@@ -42,6 +42,7 @@ Vue.component('vi-gas', {
 
       <p v-if="subscription"> </p>
       <p v-else></p>
+      <p>{{localize('thanks')}}</p>
     </v-container>
   </v-content>
 </div>`,
