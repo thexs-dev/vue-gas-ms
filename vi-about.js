@@ -19,7 +19,7 @@ Vue.component('vi-gas', {
           <p>{{localize('about-description')}}</p>
           <p>
             {{localize('licensed-to')}} {{user}}
-            (<i>{{localize(subscription ? "advanced-premium-plan" : "basic-free-plan")}}</i>)<br>
+            (<i>{{localize(premium ? "advanced-premium-plan" : "basic-free-plan")}}</i>)<br>
             {{localize('version')}} {{version}}
             (<a href="https://www.thexs.ca/xsmapping/mapping-sheets-is-learning-your-language">
               {{localize('localized-in')}} {{localize('language-locale')}}</a>)
