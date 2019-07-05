@@ -5,9 +5,7 @@ Vue.component('vi-gas', {
   <v-toolbar app>
     <v-toolbar-title>{{localize('toolbar-title')}}</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn v-if="itsme" icon @click="test">
-      <v-icon>bug_report</v-icon>
-    </v-btn>
+    <v-icon v-if="itsme" @click="test">bug_report</v-icon>
     <v-btn icon @click="window.open('http://addon.thexs.ca/mapping-sheets'); $gae('review');">
       <v-icon :title="localize('my-review')">star_half</v-icon>
     </v-btn>
@@ -37,6 +35,7 @@ Vue.component('vi-gas', {
 
     test() {
       console.log(this.localize("language"));
+      this.$gae("test");
     }
   }
 });

@@ -5,9 +5,7 @@ Vue.component('vi-gas', {
   <v-toolbar app>
     <v-toolbar-title>{{localize('about')}}</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn v-if="itsme" icon @click="test">
-      <v-icon>bug_report</v-icon>
-    </v-btn>
+    <v-icon v-if="itsme" @click="test">bug_report</v-icon>
     <v-btn icon @click="window.open('http://addon.thexs.ca/mapping-sheets'); $gae('review');">
       <v-icon :title="localize('my-review')">star_half</v-icon>
     </v-btn>
@@ -40,7 +38,7 @@ Vue.component('vi-gas', {
         <a href="https://www.thexs.ca/about-thexs/legalese">Privacy Policy and Terms</a>
       </p>
 
-      <p v-if="subscription"> </p>
+      <p v-if="premium"></p>
       <p v-else></p>
       <p>{{localize('thanks')}}</p>
     </v-container>
@@ -59,8 +57,6 @@ Vue.component('vi-gas', {
     test() {
       console.log(this.localize("language"));
       this.$gae("test");
-      // $gsdlog("Alert: calling StackdriverErrorReporter through $gsdlog()"); // it logs @GSD
-      // var x=y;
     }
   }
 });
