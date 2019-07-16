@@ -1,22 +1,5 @@
-// import VxSlider from "path/to/vx-slider.js"
 
-const VxSlider = {
-  template: `<!--  -->
-<v-layout row>
-  <v-slider class="mr-3" :value="value" :min="min" :max="max" :label="label" @input="$emit('input', $event)">
-  </v-slider>
-  <v-text-field :value="value" type="number" :min="min" :max="max" @input="$emit('input', $event)">
-  </v-text-field>
-</v-layout>`,
-
-  props: {
-    message: String,
-    min: String,
-    max: String,
-    label: String,
-    value: Number
-  }
-}
+import VxSlider from "https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.5.2-0-ga8bdade/vx-slider.js"
 
 Vue.component('vi-gas', {
   components: {
@@ -34,7 +17,7 @@ Vue.component('vi-gas', {
       </template>
 
       <v-list xdense>
-        <v-list-tile xstyle="height:40px;" v-for="item in 'general,document,filters,map,infowindow,listing,routing,layers,extend'.split(',')" @click="selected = item">
+        <v-list-tile xstyle="height:40px;" v-for="item in 'general,document,filters,map,infowindow,listing,routing,layers'.split(',')" @click="selected = item">
           <v-list-tile-content>{{ localize(item) }}</v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -49,7 +32,7 @@ Vue.component('vi-gas', {
     <v-btn icon @click="window.open('https://www.thexs.ca/posts/how-to-share-my-map')">
       <v-icon :title="localize('help')">help</v-icon>
     </v-btn>
-    <v-btn icon @click="" :disabled="working">
+    <v-btn icon @click="savePreferences" :disabled="working">
       <v-icon :title="localize('save')">save</v-icon>
     </v-btn>
   </v-toolbar>
@@ -164,8 +147,8 @@ Vue.component('vi-gas', {
             <v-checkbox v-model="settings.routingHbAlwaysVisible" :disabled="!settings.routingHbEnabled" :label="localize('Visible')"></v-checkbox>
           </v-layout>
           <v-layout row>
-            <v-text-field class="mr-3 ml-3" v-model="settings.routingHbAddress" :disabled="!settings.routingHbEnabled" :label="localize('label-hb-address')" placeholder=" "></v-text-field>
-            <v-icon class="mr-3" @click="getHbLatLng" >arrow_forward</v-icon>
+            <v-text-field class="ml-3" v-model="settings.routingHbAddress" :disabled="!settings.routingHbEnabled" :label="localize('label-hb-address')" placeholder=" "></v-text-field>
+            <v-btn icon @click="getHbLatLng" :disabled="working"><v-icon>arrow_forward</v-icon></v-btn>
             <v-text-field class="" v-model="settings.routingHbLatLng" :disabled="!settings.routingHbEnabled" :label="localize('label-hb-lat-lng')" placeholder=" "></v-text-field>
           </v-layout>
           <v-layout row>
@@ -231,6 +214,7 @@ Vue.component('vi-gas', {
     localize(key) { return this.localeResources[key] || key },
 
     iconUrl: function (iconSet) { return "https://thexs-host.firebaseapp.com/icons/%s/Blue.svg".format(iconSet) },
+    
     getHbLatLng() {
       this.working = true;
       google.script.run
@@ -245,8 +229,26 @@ Vue.component('vi-gas', {
         .getHomebaseLatLngFromAddress(this.settings.routingHbAddress);
     },
 
+    savePreferences(){
+      this.working = true;
+      if (this.itsme) console.log(this.settings);
+      this.$gae("save");
+      google.script.run
+        .withFailureHandler((e) => {
+          $gsdlog(e);
+          this.working = false;
+          google.script.host.close();
+        })
+        .withSuccessHandler((r) => {
+          this.working = false;
+          google.script.host.close();
+        })
+        .savePreferences(this.settings);
+    },
+
     test() {
-      console.log(this.settings.markerClusterMinimumClusterSize);
+      console.log(this.settings);
+      this.working = !this.working;
       this.$gae("test");
     }
   }
