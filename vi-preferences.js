@@ -1,5 +1,5 @@
 
-import VxSlider from "https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.5.2-p3/vx-slider.js"
+import VxSlider from "https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.5.2-p5/vx-slider.js"
 
 Vue.component('vi-gas', {
   components: {

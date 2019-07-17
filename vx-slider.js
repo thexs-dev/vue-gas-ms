@@ -1,9 +1,9 @@
 export default {
   template: `<!--  -->
 <v-layout row>
-  <v-slider class="mr-3" :value="value" :min="min" :max="max" :label="label" @input="$emit('input', $event)">
+  <v-slider class="mr-3" :value="value" :disabled="disabled" :min="min" :max="max" :label="label" @input="$emit('input', $event)">
   </v-slider>
-  <v-text-field :value="value" type="number" :min="min" :max="max" @input="$emit('input', $event)">
+  <v-text-field :value="value" type="number" :disabled="disabled" :min="min" :max="max" @input="$emit('input', $event)">
   </v-text-field>
 </v-layout>`,
 
@@ -12,7 +12,8 @@ export default {
     min: String,
     max: String,
     label: String,
-    value: Number
+    value: Number,
+    disabled: Boolean
   }
 }
 
