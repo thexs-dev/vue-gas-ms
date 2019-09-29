@@ -103,7 +103,7 @@ Vue.component('vi-gas', {
         <div v-if="uidata.mapsApiKeyAvailable">
           <v-layout row>
             <v-text-field class="flex xs8" v-model="settings.mapsApiKey" :label="localize('Maps Api key (for the Mapping web app)')" placeholder=" "></v-text-field>
-            <v-text-field class="ml-3" v-model="settings.mapsPageSuffix" prefix="-" :label="localize('Suffix') + ' (mapping-%s.html)'.format(settings.mapsPageSuffix)" placeholder=" " append-outer-icon="help" @click:append-outer="window.open('https://www.thexs.ca/posts/using-multiple-columns-for-geocoding-with-a-location-template')"></v-text-field>
+            <v-text-field class="ml-3" v-model="settings.mapsPageSuffix" prefix="-" :label="localize('Suffix') + ' (mapping-%s.html)'.format(settings.mapsPageSuffix)" placeholder=" " append-outer-icon="help" @click:append-outer="window.open('https://www.thexs.ca/posts/how-to-get-and-use-my-own-maps-api-key')"></v-text-field>
           </v-layout>
         </div>
       </div>
