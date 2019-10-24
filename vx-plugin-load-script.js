@@ -1,7 +1,8 @@
 const LoadScript = {
   install: function (Vue) {
-    Vue.loadScript = Vue.prototype.$loadScript = function (src, type) {
+    Vue.loadScript = Vue.prototype.$loadScript = function (src, opt) {
       // eslint-disable-line no-param-reassign
+      var opt = opt || {};
       return new Promise(function (resolve, reject) {
         if (document.querySelector('script[src="' + src + '"]')) {
           resolve();
@@ -9,8 +10,8 @@ const LoadScript = {
         }
 
         const el = document.createElement('script');
-        el.type = type || 'text/javascript';
-        el.async = true;
+        el.type = opt.type || 'text/javascript';
+        el.async = opt.async || true;
         el.src = src;
         el.addEventListener('load', resolve);
         el.addEventListener('error', reject);
