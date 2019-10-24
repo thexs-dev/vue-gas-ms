@@ -2,22 +2,22 @@
 Vue.component('vi-gas', {
   template: `<!--  -->
 <div>
-  <v-toolbar app>
+  <v-app-bar app>
     <v-toolbar-title>{{localize('Follow the steps below to share your map')}}</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-icon v-if="itsme" @click="test">bug_report</v-icon>
+    <v-icon v-if="itsme" @click="test">mdi-bug</v-icon>
     <v-btn icon @click="window.open('http://addon.thexs.ca/mapping-sheets'); $gae('review');">
-      <v-icon :title="localize('my-review')">star_half</v-icon>
+      <v-icon :title="localize('my-review')">mdi-star</v-icon>
     </v-btn>
     <v-btn icon @click="window.open('https://www.thexs.ca/posts/how-to-share-my-map')">
-      <v-icon :title="localize('help')">help</v-icon>
+      <v-icon :title="localize('help')">mdi-help-circle</v-icon>
     </v-btn>
-  </v-toolbar>
+  </v-app-bar>
   <v-content>
     <v-container fluid>
       <p>
         <div>A. Click the <b>COPY</b> button, to copy your map link</div>
-        <v-layout ml-3 row>
+        <v-layout ml-3>
           <v-text-field id="mapUrl" v-model="mapUrl" label="Your map link"></v-text-field>
           <v-btn color="secondary"
             @click="document.getElementById('mapUrl').select(); document.execCommand('copy'); $gae('copy');">
@@ -32,8 +32,8 @@ Vue.component('vi-gas', {
         <div class="ml-3">5. Click Send, confirm if asked and Done.</div>
         <br>
       </p>
-      <v-layout row justify-end>
-        <v-btn color="white" @click="google.script.host.close()">Close</v-btn>
+      <v-layout justify-end>
+        <v-btn class="mr-2" color="white" @click="google.script.host.close()">Close</v-btn>
         <v-btn color="primary" :href="shareUrl" @click="$gae('share');">Share</v-btn>
       </v-layout>
     </v-container>
@@ -64,4 +64,5 @@ Vue.component('vi-gas', {
 
 new Vue({
   el: '#app',
+  vuetify: new Vuetify(),
 });

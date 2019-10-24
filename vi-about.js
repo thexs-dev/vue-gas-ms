@@ -2,18 +2,20 @@
 Vue.component('vi-gas', {
   template: `<!--  -->
 <div>
-  <v-toolbar app>
+  <v-app-bar app>
     <v-toolbar-title>{{localize('about')}}</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-icon v-if="itsme" @click="test">bug_report</v-icon>
+    <v-icon v-if="itsme" @click="test">mdi-bug</v-icon>
     <v-btn icon @click="window.open('http://addon.thexs.ca/mapping-sheets'); $gae('review');">
-      <v-icon :title="localize('my-review')">star_half</v-icon>
+      <v-icon :title="localize('my-review')">mdi-star</v-icon>
     </v-btn>
-  </v-toolbar>
+  </v-app-bar>
   <v-content>
     <v-container fluid>
-      <v-layout row>
-        <img src="https://thexs-host.firebaseapp.com/images/xsMapping-128.png"></img>
+      <v-layout>
+        <span>
+          <img src="https://thexs-host.firebaseapp.com/images/xsMapping-128.png"></img>
+        </span>
 
         <div><br>
           <p>{{localize('about-description')}}</p>
@@ -31,7 +33,7 @@ Vue.component('vi-gas', {
 
       <div>{{localize('about-more')}}
         <v-btn icon href="https://www.thexs.ca/xsmapping">
-          <v-icon>link</v-icon>
+          <v-icon>mdi-link</v-icon>
         </v-btn>
       </div>
       <p>By using this add-on you acknowledge, consent and agree to our
@@ -64,4 +66,5 @@ Vue.component('vi-gas', {
 
 new Vue({
   el: '#app',
-});
+  vuetify: new Vuetify(),
+})
