@@ -1,10 +1,12 @@
 export default {
   template: `<!--  -->
-<v-layout row>
-  <v-slider class="mr-3" :value="value" :disabled="disabled" :min="min" :max="max" :label="label" @input="$emit('input', $event)">
+<v-layout>
+  <v-slider class="align-center mr-3" :value="value" :disabled="disabled" :min="min" :max="max" :label="label" @input="$emit('input', $event)">
+    <template v-slot:append>
+      <v-text-field class="mt-0 pt-0" :value="value" :disabled="disabled" :min="min" :max="max"  type="number" @input="$emit('input', $event)">
+      </v-text-field>
+    </template>
   </v-slider>
-  <v-text-field :value="value" type="number" :disabled="disabled" :min="min" :max="max" @input="$emit('input', $event)">
-  </v-text-field>
 </v-layout>`,
 
   props: {
