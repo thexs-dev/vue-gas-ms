@@ -15,11 +15,12 @@ Vue.component('vi-gas', {
           <v-icon>mdi-menu</v-icon>
         </v-btn>
       </template>
-
-      <v-list xdense>
-        <v-list-item xstyle="height:40px;" v-for="item in 'general,document,filters,map,infowindow,listing,routing,layers'.split(',').concat(uidata.extendedAvailable ? 'extend' : [])" @click="selected = item">
-          <v-list-item-title>{{ localize(item) }}</v-list-item-title>
-        </v-list-item>
+      <v-list>
+        <v-list-item-group>
+          <v-list-item v-for="item in 'general,document,filters,map,infowindow,listing,routing,layers'.split(',').concat(uidata.extendedAvailable ? 'extend' : [])" @click="selected = item">
+            <v-list-item-title>{{ localize(item) }}</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
       </v-list>
     </v-menu>
 
@@ -183,7 +184,7 @@ Vue.component('vi-gas', {
       <div class="mt-3" v-show="selected === 'extend'">
         <p>Coming soon [experimental] for the Extended Custom Plan</p>
         <!-- Geocoding batch (mapsApiKeyGeo/Batch),  -->
-        
+
       </div>
 
     </v-container>

@@ -2,20 +2,20 @@
 Vue.component('vi-gas', {
   template: `<!--  -->
 <div>
-  <v-toolbar app>
+  <v-app-bar app>
     <v-toolbar-title>{{localize('toolbar-title')}}</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-icon v-if="itsme" @click="test">bug_report</v-icon>
+    <v-icon v-if="itsme" @click="test">mdi-bug</v-icon>
     <v-btn icon @click="window.open('http://addon.thexs.ca/mapping-sheets'); $gae('review');">
-      <v-icon :title="localize('my-review')">star_half</v-icon>
+      <v-icon :title="localize('my-review')">mdi-star</v-icon>
     </v-btn>
     <v-btn icon @click="window.open('https://www.thexs.ca/posts/how-to-share-my-map')">
-      <v-icon :title="localize('help')">help</v-icon>
+      <v-icon :title="localize('help')">mdi-help-circle</v-icon>
     </v-btn>
-  </v-toolbar>
+  </v-app-bar>
   <v-content>
     <v-container fluid>
-      <v-layout row>
+      <v-layout>
 
       </v-layout>
 
@@ -43,4 +43,5 @@ Vue.component('vi-gas', {
 
 new Vue({
   el: '#app',
+  vuetify: new Vuetify(),
 });
