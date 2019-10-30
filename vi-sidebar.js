@@ -128,8 +128,8 @@ Vue.component('vi-gas', {
         if (typeof d === 'object' && d !== null) {
           Object.keys(d).forEach(k => this.uidata[k] = d[k]);
         }
-        if (!this.uidata.message) this.uidata.message = "%s (%s)".format(d || "OK", fnName);
-        window.setTimeout(() => { this.status = "ready"; this.working = false; }, 2000);
+        if (!this.uidata.message) this.uidata.message = "%s (%s)".format("OK", fnName);
+        window.setTimeout(() => { this.status = "ready"; this.working = false; }, 1000);
       })
       .withFailureHandler(e => {
         console.log(fnName,param,e);
@@ -157,8 +157,10 @@ Vue.component('vi-gas', {
 
     test() {
       // var x=y; // throwing error for testing
-      this.toast("Hello from Testing")
+      // this.toast("Hello from Testing")
+      console.log(this.uidata);
       this.working = !this.working;
+      window.setTimeout(() => this.working = !this.working, 3000);
       this.$gae("test");
     }
   }
