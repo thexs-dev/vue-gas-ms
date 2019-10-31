@@ -119,6 +119,7 @@ Vue.component('vi-gas', {
     localize(key) { return this.localeResources[key] || key },
 
     Call(fnName, param) {
+      console.time(fnName);
       this.working = true;
       this.status = "processing";
       this.uidata.message = "...";
@@ -132,6 +133,7 @@ Vue.component('vi-gas', {
         }
         if (!this.uidata.message) this.uidata.message = "%s (%s)".format("OK", fnName);
         window.setTimeout(() => { this.status = "ready"; this.working = false; }, 1000);
+        console.timeEnd(fnName);
       })
       .withFailureHandler(e => {
         console.log(fnName,param,e);
@@ -148,6 +150,7 @@ Vue.component('vi-gas', {
         this.working = false;
         this.uidata.message = e;
         window.setTimeout(() => this.status = "error", 1000);
+        console.timeEnd(fnName);
       })
       [fnName](param);
     },
