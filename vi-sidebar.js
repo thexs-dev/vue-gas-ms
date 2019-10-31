@@ -125,7 +125,7 @@ Vue.component('vi-gas', {
       this.uidata.message = "...";
       google.script.run
       .withSuccessHandler(d => {
-        console.log(fnName,param,d);
+        if (this.itsme) console.log(fnName,param,d);
         // assuming it always comes back with the full/partial uidata object ...
         this.uidata.message = "";
         if (typeof d === 'object' && d !== null) {
@@ -136,7 +136,7 @@ Vue.component('vi-gas', {
         console.timeEnd(fnName);
       })
       .withFailureHandler(e => {
-        console.log(fnName,param,e);
+        if (this.itsme) console.log(fnName,param,e);
         var extras = ""; // hacking the toast message for specific issues
         var keywordAuthorization = "is not def-ined,Authorization,Authorisation,toestemming,認が,הרשאה,autorisations,autorización,εξουσιοδότηση,인증이,autoryzacja,ตรวจสอบสิทธิ์,авторизация,yetki,autorizzazione,autorisée,lupa,授权,otorisasi,承認,授權,Berechtigung,phép,ترخيص.";
         if (keywordAuthorization.split(",").some(function(v){ return e.message.indexOf(v) > -1; })) {
@@ -145,11 +145,11 @@ Vue.component('vi-gas', {
           "* Or ensure that your current account ("+this.user+") is the Default";
         }
         var feedback = "<br>Send your feedback using <a href='https://docs.google.com/a/thexs.ca/forms/d/11s6OQoBS1Vn9QGgDCirqPGZq78Dv4RIPAtxuXprJJZw/viewform'>this form</a>."
-        this.toast("Problem at %s<hr><br> Original error message: <br> %s %s <br>%s".format(fnName,e,extras,feedback));
         xsLogger.log(e, fnName);
         this.working = false;
-        this.uidata.message = e;
         window.setTimeout(() => this.status = "error", 1000);
+        this.uidata.message = e.message;
+        this.toast("Problem at %s<hr><br> Original error message: <br> %s %s <br>%s".format(fnName,e.message,extras,feedback));
         console.timeEnd(fnName);
       })
       [fnName](param);
