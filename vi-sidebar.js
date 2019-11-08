@@ -17,8 +17,8 @@ Vue.component('vi-gas', {
       </template>
       <v-list dense>
         <v-list-item-group>
-          <v-list-item @click="Call('insertDemoSheet');$gae('insert');">{{ localize('insert-demo-sheet') }}</v-list-item>
           <v-list-item @click="Call('refreshHeaders');$gae('refresh');">{{ localize('refresh-header-list') }}</v-list-item>
+          <v-list-item @click="Call('insertDemoSheet');$gae('insert');">{{ localize('insert-demo-sheet') }}</v-list-item>
           <v-divider></v-divider>
           <template v-if="itsme">
             <v-list-item @click="google.script.run.showAnnounceForMe()">Announces For Me</v-list-item>
@@ -61,7 +61,7 @@ Vue.component('vi-gas', {
         <v-select class="ml-2" v-model="item.kind" :items="filtersKind" :disabled="working"></v-select>
       </v-layout>
 
-      <vx-custom v-model="custom"></vx-custom>
+      <vx-custom :custom="uidata.custom"></vx-custom>
 
       <v-snackbar v-model="snackbar" multi-line vertical absolute timeout>
         <div v-html="snackbarText"></div>
@@ -91,8 +91,8 @@ Vue.component('vi-gas', {
 
   data() {
     if (!window.google || !window.google.script) {
-      data.custom = {}; // TODO: review and complete the associated code
       data.uidata = {"fid":"1hNt8yd6Vd-zxj6anWN0Xe8frzwHaEddh","headers":["Name","Category","Address","Company","Status","Range","Due on","Days since Due","More Info","Picture","Notes","Latitude","Longitude","Buffer"],"xfilters":[],"filters":[{"property":"Status","kind":"checkboxes"},{"property":"Range","kind":"slider"}],"fields":{"filter":"Category","name":"Name","address":"Address"},"urlPath":"https://thexs-mapping.firebaseapp.com/mapping.html"}
+      data.uidata.custom = { vuejs:"https://thexs.rad3.ca/pmx/vi.gp-sidebar.js", baseDate:"2019-11-15", min:"2019-11-01", max:"2019-11-30", disabled:!true };
     }
     data.snackbar = false;
     data.snackbarText = "";
@@ -105,7 +105,9 @@ Vue.component('vi-gas', {
   mounted() {
     if (!window.google || !window.google.script) Vue.loadScript("./vx-google.script.js");
 
-    // TODO: load this.custom.html file if required
+    if (this.uidata.custom && this.uidata.custom.vuejs) {
+      Vue.component("vx-custom", () => import(this.uidata.custom.vuejs));
+    }
 
     window.setTimeout(() => {
       this.status = "ready";

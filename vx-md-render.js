@@ -4,6 +4,7 @@ if (!window.marked) window.marked = marked;
 
 import debounce from "./vx-debounce.js";
 
+// https://github.com/sindresorhus/github-markdown-css
 document.getElementsByTagName("head")[0].insertAdjacentHTML("beforeend",
   "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/github-markdown-css@3.0.1/github-markdown.css\" />"
 );
