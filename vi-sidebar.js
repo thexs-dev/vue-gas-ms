@@ -92,7 +92,7 @@ Vue.component('vi-gas', {
   data() {
     if (!window.google || !window.google.script) {
       data.uidata = {"fid":"1hNt8yd6Vd-zxj6anWN0Xe8frzwHaEddh","headers":["Name","Category","Address","Company","Status","Range","Due on","Days since Due","More Info","Picture","Notes","Latitude","Longitude","Buffer"],"xfilters":[],"filters":[{"property":"Status","kind":"checkboxes"},{"property":"Range","kind":"slider"}],"fields":{"filter":"Category","name":"Name","address":"Address"},"urlPath":"https://thexs-mapping.firebaseapp.com/mapping.html"}
-      data.uidata.custom = { vuejs:"https://thexs.rad3.ca/pmx/vi.gp-sidebar.js", baseDate:"2019-11-15", min:"2019-11-01", max:"2019-11-30", disabled:!true };
+      data.uidata.custom = { vuejs:"./vi.gp-sidebar.js", baseDate:"2019-11-15", min:"2019-11-01", max:"2019-11-30", disabled:!true };
     }
     data.snackbar = false;
     data.snackbarText = "";
@@ -140,7 +140,7 @@ Vue.component('vi-gas', {
       .withFailureHandler(e => {
         if (this.itsme) console.log(fnName,param,e);
         var extras = ""; // hacking the toast message for specific issues
-        var keywordAuthorization = "is not def-ined,Authorization,Authorisation,toestemming,認が,הרשאה,autorisations,autorización,εξουσιοδότηση,인증이,autoryzacja,ตรวจสอบสิทธิ์,авторизация,yetki,autorizzazione,autorisée,lupa,授权,otorisasi,承認,授權,Berechtigung,phép,ترخيص.";
+        var keywordAuthorization = "is not def-ined,ScriptError,Spreadsheets,permission,разрешения,Authorization,Authorisation,toestemming,認が,הרשאה,autorisations,autorización,εξουσιοδότηση,인증이,autoryzacja,ตรวจสอบสิทธิ์,авторизация,yetki,autorizzazione,autorisée,lupa,授权,otorisasi,承認,授權,Berechtigung,phép,ترخيص.";
         if (keywordAuthorization.split(",").some(function(v){ return e.message.indexOf(v) > -1; })) {
           extras += "<br><br>If you are logged in with multiple Google accounta, please: <br>" +
           "* Disconnect the other Google accounts <br>" +
