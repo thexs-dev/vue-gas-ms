@@ -63,7 +63,7 @@ Vue.component('vi-gas', {
 
       <vx-custom :custom="uidata.custom"></vx-custom>
 
-      <v-snackbar v-model="snackbar" multi-line vertical absolute timeout>
+      <v-snackbar v-model="snackbar" multi-line vertical top timeout>
         <div v-html="snackbarText"></div>
         <v-btn text color="primary" @click="snackbar = false">Close</v-btn>
       </v-snackbar>
@@ -91,8 +91,8 @@ Vue.component('vi-gas', {
 
   data() {
     if (!window.google || !window.google.script) {
-      data.uidata = {"fid":"1hNt8yd6Vd-zxj6anWN0Xe8frzwHaEddh","headers":["Name","Category","Address","Company","Status","Range","Due on","Days since Due","More Info","Picture","Notes","Latitude","Longitude","Buffer"],"xfilters":[],"filters":[{"property":"Status","kind":"checkboxes"},{"property":"Range","kind":"slider"}],"fields":{"filter":"Category","name":"Name","address":"Address"},"urlPath":"https://thexs-mapping.firebaseapp.com/mapping.html"}
-      data.uidata.custom = { vuejs:"./vi.gp-sidebar.js", baseDate:"2019-11-15", min:"2019-11-01", max:"2019-11-30", disabled:!true };
+      data.uidata = {"fid":"1hNt8yd6Vd-zxj6anWN0Xe8frzwHaEddh","headers":["Name","Category","Address","Company","Status","Range","Due on","Days since Due","More Info","Picture","Notes","Latitude","Longitude","Buffer"],"filters":[],"xfilters":[{"property":"Status","kind":"checkboxes"},{"property":"Range","kind":"slider"}],"fields":{"filter":"Category","name":"Name","address":"Address"},"urlPath":"https://thexs-mapping.firebaseapp.com/mapping.html"}
+      data.uidata.custom = { xvuejs:"./vi.gp-sidebar.js", baseDate:"2019-11-15", min:"2019-11-01", max:"2019-11-30", disabled:!true };
     }
     data.snackbar = false;
     data.snackbarText = "";
@@ -164,7 +164,7 @@ Vue.component('vi-gas', {
 
     test() {
       // var x=y; // throwing error for testing
-      // this.toast("Hello from Testing")
+      this.toast("Hello from Testing<hr><br> There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.")
       console.log(this.uidata);
       this.working = !this.working;
       window.setTimeout(() => this.working = !this.working, 3000);
