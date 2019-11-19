@@ -3,7 +3,7 @@
 
 // import debounce from "./vx-debounce.js";
 
-import VxMdRender from './vx-md-render.js';
+import VxMarked from './vx-marked.js';
 
 Vue.component('vi-gas', {
   template: `<!--  -->
@@ -23,7 +23,7 @@ Vue.component('vi-gas', {
     <v-container fluid>
       <v-layout row>
         <textarea class="flex xs6 pa-2" v-model:value="markdown"></textarea>
-        <vx-md-render class="flex xs6 pa-2" :template="markdown"></vx-md-render>
+        <vx-marked class="flex xs6 pa-2" :template="markdown"></vx-marked>
       </v-layout>
     </v-container>
   </v-content>
