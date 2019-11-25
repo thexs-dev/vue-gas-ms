@@ -1,8 +1,4 @@
 
-const db = firebase.initializeApp({
-  databaseURL: 'https://thexs-apps.firebaseio.com/'
-}).database();
-
 String.prototype.dot = function () { return this.replace(/[\.%]/g, "_"); }
 
 Vue.component('vi-gas', {
@@ -71,8 +67,14 @@ Vue.component('vi-gas', {
     return data
   },
 
-  mounted() {
+  async mounted() {
     if (!window.google || !window.google.script) Vue.loadScript("./vx-google.script.js");
+
+    await Vue.loadScript("https://www.gstatic.com/firebasejs/6.2.3/firebase-app.js");
+    await Vue.loadScript("https://www.gstatic.com/firebasejs/6.2.3/firebase-database.js");
+    const db = firebase.initializeApp({
+      databaseURL: 'https://thexs-apps.firebaseio.com/'
+    }).database();
 
     db.ref("/IPN/Mapping/" + this.user.dot() + "/active/")
       .on("value", (snapshot) => {
