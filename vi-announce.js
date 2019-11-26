@@ -5,7 +5,7 @@ Vue.component("announce-actions", {
   template: `<!--  -->
 <div>
   <template v-if="poll.type === 'yorn'">
-    <div v-if="!answered">
+    <div class="mt-4" v-if="!answered">
       <v-btn @click="vote('YES');" color="success">yes</v-btn>
       <v-btn @click="vote('NO');" color="white" class="ml-2">no</v-btn>
     </div>
