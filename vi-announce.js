@@ -91,7 +91,7 @@ Vue.component('vi-gas', {
   <v-content>
     <v-container fluid>
       <v-layout>
-        <vx-marked :template="announce.content" :sanitize="true" ></vx-marked>
+        <vx-marked :template="announce.content" :sanitize="false" ></vx-marked>
       </v-layout>
       <announce-actions v-if="announce._poll" :poll="announce._poll" :entry="key" :itsme="itsme"></announce-actions>
     </v-container>
