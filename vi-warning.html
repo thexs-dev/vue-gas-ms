@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_blank">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@3.0.1/github-markdown.css">
+  </head>
+  <body>
+
+
+<template id="template">
+## Warning: Unknown server error {{helpicon}}
+</template>
+          
+<template id="unknown">
+## Warning: Unknown error {{helpicon}}
+There was an error with unspecified cause that we cannot identify
+> Please [contact us](https://www.thexs.ca/xsmapping/faq-and-feedback) if you keep having this issue
+</template>
+
+<template id="headers-mismatch">
+## Warning: Column headers mismatch {{helpicon}}
+Some main column headers might have changed or been removed.
+
+Please, 
+> Check your headers and field selections and try again.\
+You might need to reload the add-on sidebar\
+Or just click on *Refresh header list* from the menu.
+</template>
+
+<template id="basic-cap">
+## Warning: Basic free plan locations cap {{helpicon}}
+When using the Basic Free Plan, the add-on will process and map the first 50 locations on your datasheet.
+
+To remove this cap and also get access to the premium features, you can subscribe to the Advanced Premium Plan from   
+> Add-ons menu > Mapping Sheets > Subscription
+
+Please, see [this page](https://www.thexs.ca/xsmapping/advanced-premium-plan-subscription) for more details.
+
+> (†) Disclaimer: The Advanced Premium Plan does not avoid 
+[service errors, limitations and quotas](https://www.thexs.ca/xsmapping/limitations-known-issues-and-common-errors)
+like [Google Geocoding daily quota limit exception](https://www.thexs.ca/posts/exception-service-invoked-too-many-times-for-one-day-geocode).
+</template>
+
+<template id="geocoding">
+## Warning: Geocoding problems {{helpicon}}
+</template>
+<template id="timing">
+This is just a pause on building your map, to avoid exceeding the Script execution time limit (6 minutes).
+> Please, click BUILD again until your map is complete
+</template>
+<template id="errors">
+There was some error(s) while Geocoding your locations\
+This is the original last server error message and [location]
+> {{error}} [{{address}}]
+</template>
+<template id="stopped">
+The Geocoding process was not completed as explained above
+> But you can view your partial map with {{locations}} locations
+</template>
+<template id="badaddress">
+Problem Geocoding these ({{badlength}}) locations:
+> {{badaddress}}
+</template>
+<template id="nodata">
+Due to these issues, there is No valid Data available for Mapping
+> Please check your data and contact us for further support
+</template>
+
+<template id="prefs-critical">
+## Warning: Critical changes {{helpicon}}
+Some of the Preferences you have changed require that you reload the sidebar to get them active
+> Please reopen the add-on sidebar from the menu
+</template>
+
+<template id="unexpected">
+## Warning: Unexpected server error {{helpicon}}
+An unexpected server error has happened, this is the original message:
+> {{error}}
+
+Please try again later, or [submit a feedback ticket](https://www.thexs.ca/xsmapping/faq-and-feedback)
+</template>
+    
+
+    <render class="markdown-body" id="content"> Loading...</render>
+
+  </body>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@0.7.0/lib/marked.js"></script>
+  <script>
+    String.prototype.mustache = function (json) {
+      return (this.match(/\{\{[^\{]+\}\}/g) || []).reduce(function (p, v) {
+        var d = json[v.replace(/[{}]/g, "")];
+        if (d === undefined) d = "";
+        p = p.replace(v, d);
+        return p;
+      }, this);
+    }
+  </script>
+
+  <script>
+    var json = {}, keyword = "unknown";
+    // ready for GAS HtmlService...evaluate() >> uncomment the line below @GAS
+// var json = <?!=JSON.stringify(json)?>, keyword = "<?!= keyword ?>";
+    if (!window.google) { // itsme testing local >> comment below lines within {} @GAS
+      // keyword = "geocoding|timing|errors|stopped|badaddress|nodata";
+      // Ids: unknown, headers-mismatch, basic-cap, prefs-critical, unexpected
+      keyword = "unknown"
+      json = {
+        error: "Exception: Service invoked too many times for one day: geocode.",
+        address: "123 No Place to Go",
+        locations: 101,
+        badlength: 2,
+        badaddress: "From the lake, using coordinates<br>[empty address] for No Address"
+      }
+    }
+
+    // hacking json for floating header help icon, as a simple placeholder {{helpicon}}
+    json.help = json.help || "https://www.thexs.ca/xsmapping/faq-and-feedback";
+    json.icon = '<svg width="24" height="24"><path fill="#000000" d="M11,18H13V16H11V18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,6A4,4 0 0,0 8,10H10A2,2 0 0,1 12,8A2,2 0 0,1 14,10C14,12 11,11.75 11,15H13C13,12.75 16,12.5 16,10A4,4 0 0,0 12,6Z" ></svg>';
+    json.helpicon = '<a href="{{help}}" style="float:right;">{{icon}}</a>'.mustache(json);
+
+    var content = ""; 
+    keyword.split("|").forEach( (kw) => content += document.getElementById(kw).innerHTML.replace(/&gt;/g,">"));
+    content = content.mustache(json).toString();
+    content = marked(content);
+    // console.log(content);
+    document.getElementById("content").innerHTML = content;
+  </script>
+</html>
+
+<!-- 
+The replacement for current/old warning.html currently called from showWarning(title, message)
+- Server.gs (2) 
+- Build.MS.gs (3) 
+
+server-side always use Notification or so... as title SpreadsheetApp.getUi().showModelessDialog(ui, title);
+
+vueWarning(keyword, json)
+- keyword to get the intended template id(s) client-side
+- json for template content with {{place-holder}}
+  .help: optional if not the support link
+  .error: e.message when applicable
+  . et cetera
+
+Notes
+- No headers, just the default dialog close
+- passing a json data object with dynamic content as required
+- static content including title (with optional placeholders) as templates in this html code
+-->
