@@ -1,4 +1,4 @@
-// copied from xFilePicker.gscript library picker-ui-js (version 2+dev)
+// copied from xFilePicker.gscript library picker-ui-js (version 3)
 
 /** 
   var picker. object MUST be defined in full before loading this script file
