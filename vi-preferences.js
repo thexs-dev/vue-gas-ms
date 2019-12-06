@@ -51,7 +51,7 @@ Vue.component('vi-gas', {
       <div v-show="selected === 'document'">
         <div v-if="uidata.unattendedAvailable">
           <v-layout>
-            <v-checkbox class="flex xs11" v-model="settings.unattendedEnabled" @change="unattended" label="Unattended BUILD (time-based trigger)"></v-checkbox>
+            <v-checkbox class="flex xs11" v-model="settings.unattendedEnabled" @change="unattended" :disabled="!settings.lastBuildDate" label="Unattended BUILD (time-based trigger)"></v-checkbox>
             <v-select :items="uidata.unattendedFrequencies" suffix="hours" v-model="settings.unattendedFrequency" :label="localize('Frequency')"></v-select>
           </v-layout>
           <div class="body-2 mb-8 ml-4">(*) Unattended BUILD requires access to this Spreadsheet </div>
@@ -206,7 +206,7 @@ Vue.component('vi-gas', {
     if (!window.google || !window.google.script) {
       data.uidata = {"headers":"Name,Category,Address,Company,Status,Range,More Info,Picture,Notes,Latitude,Longitude,Extras","headersAll":["Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"headersAllOptional":["","Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"filtersMaxQty":10,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}}\\n {{Address}}","routingHbOptions":["Roundtrip","Start","End"],"routingTravelModes":["BICYCLING","DRIVING","WALKING"],"routingUnitSystems":["IMPERIAL","METRIC"],"placeUnits":["km","mi","m","ft"],"filtersSplit":",","icons":["locas","pins","flags","dots-10","triangles-10","mdi/pin","mdi/place","mdi/truck","mdi/water"],"styledMap":"","mapTypeIds":["roadmap","satellite","hybrid","terrain","styled"],"mapsApiKeyAvailable":true,"alpha":true,"unattendedAvailable":true,"unattendedFrequencies":["1","2","4","6","8","12"]};
       data.picker = {"ViewId":"SPREADSHEETS","itsme":false,"showModeDialog":"showModalDialog","DeveloperKey":"AIzaSyARPn4fd7Ublsoc4PiiubqC4sqvBtUxh7c","AppId":"736233853391","width":600,"height":425,"title":"Select current Spreadsheet from the list","query":"MS Testing as None"};
-      data.settings = {"beta":false,"dataHeadersRowIndex":1,"dataGetDisplayValues":false,"spreadsheetLocale":"en_US","infowindowDirections":true,"infowindowZoomIn":true,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}} ({{Range}})\\n {{Address}}","listingOpenInfowindow":true,"listingExportNewTab":true,"iconSet":"mdi/pin","pageTitle":"Mapping as None","routingEnabled":true,"routingF2LEnabled":true,"routingHbEnabled":true,"routingHbOption":"Roundtrip","routingHbAddress":"CN Tower","routingHbLatLng":"43.6425662,-79.3870568","routingHbDraggable":true,"routingHbAlwaysVisible":true,"routingTravelMode":"DRIVING","routingUnitSystem":"METRIC","routingDirectionPanelEnabled":true,"routingSuppressMarkers":true,"showPlace":true,"placeRadius":10,"placeFilter":true,"placeUnit":"km","mapCenterOnClick":false,"filtersQty":1,"filtersTag":true,"filtersSplit":"","styledMap":"","styledMapDefault":false,"markerCluster":true,"markerClusterMinimumClusterSize":5,"markerClusterMaxZoom":15,"markerSpider":true,"mapsApiKey":"","mapsPageSuffix":"","unattendedEnabled":false,"unattendedFrequency":"8","layers":{"circles":{"radiusUnit":"km","fillOpacity":"0.1","enabled":false,"radiusHeader":"Range"},"heatmap":{"enabled":false,"weightHeader":"","fillOpacity":0.6}}};
+      data.settings = {"beta":false,"dataHeadersRowIndex":1,"dataGetDisplayValues":false,"spreadsheetLocale":"en_US","infowindowDirections":true,"infowindowZoomIn":true,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}} ({{Range}})\\n {{Address}}","listingOpenInfowindow":true,"listingExportNewTab":true,"iconSet":"mdi/pin","pageTitle":"Mapping as None","routingEnabled":true,"routingF2LEnabled":true,"routingHbEnabled":true,"routingHbOption":"Roundtrip","routingHbAddress":"CN Tower","routingHbLatLng":"43.6425662,-79.3870568","routingHbDraggable":true,"routingHbAlwaysVisible":true,"routingTravelMode":"DRIVING","routingUnitSystem":"METRIC","routingDirectionPanelEnabled":true,"routingSuppressMarkers":true,"showPlace":true,"placeRadius":10,"placeFilter":true,"placeUnit":"km","mapCenterOnClick":false,"filtersQty":1,"filtersTag":true,"filtersSplit":"","styledMap":"","styledMapDefault":false,"markerCluster":true,"markerClusterMinimumClusterSize":5,"markerClusterMaxZoom":15,"markerSpider":true,"mapsApiKey":"","mapsPageSuffix":"","lastBuildDate":"12345678","unattendedEnabled":false,"unattendedFrequency":"8","layers":{"circles":{"radiusUnit":"km","fillOpacity":"0.1","enabled":false,"radiusHeader":"Range"},"heatmap":{"enabled":false,"weightHeader":"","fillOpacity":0.6}}};
       picker = data.picker;
     }
     data.working = false;
@@ -256,6 +256,7 @@ Vue.component('vi-gas', {
           this.working = false;
           if (!r) {
             this.picker.required = true;
+            window.setTimeout(() => this.settings.unattendedEnabled = false, 1000);
             getOAuthToken();
           }
         })
@@ -282,7 +283,7 @@ Vue.component('vi-gas', {
     },
 
     test() {
-      console.log(this.settings, picker);
+      console.log(this.settings, picker, window.location);
       google.script.run.testingFromPreferencesForMe()
       this.working = !this.working;
       this.$gae("test");

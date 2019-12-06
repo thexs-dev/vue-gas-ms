@@ -10,7 +10,7 @@
 <template id="template">
 ## Warning: Unknown server error {{helpicon}}
 </template>
-          
+
 <template id="unknown">
 ## Warning: Unknown error {{helpicon}}
 There was an error with unspecified cause that we cannot identify
@@ -79,7 +79,17 @@ An unexpected server error has happened, this is the original message:
 
 Please try again later, or [submit a feedback ticket](https://www.thexs.ca/xsmapping/faq-and-feedback)
 </template>
-    
+
+<template id="version">
+## Warning: Using an older version {{helpicon}}
+There is a new version (**{{version}}**) available for the Mapping add-on.\
+However you are still using an older version (*{{older}}*)
+> Please reload your spreadsheet (refresh the browser) 
+to get access to the latest Mapping add-on version
+
+Thanks
+</template>
+
 
     <render class="markdown-body" id="content"> Loading...</render>
 
@@ -103,14 +113,15 @@ Please try again later, or [submit a feedback ticket](https://www.thexs.ca/xsmap
 // var json = <?!=JSON.stringify(json)?>, keyword = "<?!= keyword ?>";
     if (!window.google) { // itsme testing local >> comment below lines within {} @GAS
       // keyword = "geocoding|timing|errors|stopped|badaddress|nodata";
-      // Ids: unknown, headers-mismatch, basic-cap, prefs-critical, unexpected
+      // Ids: unknown, headers-mismatch, basic-cap, prefs-critical, unexpected, version
       keyword = "unknown"
       json = {
         error: "Exception: Service invoked too many times for one day: geocode.",
         address: "123 No Place to Go",
         locations: 101,
         badlength: 2,
-        badaddress: "From the lake, using coordinates<br>[empty address] for No Address"
+        badaddress: "From the lake, using coordinates<br>[empty address] for No Address",
+        version:"3.1.170", older:"3.1.168"
       }
     }
 
