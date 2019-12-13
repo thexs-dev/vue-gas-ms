@@ -1,5 +1,5 @@
 
-import VxSlider from "https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.1/vx-slider.js"
+import VxSlider from "https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.5/vx-slider.js"
 
 Vue.component('vi-gas', {
   components: {
@@ -52,7 +52,7 @@ Vue.component('vi-gas', {
         <div v-if="uidata.unattendedAvailable">
           <v-layout>
             <v-checkbox class="flex xs11" v-model="settings.unattendedEnabled" @change="unattended" :disabled="!settings.lastBuildDate" label="Unattended BUILD (time-based trigger)"></v-checkbox>
-            <v-select :items="uidata.unattendedFrequencies" suffix="hours" v-model="settings.unattendedFrequency" :label="localize('Frequency')"></v-select>
+            <v-select :items="uidata.unattendedFrequencies" suffix="hours" v-model="settings.unattendedFrequency" :label="localize('Frequency')" append-outer-icon="mdi-help-circle" @click:append-outer="window.open('https://www.thexs.ca/posts/how-to-update-my-map-automatically-when-the-data-changes')"></v-select>
           </v-layout>
           <div class="body-2 mb-8 ml-4">(*) Unattended BUILD requires access to this Spreadsheet </div>
           <!-- file picker dialog if required -->
@@ -205,7 +205,7 @@ Vue.component('vi-gas', {
   data() {
     if (!window.google || !window.google.script) {
       data.uidata = {"headers":"Name,Category,Address,Company,Status,Range,More Info,Picture,Notes,Latitude,Longitude,Extras","headersAll":["Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"headersAllOptional":["","Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"filtersMaxQty":10,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}}\\n {{Address}}","routingHbOptions":["Roundtrip","Start","End"],"routingTravelModes":["BICYCLING","DRIVING","WALKING"],"routingUnitSystems":["IMPERIAL","METRIC"],"placeUnits":["km","mi","m","ft"],"filtersSplit":",","icons":["locas","pins","flags","dots-10","triangles-10","mdi/pin","mdi/place","mdi/truck","mdi/water"],"styledMap":"","mapTypeIds":["roadmap","satellite","hybrid","terrain","styled"],"mapsApiKeyAvailable":true,"alpha":true,"unattendedAvailable":true,"unattendedFrequencies":["1","2","4","6","8","12"]};
-      data.picker = {"ViewId":"SPREADSHEETS","itsme":false,"showModeDialog":"showModalDialog","DeveloperKey":"AIzaSyARPn4fd7Ublsoc4PiiubqC4sqvBtUxh7c","AppId":"736233853391","width":600,"height":425,"title":"Select current Spreadsheet from the list","query":"MS Testing as None"};
+      data.picker = {"ViewId":"SPREADSHEETS","itsme":false,"showModeDialog":"showModalDialog","DeveloperKey":"DeveloperKey","AppId":"AppId","width":600,"height":425,"title":"Select current Spreadsheet from the list","query":"MS Testing as None"};
       data.settings = {"beta":false,"dataHeadersRowIndex":1,"dataGetDisplayValues":false,"spreadsheetLocale":"en_US","infowindowDirections":true,"infowindowZoomIn":true,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}} ({{Range}})\\n {{Address}}","listingOpenInfowindow":true,"listingExportNewTab":true,"iconSet":"mdi/pin","pageTitle":"Mapping as None","routingEnabled":true,"routingF2LEnabled":true,"routingHbEnabled":true,"routingHbOption":"Roundtrip","routingHbAddress":"CN Tower","routingHbLatLng":"43.6425662,-79.3870568","routingHbDraggable":true,"routingHbAlwaysVisible":true,"routingTravelMode":"DRIVING","routingUnitSystem":"METRIC","routingDirectionPanelEnabled":true,"routingSuppressMarkers":true,"showPlace":true,"placeRadius":10,"placeFilter":true,"placeUnit":"km","mapCenterOnClick":false,"filtersQty":1,"filtersTag":true,"filtersSplit":"","styledMap":"","styledMapDefault":false,"markerCluster":true,"markerClusterMinimumClusterSize":5,"markerClusterMaxZoom":15,"markerSpider":true,"mapsApiKey":"","mapsPageSuffix":"","lastBuildDate":"12345678","unattendedEnabled":false,"unattendedFrequency":"8","layers":{"circles":{"radiusUnit":"km","fillOpacity":"0.1","enabled":false,"radiusHeader":"Range"},"heatmap":{"enabled":false,"weightHeader":"","fillOpacity":0.6}}};
       picker = data.picker;
     }
@@ -217,7 +217,7 @@ Vue.component('vi-gas', {
     if (!window.google || !window.google.script) Vue.loadScript("./vx-google.script.js");
 
     // await Vue.loadScript("./vx-file-picker.js");
-    await Vue.loadScript("https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.4-1-g35ee37a/vx-file-picker.js");
+    await Vue.loadScript("https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.5/vx-file-picker.js");
     Vue.loadScript("https://apis.google.com/js/api.js?onload=onApiLoad");
   },
 

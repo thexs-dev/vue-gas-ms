@@ -79,7 +79,7 @@ Vue.component('vi-gas', {
       <v-layout class="mt-2 mb-2">
         <v-btn color="success" @click="Call('buildJsonFile',uidata);$gae('build');" :disabled="working || !uidata.fields.name || !uidata.fields.address || !uidata.fields.filter">{{ $localize('build') }}</v-btn>
         <v-spacer></v-spacer>
-        <v-btn v-if="itsme" color="secundary" @click="window.open('http://127.0.0.1:5500/mapping.html?fid=' + uidata.fid)" :disabled="working || !uidata.fid">vu-dev</v-btn>
+        <v-btn v-if="itsme" color="secundary" @click="window.open('http://127.0.0.1:5505/mapping.html?fid=' + uidata.fid)" :disabled="working || !uidata.fid">vu-dev</v-btn>
         <!-- <v-btn v-if="itsme" color="secundary" @click="window.open('https://script.google.com/a/macros/thexs.ca/s/AKfycbzjd-_KOMG9HoIzjsv3w2M5Wf-hR1syYw6C9grbBXM4/dev?fid=' + uidata.fid)" :disabled="working || !uidata.fid">vu-dev</v-btn> -->
         <v-btn color="primary" @click="window.open(uidata.urlPath + '?fid=' + uidata.fid)" :disabled="working || !uidata.fid">{{ $localize('view') }}</v-btn>
       </v-layout>
