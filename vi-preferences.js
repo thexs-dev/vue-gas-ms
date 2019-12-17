@@ -243,9 +243,8 @@ Vue.component('vi-gas', {
     },
 
     unattended(e) {
-      this.working = true;
-      if (this.itsme) console.log("unattended", this.settings.unattendedEnabled);
       if (this.settings.unattendedEnabled) {
+        this.working = true;
         this.$gae("unattended");
         google.script.run
         .withFailureHandler((e) => {
@@ -262,7 +261,6 @@ Vue.component('vi-gas', {
         })
         .checkGetAccessToCurrentDoc();
       }
-      else ;
     },
 
     savePreferences() {
