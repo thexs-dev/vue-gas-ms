@@ -54,7 +54,8 @@ Vue.component('vi-gas', {
             <v-checkbox class="flex xs11" v-model="settings.unattendedEnabled" @change="unattended" :disabled="!settings.lastBuildDate" label="Unattended BUILD (time-based trigger)"></v-checkbox>
             <v-select :items="uidata.unattendedFrequencies" suffix="hours" v-model="settings.unattendedFrequency" :label="localize('Frequency')" append-outer-icon="mdi-help-circle" @click:append-outer="window.open('https://www.thexs.ca/posts/how-to-update-my-map-automatically-when-the-data-changes')"></v-select>
           </v-layout>
-          <div class="body-2 mb-8 ml-4">(*) Unattended BUILD requires access to this Spreadsheet </div>
+          <div v-if="settings.lastBuildDate" class="body-2 mb-8 ml-4">(*) Unattended BUILD requires access to this Spreadsheet</div>
+          <div v-else class="body-2 mb-8 ml-4">(*) BUILD a map first, to get access to the Unattended BUILD option</div>
           <!-- file picker dialog if required -->
           <div v-if="picker.required">
             <p hidden id='picker-result'></p>
