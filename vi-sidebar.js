@@ -92,7 +92,7 @@ Vue.component('vi-gas', {
   data() {
     if (!window.google || !window.google.script) {
       data.uidata = {"fid":"1hNt8yd6Vd-zxj6anWN0Xe8frzwHaEddh","headers":["Name","Category","Address","Company","Status","Range","Due on","Days since Due","More Info","Picture","Notes","Latitude","Longitude","Buffer"],"filters":[],"xfilters":[{"property":"Status","kind":"checkboxes"},{"property":"Range","kind":"slider"}],"fields":{"filter":"Category","name":"Name","address":"Address"},"urlPath":"https://thexs-mapping.firebaseapp.com/mapping.html"}
-      data.uidata.custom = { xvuejs:"./vi.gp-sidebar.js", baseDate:"2019-11-15", min:"2019-11-01", max:"2019-11-30", disabled:!true };
+      data.uidata.custom = { vuejs:"./vi.gp-sidebar.js", baseDate:"2019-11-15", min:"2019-11-01", max:"2019-11-30", disabled:!true };
     }
     data.snackbar = false;
     data.snackbarText = "";
@@ -106,7 +106,8 @@ Vue.component('vi-gas', {
     if (!window.google || !window.google.script) Vue.loadScript("./vx-google.script.js");
 
     if (this.uidata.custom && this.uidata.custom.vuejs) {
-      Vue.component("vx-custom", () => import(this.uidata.custom.vuejs));
+      // Vue.component("vx-custom", () => import(this.uidata.custom.vuejs));
+      Vue.loadScript(this.uidata.custom.vuejs, {type:"module"});
     }
 
     window.setTimeout(() => {
