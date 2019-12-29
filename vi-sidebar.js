@@ -79,8 +79,7 @@ Vue.component('vi-gas', {
       <v-layout class="mt-2 mb-2">
         <v-btn color="success" @click="Call('buildJsonFile',uidata);$gae('build');" :disabled="working || !uidata.fields.name || !uidata.fields.address || !uidata.fields.filter">{{ $localize('build') }}</v-btn>
         <v-spacer></v-spacer>
-        <v-btn v-if="itsme" color="secundary" @click="window.open('http://127.0.0.1:5505/mapping.html?fid=' + uidata.fid)" :disabled="working || !uidata.fid">vu-dev</v-btn>
-        <!-- <v-btn v-if="itsme" color="secundary" @click="window.open('https://script.google.com/a/macros/thexs.ca/s/AKfycbzjd-_KOMG9HoIzjsv3w2M5Wf-hR1syYw6C9grbBXM4/dev?fid=' + uidata.fid)" :disabled="working || !uidata.fid">vu-dev</v-btn> -->
+        <v-btn v-if="itsme" color="secundary" @click="window.open('http://127.0.0.1:5505/mapping.html?fid=' + uidata.fid + '&dev=1')" :disabled="working || !uidata.fid">vu-dev</v-btn>
         <v-btn color="primary" @click="window.open(uidata.urlPath + '?fid=' + uidata.fid)" :disabled="working || !uidata.fid">{{ $localize('view') }}</v-btn>
       </v-layout>
       <div>Mapping Sheets by <a href="http://www.thexs.ca/xsmapping">theXS</a> {{ version }}</div>
@@ -92,7 +91,7 @@ Vue.component('vi-gas', {
   data() {
     if (!window.google || !window.google.script) {
       data.uidata = {"fid":"1hNt8yd6Vd-zxj6anWN0Xe8frzwHaEddh","headers":["Name","Category","Address","Company","Status","Range","Due on","Days since Due","More Info","Picture","Notes","Latitude","Longitude","Buffer"],"filters":[],"xfilters":[{"property":"Status","kind":"checkboxes"},{"property":"Range","kind":"slider"}],"fields":{"filter":"Category","name":"Name","address":"Address"},"urlPath":"https://thexs-mapping.firebaseapp.com/mapping.html"}
-      data.uidata.custom = { vuejs:"./vi.gp-sidebar.js", baseDate:"2019-11-15", min:"2019-11-01", max:"2019-11-30", disabled:!true };
+      data.uidata.custom = { xvuejs:"./vi.gp-sidebar.js", baseDate:"2019-11-15", min:"2019-11-01", max:"2019-11-30", disabled:!true };
     }
     data.snackbar = false;
     data.snackbarText = "";
