@@ -84,7 +84,7 @@ Vue.component('vi-gas', {
     <v-spacer></v-spacer>
     <input v-if="itsme" v-model.lazy="key" type="number" min="1" style="width:45px;" @change="update">
     <v-icon v-if="itsme" @click="test">mdi-bug</v-icon>
-    <v-icon @click="window.open('http://addon.thexs.ca/mapping-sheets'); $gae('review');" :title="$localize('my-review')">mdi-star</v-icon>
+    <v-icon @click="$open('http://addon.thexs.ca/mapping-sheets'); $gae('review');" :title="$localize('my-review')">mdi-star</v-icon>
     <v-icon :title="$localize('snooze')" @click="google.script.run.flagAnnounce(false,key); google.script.host.close(); $gae('announce-snooze');" class="ml-1">mdi-alarm</v-icon>
     <v-icon :title="$localize('dismiss')" @click="google.script.run.flagAnnounce(true,key); google.script.host.close(); $gae('announce-dismiss');" class="ml-1">mdi-check</v-icon>
   </v-app-bar>

@@ -6,7 +6,7 @@ Vue.component('vi-gas', {
     <v-toolbar-title>{{"%s ⇨ %s".format(localize('data'),localize('map'))}}</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-icon v-if="itsme" @click="test">mdi-bug</v-icon>
-    <v-btn icon @click="window.open('http://addon.thexs.ca/mapping-sheets'); $gae('review');">
+    <v-btn icon @click="$open('http://addon.thexs.ca/mapping-sheets'); $gae('review');">
       <v-icon :title="localize('my-review')">mdi-star</v-icon>
     </v-btn>
     <v-menu open-on-hover>
@@ -30,10 +30,10 @@ Vue.component('vi-gas', {
           <v-list-item @click="google.script.run.vueSubscription()">{{ localize('subscription') }}</v-list-item>
           <v-list-item @click="google.script.run.vueSharing(uidata.fid);$gae('share');" :disabled="!uidata.fid">{{ localize('share-my-map') }}</v-list-item>
           <v-divider></v-divider>
-          <v-list-item @click="window.open(uidata.urlPath)">{{ localize('view-demo-map') }}</v-list-item>
-          <v-list-item @click="window.open('https://www.thexs.ca/about-thexs/legalese')">Privacy & Terms</v-list-item>
+          <v-list-item @click="$open(uidata.urlPath)">{{ localize('view-demo-map') }}</v-list-item>
+          <v-list-item @click="$open('https://www.thexs.ca/about-thexs/legalese')">Privacy & Terms</v-list-item>
           <v-list-item @click="google.script.run.vueAbout()">{{ localize('about') }}</v-list-item>
-          <v-list-item @click="window.open('https://www.thexs.ca/xsmapping/faq-and-feedback')">FAQ & Support</v-list-item>
+          <v-list-item @click="$open('https://www.thexs.ca/xsmapping/faq-and-feedback')">FAQ & Support</v-list-item>
         </v-list-item-group>
       </v-list>
     </v-menu>
@@ -43,7 +43,7 @@ Vue.component('vi-gas', {
     <v-container fluid>
       <v-layout class="align-center">
         <div class="flex body-2">{{localize('fields-header')}} (*)</div>
-        <v-icon @click="window.open('https://www.thexs.ca/posts/required-headers-for-mapping')" :title="localize('help')">mdi-help-circle</v-icon>
+        <v-icon @click="$open('https://www.thexs.ca/posts/required-headers-for-mapping')" :title="localize('help')">mdi-help-circle</v-icon>
       </v-layout>
       <v-select v-model="uidata.fields.name" :items="uidata.headers" :label="localize('title')" :disabled="working"></v-select>
       <v-select v-model="uidata.fields.filter" :items="uidata.headers" :label="localize('filter')" :disabled="working"></v-select>
@@ -54,7 +54,7 @@ Vue.component('vi-gas', {
 
       <v-layout class="align-center">
         <div class="flex body-2 mt-3">{{localize('filters-header')}} (*)</div>
-        <v-icon @click="window.open('https://www.thexs.ca/xsmapping/filtering-on-your-map')" :title="localize('help')">mdi-help-circle</v-icon>
+        <v-icon @click="$open('https://www.thexs.ca/xsmapping/filtering-on-your-map')" :title="localize('help')">mdi-help-circle</v-icon>
       </v-layout>
       <v-layout v-for="(item, index) in uidata.filters">
         <v-select v-model="item.property" :items="uidata.headers" :disabled="working"></v-select>
@@ -79,8 +79,8 @@ Vue.component('vi-gas', {
       <v-layout class="mt-2 mb-2">
         <v-btn color="success" @click="Call('buildJsonFile',uidata);$gae('build');" :disabled="working || !uidata.fields.name || !uidata.fields.address || !uidata.fields.filter">{{ $localize('build') }}</v-btn>
         <v-spacer></v-spacer>
-        <v-btn v-if="itsme" color="secundary" @click="window.open('http://127.0.0.1:5505/mapping.html?fid=' + uidata.fid + '&dev=1')" :disabled="working || !uidata.fid">vu-dev</v-btn>
-        <v-btn color="primary" @click="window.open(uidata.urlPath + '?fid=' + uidata.fid)" :disabled="working || !uidata.fid">{{ $localize('view') }}</v-btn>
+        <v-btn v-if="itsme" color="secundary" @click="$open('http://127.0.0.1:5505/mapping.html?fid=' + uidata.fid + '&dev=1')" :disabled="working || !uidata.fid">vu-dev</v-btn>
+        <v-btn color="primary" @click="$open(uidata.urlPath + '?fid=' + uidata.fid)" :disabled="working || !uidata.fid">{{ $localize('view') }}</v-btn>
       </v-layout>
       <div>Mapping Sheets by <a href="http://www.thexs.ca/xsmapping">theXS</a> {{ version }}</div>
     </v-container>

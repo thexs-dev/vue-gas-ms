@@ -8,10 +8,10 @@ Vue.component('vi-gas', {
     <v-toolbar-title>{{localize('advanced-premium-plan')}} - {{localize('subscription')}}</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-icon v-if="itsme" @click="test">mdi-bug</v-icon>
-    <v-btn icon @click="window.open('http://addon.thexs.ca/mapping-sheets'); $gae('review');">
+    <v-btn icon @click="$open('http://addon.thexs.ca/mapping-sheets'); $gae('review');">
       <v-icon :title="localize('my-review')">mdi-star</v-icon>
     </v-btn>
-    <v-btn icon @click="window.open('https://www.thexs.ca/xsmapping/advanced-premium-plan-subscription')">
+    <v-btn icon @click="$open('https://www.thexs.ca/xsmapping/advanced-premium-plan-subscription')">
       <v-icon :title="localize('help')">mdi-help-circle</v-icon>
     </v-btn>
   </v-app-bar>

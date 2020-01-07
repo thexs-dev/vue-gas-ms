@@ -6,7 +6,7 @@ Vue.component('vi-gas', {
     <v-toolbar-title>{{localize('about')}}</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-icon v-if="itsme" @click="test">mdi-bug</v-icon>
-    <v-btn icon @click="window.open('http://addon.thexs.ca/mapping-sheets'); $gae('review');">
+    <v-btn icon @click="$open('http://addon.thexs.ca/mapping-sheets'); $gae('review');">
       <v-icon :title="localize('my-review')">mdi-star</v-icon>
     </v-btn>
   </v-app-bar>
