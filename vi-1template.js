@@ -31,8 +31,6 @@ Vue.component('vi-gas', {
   computed: {},
 
   methods: {
-    // localize(key) { return this.localeResources[key] || key },
-
     test() {
       console.log(this.localize("language"));
       this.$gae("test");
