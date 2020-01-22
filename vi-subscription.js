@@ -21,7 +21,7 @@ Vue.component('vi-gas', {
         <v-flex xs6 mr-2>
           <!-- <v-select items="['user','domain']"></v-select> -->
           <div>{{localize('user')}}: {{user}}</div>
-          <div>{{localize('subscribe-contribution')}}: 25 USD / {{localize('year')}}</div>
+          <div>{{localize('subscribe-contribution')}}: {{subscription.current.mc_gross || 25}} USD / {{localize(subscription.current.period)}}</div>
           <div v-if="premium">{{localize('thanks')}}!</div>
         </v-flex>
 
