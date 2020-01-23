@@ -78,7 +78,7 @@ Vue.component('vi-gas', {
 
     db.ref("/IPN/Mapping/" + this.user.dot() + "/active/")
       .on("value", (snapshot) => {
-        if (this.premium === snapshot.val()) return;
+        if (this.premium === snapshot.val() || subscription.domain) return;
 
         google.script.run
           .withFailureHandler((e) => {
