@@ -78,7 +78,7 @@ Vue.component('vi-gas', {
 
     db.ref("/IPN/Mapping/" + this.user.dot() + "/active/")
       .on("value", (snapshot) => {
-        if (this.premium === snapshot.val() || subscription.domain) return;
+        if (this.premium === snapshot.val() || this.subscription.domain) return;
 
         google.script.run
           .withFailureHandler((e) => {
@@ -101,7 +101,7 @@ Vue.component('vi-gas', {
     localize(key) { return this.localeResources[key] || key },
 
     test() {
-      console.log(this.localize("language"));
+      console.log(this.subscription);
       this.$gae("test");
     }
   }
