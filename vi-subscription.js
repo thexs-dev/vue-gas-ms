@@ -69,6 +69,8 @@ Vue.component('vi-gas', {
 
   async mounted() {
     if (!window.google || !window.google.script) Vue.loadScript("./vx-google.script.js");
+    // only listen if not premium, waiting for subscription to complete (IPN response)
+    if (this.premium || this.subscription.domain) return;
 
     await Vue.loadScript("https://www.gstatic.com/firebasejs/6.2.3/firebase-app.js");
     await Vue.loadScript("https://www.gstatic.com/firebasejs/6.2.3/firebase-database.js");
