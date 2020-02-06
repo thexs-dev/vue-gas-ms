@@ -14,7 +14,7 @@ Vue.component("announce-actions", {
 
   <template v-if="poll.type.substr(0,4) === 'quiz'">
     <v-layout v-if="!answered">
-      <v-combobox v-if="poll.type === 'quiz-combobox'" v-model="answer" ref="combo" :items="poll.list.split(',')"></v-combobox>
+      <v-combobox v-if="poll.type === 'quiz-combobox'" v-model="answer" ref="combo" :items="poll.list.split(',')" label="Select or enter your answer, then Submit"></v-combobox>
       <v-select v-if="poll.type === 'quiz-select'" v-model="answer" :items="poll.list.split(',')"></v-select>
       <v-text-field v-if="poll.type === 'quiz-text'" v-model="answer" ></v-text-field>
       <v-btn @click="submit" color="success" class="ml-2" :disabled="!answer" >submit</v-btn>
