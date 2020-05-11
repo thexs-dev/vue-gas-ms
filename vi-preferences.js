@@ -62,7 +62,7 @@ Vue.component('vi-gas', {
           </div>
         </div>
         <vx-slider v-model="settings.dataHeadersRowIndex" :min="1" :max="10" :label="localize('label-data-headers-row-index')"></vx-slider>
-        <v-checkbox v-model="settings.dataGetDisplayValues" v-if="uidata.alpha" label="Get data as displayed, in text format (experimental)"></v-checkbox>
+        <v-checkbox v-model="settings.dataGetDisplayValues" v-if="settings.beta" label="Get data as displayed, in text format (experimental)"></v-checkbox>
         <v-text-field v-model="settings.locationTemplate" placeholder=" " append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/using-multiple-columns-for-geocoding-with-a-location-template')" :label="localize('label-location-template')"></v-text-field>
         <v-checkbox v-model="settings.useEnglishLocale" :label="'Use English language instead of this G Sheets locale (%s)'.format(settings.spreadsheetLocale)"></v-checkbox>
       </div>
