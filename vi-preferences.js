@@ -164,10 +164,10 @@ Vue.component('vi-gas', {
           </v-layout>
           <v-layout>
             <v-text-field class="ml-3" v-model="settings.routingHbAddress" :disabled="!settings.routingHbEnabled" :label="localize('label-hb-address')" placeholder=" "></v-text-field>
-            <v-btn icon @click="getHbLatLng" :disabled="!settings.routingHbEnabled || working">
+            <v-btn icon outlined @click="getHbLatLng" :disabled="!settings.routingHbEnabled || working">
               <v-icon>mdi-arrow-right</v-icon>
             </v-btn>
-            <v-text-field class="" v-model="settings.routingHbLatLng" :disabled="!settings.routingHbEnabled" :label="localize('label-hb-lat-lng')" placeholder=" "></v-text-field>
+            <v-text-field class="ml-3" v-model="settings.routingHbLatLng" :disabled="!settings.routingHbEnabled" :label="localize('label-hb-lat-lng')" placeholder=" "></v-text-field>
           </v-layout>
           <v-layout>
             <v-select class="mr-3" :items="uidata.routingTravelModes" v-model="settings.routingTravelMode" :label="localize('label-travel-mode')"></v-select>
