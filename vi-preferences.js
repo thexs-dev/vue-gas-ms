@@ -202,13 +202,13 @@ Vue.component('vi-gas', {
           <v-text-field class="mr-3" v-model="settings.layers.heatmap.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.heatmap.enabled" :label="localize('label-fill-opacity')"></v-text-field>
           <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
         </v-layout>
-        <v-layout v-if="uidata.layerGeoJSONAvailable || itsme">
+        <v-layout v-if="uidata.layerGeoJSONAvailable">
           <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.geojson.enabled" :label="localize('GeoJSON')"></v-checkbox>
           <v-text-field class="mr-3" v-model="settings.layers.geojson.url" :disabled="!settings.layers.geojson.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
           <v-text-field class="mr-3" v-model="settings.layers.geojson.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.geojson.enabled" :label="localize('label-fill-opacity')"></v-text-field>
           <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
         </v-layout>
-        <v-layout v-if="uidata.layerKmlAvailable || itsme">
+        <v-layout v-if="uidata.layerKmlAvailable">
           <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.kml.enabled" :label="localize('Kml/Kmz')"></v-checkbox>
           <v-text-field class="mr-3" v-model="settings.layers.kml.url" :disabled="!settings.layers.kml.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
           <v-checkbox class="mr-3" v-model="settings.layers.kml.viewport" :disabled="!settings.layers.kml.enabled" :label="localize('Viewport')"></v-checkbox>
