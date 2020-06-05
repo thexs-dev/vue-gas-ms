@@ -1,5 +1,5 @@
 
-import VxSlider from "https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.5/vx-slider.js"
+import VxSlider from "https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.17/vx-slider.js"
 
 Vue.component('vi-gas', {
   components: {
@@ -15,9 +15,9 @@ Vue.component('vi-gas', {
           <v-icon>mdi-menu</v-icon>
         </v-btn>
       </template>
-      <v-list>
+      <v-list xdense>
         <v-list-item-group>
-          <v-list-item v-for="item in 'general,document,filters,map,infowindow,listing,routing,layers'.split(',').concat(uidata.extendedAvailable ? 'extend' : [])" @click="selected = item">
+          <v-list-item v-for="item in 'general,document,filters,map,icons,infowindow,listing,routing,layers'.split(',').concat(uidata.extendedAvailable ? 'extend' : [])" @click="selected = item">
             <v-list-item-title>{{ localize(item) }}</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
@@ -63,17 +63,11 @@ Vue.component('vi-gas', {
         </div>
         <vx-slider v-model="settings.dataHeadersRowIndex" :min="1" :max="10" :label="localize('label-data-headers-row-index')"></vx-slider>
         <v-checkbox v-model="settings.dataGetDisplayValues" v-if="settings.beta" label="Get data as displayed, in text format (experimental)"></v-checkbox>
-        <v-text-field v-model="settings.locationTemplate" placeholder=" " append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/using-multiple-columns-for-geocoding-with-a-location-template')" :label="localize('label-location-template')"></v-text-field>
+        <v-text-field v-model="settings.locationTemplate" placeholder=" " append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/using-multiple-columns-for-geocoding-with-a-location-template')" :label="'%s {{}}'.format(localize('label-location-template'))"></v-text-field>
         <v-checkbox v-model="settings.useEnglishLocale" :label="'Use English language instead of this G Sheets locale (%s)'.format(settings.spreadsheetLocale)"></v-checkbox>
       </div>
 
       <div v-show="selected === 'filters'">
-        <v-layout>
-          <v-checkbox class="flex grow mr-3" v-model="settings.showPlace" :disabled="!premium" :label="'%s (%s)'.format(localize('label-find-place'), localize('premium'))"></v-checkbox>
-          <v-text-field class="mr-3" v-model="settings.placeRadius" :disabled="!premium" type="number" min="0" :label="localize('label-place-radius')"></v-text-field>
-          <v-select class="mr-3" :items="uidata.placeUnits" v-model="settings.placeUnit" :disabled="!premium" :label="localize('label-place-unit')"></v-select>
-          <v-checkbox v-model="settings.placeFilter" :disabled="!premium" :label="localize('filter')"></v-checkbox>
-        </v-layout>
         <vx-slider v-model="settings.filtersQty" :disabled="!premium" :min="0" :max="uidata.filtersMaxQty" :label="'%s (%s)'.format(localize('label-filters-qty'), localize('premium'))"></vx-slider>
         <v-checkbox class="ml-3" v-model="settings.filtersTag" :label="localize('label-filters-tag')"></v-checkbox>
         <v-checkbox class="ml-3" v-model="settings.filtersDisplay" :label="localize('label-filters-display')"></v-checkbox>
@@ -83,10 +77,31 @@ Vue.component('vi-gas', {
 
       <div v-show="selected === 'map'">
         <v-layout>
+          <v-checkbox class="flex grow mr-3" v-model="settings.showPlace" :disabled="!premium" :label="'%s (%s)'.format(localize('label-find-place'), localize('premium'))"></v-checkbox>
+          <v-text-field class="mr-3" v-model="settings.placeRadius" :disabled="!premium" type="number" min="0" :label="localize('label-place-radius')"></v-text-field>
+          <v-select class="mr-3" :items="uidata.placeUnits" v-model="settings.placeUnit" :disabled="!premium" :label="localize('label-place-unit')"></v-select>
+          <v-checkbox v-model="settings.placeFilter" :disabled="!premium" :label="localize('filter')"></v-checkbox>
+        </v-layout>
+        <v-layout>
           <v-text-field class="mr-3" v-model="settings.pageTitle" :disabled="!premium" :label="'%s (%s)'.format(localize('label-page-title'), localize('premium'))"></v-text-field>
           <v-checkbox class="flex shrink" v-model="settings.mapCenterOnClick" :label="localize('label-center-on-click')">
         </v-layout>
         <v-layout>
+          <v-text-field class="flex xs11 mr-3" v-model="settings.styledMap" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="localize('label-styled-map')"></v-text-field>
+          <v-checkbox v-model="settings.styledMapDefault" :label="localize('default')"></v-checkbox>
+          <!-- <v-select :items="uidata.mapTypeIds" v-model="settings.styledMapDefault" :label="localize('default')"></v-select> -->
+        </v-layout>
+        <!-- mapsApiKey might be required even for non premium/custom plans -->
+        <div v-if="uidata.mapsApiKeyAvailable">
+          <v-layout>
+            <v-text-field class="flex xs8" v-model="settings.mapsApiKey" :label="localize('Maps Api key (for the Mapping web app)')" placeholder=" "></v-text-field>
+            <v-text-field class="ml-3" v-model="settings.mapsPageSuffix" prefix="-" :label="localize('Suffix') + ' (mapping-%s.html)'.format(settings.mapsPageSuffix)" placeholder=" " append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/how-to-get-and-use-my-own-maps-api-key')"></v-text-field>
+          </v-layout>
+        </div>
+      </div>
+
+      <div v-show="selected === 'icons'">
+        <v-layout class="mt-3">
           <v-select dense class="mr-3" :items="uidata.icons" v-model="settings.iconSet" :disabled="!premium" :label="'%s (%s)'.format(localize('label-icon-set'), localize('premium'))">
             <template slot="selection" slot-scope="data">
               <img height="24" width="auto" :src="iconUrl(data.item)"></img>
@@ -107,18 +122,6 @@ Vue.component('vi-gas', {
           <v-checkbox v-model="settings.markerClusterToggle" :label="localize('Toggle')"></v-checkbox>
         </v-layout>
         <v-text-field v-model="settings.titleTemplate" placeholder=" " append-icon="mdi-eye" @click:append="settings.titleTemplate = uidata.titleTemplate" :label="'%s {{}}'.format(localize('label-icon-title'))"></v-text-field>
-        <v-layout>
-          <v-text-field class="flex xs11 mr-3" v-model="settings.styledMap" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="localize('label-styled-map')"></v-text-field>
-          <v-checkbox v-model="settings.styledMapDefault" :label="localize('default')"></v-checkbox>
-          <!-- <v-select :items="uidata.mapTypeIds" v-model="settings.styledMapDefault" :label="localize('default')"></v-select> -->
-        </v-layout>
-        <!-- mapsApiKey might be required even for non premium/custom plans -->
-        <div v-if="uidata.mapsApiKeyAvailable">
-          <v-layout>
-            <v-text-field class="flex xs8" v-model="settings.mapsApiKey" :label="localize('Maps Api key (for the Mapping web app)')" placeholder=" "></v-text-field>
-            <v-text-field class="ml-3" v-model="settings.mapsPageSuffix" prefix="-" :label="localize('Suffix') + ' (mapping-%s.html)'.format(settings.mapsPageSuffix)" placeholder=" " append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/how-to-get-and-use-my-own-maps-api-key')"></v-text-field>
-          </v-layout>
-        </div>
       </div>
 
       <div v-show="selected === 'infowindow'">
@@ -149,11 +152,12 @@ Vue.component('vi-gas', {
       <div v-show="selected === 'routing'">
         <v-layout>
           <v-checkbox v-model="settings.routingEnabled" :disabled="!premium" append-icon="mdi-help-circle" @click:append="$open('https://www.thexs.ca/xsmapping/optimal-routing')" :label="'%s (%s)'.format(localize('label-enable-routing'), localize('premium'))"></v-checkbox>
-          <v-checkbox v-show="settings.routingEnabled" v-model="settings.routingF2LEnabled" :label="localize('label-enable-F2L')" class="ml-4"></v-checkbox>
+          <v-checkbox v-show="settings.routingEnabled" v-model="settings.routingF2LEnabled" :label="localize('label-F2L')" class="ml-4"></v-checkbox>
+          <v-checkbox v-show="settings.routingEnabled && uidata.map4vue" v-model="settings.routingAsIsEnabled" :label="localize('As-Is')" class="ml-4"></v-checkbox>
         </v-layout>
         <div v-show="settings.routingEnabled">
           <v-layout>
-            <v-checkbox class="flex grow mr-3" v-model="settings.routingHbEnabled" :label="localize('label-enable-hb')"></v-checkbox>
+            <v-checkbox class="flex grow mr-3" v-model="settings.routingHbEnabled" :label="localize('label-hb')"></v-checkbox>
             <v-select class="mr-3" :items="uidata.routingHbOptions" v-model="settings.routingHbOption" :disabled="!settings.routingHbEnabled" :label="localize('label-hb-option')"></v-select>
             <v-checkbox class="mr-3" v-model="settings.routingHbDraggable" :disabled="!settings.routingHbEnabled" :label="localize('Draggable')"></v-checkbox>
             <v-checkbox v-model="settings.routingHbAlwaysVisible" :disabled="!settings.routingHbEnabled" :label="localize('Visible')"></v-checkbox>
