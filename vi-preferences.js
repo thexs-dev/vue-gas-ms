@@ -218,8 +218,8 @@ Vue.component('vi-gas', {
 
         <v-layout v-if="uidata.layerTripBufferAvailable">
           <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.buffer.enabled" :label="localize('Trip:Buffer')"></v-checkbox>
-          <v-text-field class="mr-0 col-2" v-model="settings.layers.buffer.maxWaypoints" type="number" step="1" min="0" max="10" :disabled="!settings.layers.buffer.enabled" :label="localize('Waypoints')"></v-text-field>
-          <v-text-field class="mr-0 col-2" v-model="settings.layers.buffer.maxRadius" type="number" step="1" min="0" max="10" :disabled="!settings.layers.buffer.enabled" :label="localize('Radius')"></v-text-field>
+          <v-text-field class="mr-0 col-2" v-model.number="settings.layers.buffer.maxWaypoints" type="number" step="1" min=0 max=10 :disabled="!settings.layers.buffer.enabled" :label="localize('Waypoints')"></v-text-field>
+          <v-text-field class="mr-0 col-2" v-model.number="settings.layers.buffer.maxRadius" type="number" step="1" min="0" max="10" :disabled="!settings.layers.buffer.enabled" :label="localize('Radius')"></v-text-field>
           <!-- <v-text-field class="mr-0 col-2" v-model="settings.layers.buffer.step" type="number" step="0.1" min="0.1" max="1" :disabled="!settings.layers.buffer.enabled" :label="localize('Step')"></v-text-field> -->
           <v-select class="mr-3" :items="['kilometers','miles']" v-model="settings.layers.buffer.units" :disabled="!settings.layers.buffer.enabled" :label="localize('Units')"></v-select>
           <v-checkbox class="mr-3" v-model="settings.layers.buffer.draggable" :disabled="!settings.layers.buffer.enabled" :label="localize('Draggable')"></v-checkbox>
@@ -318,7 +318,7 @@ Vue.component('vi-gas', {
 
     test() {
       console.log(this.settings, this.uidata);
-      console.log(this.settings.headers);
+      console.log(this.settings.layers);
       console.log(this.uidata.headers);
       this.$gae("test");
     }
