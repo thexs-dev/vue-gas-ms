@@ -148,6 +148,22 @@ Vue.component('vi-gas', {
           <v-checkbox v-model="settings.infowindowHeightLock" :label="localize('Lock')"></v-checkbox>
         </v-layout>
 
+        <template v-if="uidata.editingAvailable">
+          <v-layout>
+            <v-checkbox v-model="settings.editingEnabled" :label="localize('Editing')" class="flex xs4"></v-checkbox>
+            <v-checkbox v-model="settings.editingAddOverlay" :disabled="!settings.editingEnabled" :label="localize('Add new')" class="flex xs4"></v-checkbox>
+            <v-checkbox v-model="settings.editingHeadersOnly" :disabled="!settings.editingEnabled" :label="localize('Only listed')" class="flex xs4"></v-checkbox>
+            <v-checkbox v-model="settings.editingAppendCarryOver" :disabled="!settings.editingEnabled" :label="localize('Carry over')" class="flex xs4"></v-checkbox>
+          </v-layout>
+          <v-layout>
+            <v-text-field v-model="settings.editingHeaders" :disabled="!settings.editingEnabled" :label="localize('Headers to edit (csv)')" placeholder=" " class="flex xs6 mr-3"></v-text-field>
+            <v-text-field v-model="settings.editingHeadersTextarea" :disabled="!settings.editingEnabled" :label="localize('Headers as textarea (csv)')" placeholder=" " class="flex xs6"></v-text-field>
+          </v-layout>
+          <v-layout>
+            <v-textarea v-model="settings.editingAppendDefaultValues" :disabled="!settings.editingEnabled" :label="localize('Append default values (json)')" :rows=3 placeholder=" " class="flex xs6 mr-3" hide-details></v-textarea>
+            <v-textarea v-model="settings.editingUpdatePatchedValues" :disabled="!settings.editingEnabled" :label="localize('Update patched values (json)')" :rows=3 placeholder=" " class="flex xs6" hide-details></v-textarea>
+          </v-layout>
+        </template>
       </div>
 
       <div v-show="selected === 'listing'">
@@ -250,7 +266,7 @@ Vue.component('vi-gas', {
 
   data() {
     if (!window.google || !window.google.script) { // local values for uidata, picker, settings
-      data.uidata = {"map4vue":true, "headers":"Name,Category,Address,Company,Status,Range,More Info,Picture,Notes,Latitude,Longitude,Extras","headersAll":["Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"headersAllOptional":["","Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"filtersMaxQty":10,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}}\\n {{Address}}","routingHbOptions":["Roundtrip","Start","End"],"routingTravelModes":["BICYCLING","DRIVING","WALKING"],"routingUnitSystems":["IMPERIAL","METRIC"],"placeUnits":["km","mi","m","ft"],"filtersSplit":",","icons":["locas","pins","flags","dots-10","triangles-10","mdi/pin","mdi/place","mdi/truck","mdi/water"],"styledMap":"","mapsApiKeyAvailable":true,"alpha":true,"unattendedAvailable":true,"unattendedFrequencies":["1","2","4","6","8","12"],layerTripBufferAvailable:true};
+      data.uidata = {"map4vue":true, "headers":"Name,Category,Address,Company,Status,Range,More Info,Picture,Notes,Latitude,Longitude,Extras","headersAll":["Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"headersAllOptional":["","Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"filtersMaxQty":10,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}}\\n {{Address}}","routingHbOptions":["Roundtrip","Start","End"],"routingTravelModes":["BICYCLING","DRIVING","WALKING"],"routingUnitSystems":["IMPERIAL","METRIC"],"placeUnits":["km","mi","m","ft"],"filtersSplit":",","icons":["locas","pins","flags","dots-10","triangles-10","mdi/pin","mdi/place","mdi/truck","mdi/water"],"styledMap":"","mapsApiKeyAvailable":true,"alpha":true,"unattendedAvailable":true,"unattendedFrequencies":["1","2","4","6","8","12"],layerTripBufferAvailable:true,editingAvailable:true};
       data.picker = {"ViewId":"SPREADSHEETS","itsme":false,"showModeDialog":"showModalDialog","DeveloperKey":"DeveloperKey","AppId":"AppId","width":600,"height":425,"title":"Select current Spreadsheet from the list","query":"MS Testing as None"};
       data.settings = {"headers":"",searchHeaders:"","beta":false,"dataHeadersRowIndex":1,"dataGetDisplayValues":false,"spreadsheetLocale":"en_US","infowindowDirections":true,"infowindowZoomIn":true,infowindowWidth:250,infowindowHeight:300,infowindowHeightLock:true,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}} ({{Range}})\\n {{Address}}","listingOpenInfowindow":true,"listingExportNewTab":true,"iconSet":"mdi/pin","pageTitle":"Mapping as None","routingEnabled":true,"routingF2LEnabled":true,"routingHbEnabled":true,"routingHbOption":"Roundtrip","routingHbAddress":"CN Tower","routingHbLatLng":"43.6425662,-79.3870568","routingHbDraggable":true,"routingHbAlwaysVisible":true,"routingTravelMode":"DRIVING","routingUnitSystem":"METRIC","routingDirectionPanelEnabled":true,"routingSuppressMarkers":true,"showPlace":true,"placeRadius":10,"placeFilter":true,"placeUnit":"km","mapCenterOnClick":false,"filtersQty":1,"filtersTag":true,"filtersSplit":"","styledMap":"","styledMapDefault":false,"mapTypes":["roadmap","satellite","hybrid","terrain"],"markerCluster":true,"markerClusterMinimumClusterSize":5,"markerClusterMaxZoom":15,"markerSpider":true,"mapsApiKey":"","mapsPageSuffix":"","lastBuildDate":"12345678","unattendedEnabled":false,"unattendedFrequency":"8","layers":{"circles":{"radiusUnit":"km","fillOpacity":"0.1","enabled":false,"radiusHeader":"Range"},"heatmap":{"enabled":false,"weightHeader":"","fillOpacity":0.6},"geojson":{"enabled":false,"fillOpacity":0.1},"kml":{"enabled":false,"viewport":true},"buffer":{maxWaypoints:0,maxRadius:2,units:"kilometers",step:0.5}}};
       picker = data.picker;
