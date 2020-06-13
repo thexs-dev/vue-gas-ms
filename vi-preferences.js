@@ -88,8 +88,12 @@ Vue.component('vi-gas', {
           <v-checkbox v-model="settings.placeFilter" :disabled="!premium" :label="localize('filter')"></v-checkbox>
         </v-layout>
         <v-layout>
-          <v-text-field class="mr-3" v-model="settings.pageTitle" :disabled="!premium" :label="'%s (%s)'.format(localize('label-page-title'), localize('premium'))"></v-text-field>
-          <v-checkbox class="flex shrink" v-model="settings.mapCenterOnClick" :label="localize('label-center-on-click')">
+          <v-text-field class="flex xs4 mr-3" v-model="settings.pageTitle" :disabled="!premium" :label="'%s (%s)'.format(localize('label-page-title'), localize('premium'))"></v-text-field>
+          <v-checkbox class="mr-3" v-model="settings.mapCenterOnClick" :label="localize('label-center-on-click')"></v-checkbox>
+          <template v-if="uidata.map4vue">
+            <v-checkbox class="mr-3" v-model="settings.mapFindMe" :disabled="!premium" :label="localize('Find me')"></v-checkbox>
+            <v-checkbox class="" v-model="settings.mapFollowMe" :disabled="!premium" :label="localize('Follow me')"></v-checkbox>
+          </template>
         </v-layout>
         <v-layout>
           <v-text-field class="flex xs11 mr-3" v-model="settings.styledMap" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="localize('label-styled-map')"></v-text-field>
