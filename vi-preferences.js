@@ -52,7 +52,8 @@ Vue.component('vi-gas', {
         <div v-if="uidata.unattendedAvailable">
           <v-layout>
             <v-checkbox class="flex xs11" v-model="settings.unattendedEnabled" @change="unattended" :disabled="!settings.lastBuildDate" label="Unattended BUILD (time-based trigger)"></v-checkbox>
-            <v-select :items="uidata.unattendedFrequencies" suffix="hours" v-model="settings.unattendedFrequency" :label="localize('Frequency')" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/how-to-update-my-map-automatically-when-the-data-changes')"></v-select>
+            <v-select :items="uidata.unattendedFrequencies" suffix="hours" v-model="settings.unattendedFrequency" :label="localize('Frequency')" class="mr-3" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/how-to-update-my-map-automatically-when-the-data-changes')"></v-select>
+            <v-checkbox v-model="settings.unattendedAlways" :disabled="!uidata.unattendedAlwaysAvailable" :label="localize('Always')"></v-checkbox>
           </v-layout>
           <div v-if="settings.lastBuildDate" class="body-2 mb-8 ml-4">(*) Unattended BUILD requires access to this Spreadsheet</div>
           <div v-else class="body-2 mb-8 ml-4">(*) BUILD a map first, to get access to the Unattended BUILD option</div>
@@ -62,7 +63,7 @@ Vue.component('vi-gas', {
           </div>
         </div>
         <vx-slider v-model="settings.dataHeadersRowIndex" :min="1" :max="10" :label="localize('label-data-headers-row-index')"></vx-slider>
-        <v-checkbox v-model="settings.dataGetDisplayValues" v-if="settings.beta" label="Get data as displayed, in text format (experimental)"></v-checkbox>
+        <v-checkbox v-model="settings.dataGetDisplayValues" :disabled="!settings.beta" label="Get data as displayed, in text format (experimental)"></v-checkbox>
         <v-text-field v-model="settings.locationTemplate" placeholder=" " append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/using-multiple-columns-for-geocoding-with-a-location-template')" :label="'%s {{}}'.format(localize('label-location-template'))"></v-text-field>
         <v-checkbox v-model="settings.useEnglishLocale" :label="'Use English language instead of this G Sheets locale (%s)'.format(settings.spreadsheetLocale)"></v-checkbox>
       </div>
@@ -140,7 +141,10 @@ Vue.component('vi-gas', {
       </div>
 
       <div v-show="selected === 'infowindow'">
-        <v-text-field v-model="settings.headers" placeholder=" " append-icon="mdi-eye" @click:append="settings.headers = uidata.headers" :label="localize('label-headers')"></v-text-field>
+        <v-layout>
+          <v-text-field v-model="settings.headers" placeholder=" " append-icon="mdi-eye" @click:append="settings.headers = uidata.headers" :label="'%s (csv)'.format(localize('label-headers-show'))"></v-text-field>
+          <v-text-field v-model="settings.infowindowMarkedHeaders" :disabled="!uidata.map4vue" placeholder=" " :label="'%s (csv)'.format(localize('label-headers-marked'))" class="ml-3"></v-text-field>
+        </v-layout>
         <v-layout>
           <v-checkbox v-model="settings.infowindowDirections" :label="localize('Add a Directions link')" class="pr-4"></v-checkbox>
           <v-checkbox v-model="settings.infowindowZoomIn" :label="localize('Add a Zoom in link')"></v-checkbox>
@@ -174,8 +178,9 @@ Vue.component('vi-gas', {
         <v-text-field v-model="settings.listingTemplate" placeholder=" " append-icon="mdi-eye" @click:append="settings.listingTemplate = uidata.listingTemplate" :label="'%s {{}}'.format(localize('label-listing'))"></v-text-field>
         <v-checkbox v-model="settings.listingOpenInfowindow" :label="localize('Click an anchor (✜) to open the item Infowindow, if not within a cluster')"></v-checkbox>
         <v-layout>
-          <v-checkbox v-model="settings.listingExportNewTab" :label="localize('Export Listing to a new tab')" class="mr-4"></v-checkbox>
-          <v-checkbox v-model="settings.listingExportCsv" :label="localize('Export Listing as a CSV file')"></v-checkbox>
+          <v-checkbox v-model="settings.listingExportNewTab" :label="localize('Export Listing to a new tab')" class="mr-3"></v-checkbox>
+          <v-checkbox v-model="settings.listingExportCsv" :label="localize('Export Listing as a CSV file')" class="mr-3"></v-checkbox>
+          <v-checkbox v-if="uidata.listingSortableAvailable" v-model="settings.listingSortable" :label="localize('Sortable')"></v-checkbox>
         </v-layout>
         <v-checkbox class="ml-3" v-model="settings.listingExportNewTabDirections" :label="localize('View Directions on Google Maps')"></v-checkbox>
       </div>
@@ -270,7 +275,7 @@ Vue.component('vi-gas', {
 
   data() {
     if (!window.google || !window.google.script) { // local values for uidata, picker, settings
-      data.uidata = {"map4vue":true, "headers":"Name,Category,Address,Company,Status,Range,More Info,Picture,Notes,Latitude,Longitude,Extras","headersAll":["Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"headersAllOptional":["","Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"filtersMaxQty":10,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}}\\n {{Address}}","routingHbOptions":["Roundtrip","Start","End"],"routingTravelModes":["BICYCLING","DRIVING","WALKING"],"routingUnitSystems":["IMPERIAL","METRIC"],"placeUnits":["km","mi","m","ft"],"filtersSplit":",","icons":["locas","pins","flags","dots-10","triangles-10","mdi/pin","mdi/place","mdi/truck","mdi/water"],"styledMap":"","mapsApiKeyAvailable":true,"alpha":true,"unattendedAvailable":true,"unattendedFrequencies":["1","2","4","6","8","12"],layerTripBufferAvailable:true,editingAvailable:true};
+      data.uidata = {unattendedAlwaysAvailable:true,listingSortableAvailable:true,"map4vue":true, "headers":"Name,Category,Address,Company,Status,Range,More Info,Picture,Notes,Latitude,Longitude,Extras","headersAll":["Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"headersAllOptional":["","Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"filtersMaxQty":10,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}}\\n {{Address}}","routingHbOptions":["Roundtrip","Start","End"],"routingTravelModes":["BICYCLING","DRIVING","WALKING"],"routingUnitSystems":["IMPERIAL","METRIC"],"placeUnits":["km","mi","m","ft"],"filtersSplit":",","icons":["locas","pins","flags","dots-10","triangles-10","mdi/pin","mdi/place","mdi/truck","mdi/water"],"styledMap":"","mapsApiKeyAvailable":true,"alpha":true,"unattendedAvailable":true,"unattendedFrequencies":["1","2","4","6","8","12"],layerTripBufferAvailable:true,editingAvailable:true};
       data.picker = {"ViewId":"SPREADSHEETS","itsme":false,"showModeDialog":"showModalDialog","DeveloperKey":"DeveloperKey","AppId":"AppId","width":600,"height":425,"title":"Select current Spreadsheet from the list","query":"MS Testing as None"};
       data.settings = {"headers":"",searchHeaders:"","beta":false,"dataHeadersRowIndex":1,"dataGetDisplayValues":false,"spreadsheetLocale":"en_US","infowindowDirections":true,"infowindowZoomIn":true,infowindowWidth:250,infowindowHeight:300,infowindowHeightLock:true,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}} ({{Range}})\\n {{Address}}","listingOpenInfowindow":true,"listingExportNewTab":true,"iconSet":"mdi/pin","pageTitle":"Mapping as None","routingEnabled":true,"routingF2LEnabled":true,"routingHbEnabled":true,"routingHbOption":"Roundtrip","routingHbAddress":"CN Tower","routingHbLatLng":"43.6425662,-79.3870568","routingHbDraggable":true,"routingHbAlwaysVisible":true,"routingTravelMode":"DRIVING","routingUnitSystem":"METRIC","routingDirectionPanelEnabled":true,"routingSuppressMarkers":true,"showPlace":true,"placeRadius":10,"placeFilter":true,"placeUnit":"km","mapCenterOnClick":false,"filtersQty":1,"filtersTag":true,"filtersSplit":"","styledMap":"","styledMapDefault":false,"mapTypes":["roadmap","satellite","hybrid","terrain"],"markerCluster":true,"markerClusterMinimumClusterSize":5,"markerClusterMaxZoom":15,"markerSpider":true,"mapsApiKey":"","mapsPageSuffix":"","lastBuildDate":"12345678","unattendedEnabled":false,"unattendedFrequency":"8","layers":{"circles":{"radiusUnit":"km","fillOpacity":"0.1","enabled":false,"radiusHeader":"Range"},"heatmap":{"enabled":false,"weightHeader":"","fillOpacity":0.6},"geojson":{"enabled":false,"fillOpacity":0.1},"kml":{"enabled":false,"viewport":true},"buffer":{maxWaypoints:0,maxRadius:2,units:"kilometers",step:0.5}}};
       picker = data.picker;
