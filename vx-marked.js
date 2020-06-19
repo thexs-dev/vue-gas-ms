@@ -1,11 +1,11 @@
-
 // https://github.com/markedjs/marked
-import * as marked from 'https://cdn.jsdelivr.net/npm/marked@0.7.0/lib/marked.js';
+import * as marked from 'https://cdn.jsdelivr.net/npm/marked@1.1.0/lib/marked.js';
 if (!window.marked) window.marked = marked;
 
 // https://github.com/cure53/DOMPurify
 // DOMPurify() is loaded async/await/then on demand if sanitize is required (only for user's content)
-window.DOMPurify = false;
+// window.DOMPurify = false;
+import ("https://cdn.jsdelivr.net/npm/dompurify@2.0.11/dist/purify.min.js")
 
 // replace {{key-field}} placeholders with matching json key-field
 String.prototype.mustache = function(json){
@@ -19,7 +19,7 @@ String.prototype.mustache = function(json){
 
 // https://github.com/sindresorhus/github-markdown-css
 document.getElementsByTagName("head")[0].insertAdjacentHTML("beforeend",
-  "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/github-markdown-css@3.0.1/github-markdown.css\" />"
+  "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.css\" />"
 );
 
 
@@ -40,7 +40,7 @@ export default {
       local = window.marked(local);
       if (!this.sanitize) return local;
       else if (!DOMPurify) {
-        Vue.loadScript("https://cdn.jsdelivr.net/npm/dompurify@2.0.7/dist/purify.min.js")
+        Vue.loadScript("https://cdn.jsdelivr.net/npm/dompurify@2.0.11/dist/purify.min.js")
         .then(() => {
           return DOMPurify.sanitize(local);
         })
