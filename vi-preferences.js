@@ -1,9 +1,25 @@
+import VxSlider from "https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.24/vx-slider.js"
+import VxMarked from 'https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.24/vx-marked.js';
+// import VxMarked from './vx-marked.js';
 
-import VxSlider from "https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.17/vx-slider.js"
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		}
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	}
+}
 
 Vue.component('vi-gas', {
   components: {
-    VxSlider
+    VxSlider, VxMarked
   },
 
   template: `<!--  -->
@@ -42,10 +58,9 @@ Vue.component('vi-gas', {
 
       <div class="mt-3" v-show="selected === 'general'">
         <p>{{ localize('preferences-general-description') }}</p>
-        <v-checkbox v-model="settings.beta" label="Beta version opt-in for this spreadsheet (Build the map when opt-in/out)"></v-checkbox>
-        <div>The Beta program would give you access to new, advanced and experimental features when available, only in
-          those Google Spreadsheets from where you enroll. You will keep using the stable version in any other
-          Spreadsheet.</div>
+        <v-checkbox v-model="settings.beta" label="Beta version opt-in for this spreadsheet (Build the map when opt-in/out)" hide-details></v-checkbox>
+        <v-checkbox v-model="settings.map4vue" :disabled="!uidata.map4vue" label="Mapping 4.0 opt-in for this spreadsheet (Build the map when opt-in/out)" hide-details></v-checkbox>
+        <v-text-field v-model="settings.footerInfoAbout" class="mt-4" :disabled="!settings.map4vue || !premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.footerInfoAbout = 'Powered by [Mapping Sheets](https://www.thexs.ca/xsmapping)'" :label="localize('About information (Markdown)')"></v-text-field>
       </div>
 
       <div v-show="selected === 'document'">
@@ -69,7 +84,7 @@ Vue.component('vi-gas', {
       </div>
 
       <div v-show="selected === 'filters'">
-        <v-layout v-if="uidata.map4vue">
+        <v-layout v-if="settings.map4vue">
           <v-checkbox class="mr-3" v-model="settings.searchEnabled" :disabled="!premium" :label="localize('Search')"></v-checkbox>
           <v-text-field v-model="settings.searchHeaders" :disabled="!premium || !settings.searchEnabled" placeholder=" " append-icon="mdi-eye" @click:append="settings.searchHeaders = uidata.headers" :label="localize('label-search-headers')"></v-text-field>
         </v-layout>
@@ -91,18 +106,18 @@ Vue.component('vi-gas', {
         <v-layout>
           <v-text-field class="flex xs4 mr-3" v-model="settings.pageTitle" :disabled="!premium" :label="'%s (%s)'.format(localize('label-page-title'), localize('premium'))"></v-text-field>
           <v-checkbox class="mr-3" v-model="settings.mapCenterOnClick" :label="localize('label-center-on-click')"></v-checkbox>
-          <template v-if="uidata.map4vue">
+          <template v-if="settings.map4vue">
             <v-checkbox class="mr-3" v-model="settings.mapFindMe" :disabled="!premium" :label="localize('Find me')"></v-checkbox>
             <v-checkbox class="" v-model="settings.mapFollowMe" :disabled="!premium" :label="localize('Follow me')"></v-checkbox>
           </template>
         </v-layout>
-        <v-layout>
+        <v-layout v-if="!settings.map4vue">
           <v-text-field class="flex xs11 mr-3" v-model="settings.styledMap" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="localize('label-styled-map')"></v-text-field>
           <v-checkbox v-model="settings.styledMapDefault" :disabled="!premium" :label="localize('default')"></v-checkbox>
           <!-- <v-select :items="uidata.mapTypeIds" v-model="settings.styledMapDefault" :label="localize('default')"></v-select> -->
         </v-layout>
 
-        <v-layout v-if="uidata.map4vue">
+        <v-layout v-if="settings.map4vue">
           <v-select class="flex xs6 mr-3" multiple clearable :items="[...mapTypeIds, ... settings.styledMap ? ['styled'] : []]" v-model="settings.mapTypes" :disabled="!premium" :label="localize('Map types')"></v-select>
           <v-text-field class="flex xs6 xmr-3" v-model="settings.styledMap" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="localize('label-styled-map')"></v-text-field>
         </v-layout>
@@ -143,17 +158,22 @@ Vue.component('vi-gas', {
       <div v-show="selected === 'infowindow'">
         <v-layout>
           <v-text-field v-model="settings.headers" placeholder=" " append-icon="mdi-eye" @click:append="settings.headers = uidata.headers" :label="'%s (csv)'.format(localize('label-headers-show'))"></v-text-field>
-          <v-text-field v-model="settings.infowindowMarkedHeaders" :disabled="!uidata.map4vue" placeholder=" " :label="'%s (csv)'.format(localize('label-headers-marked'))" class="ml-3"></v-text-field>
+          <v-text-field v-model="settings.infowindowMarkedHeaders" :disabled="!settings.map4vue" placeholder=" " :label="'%s (csv)'.format(localize('label-headers-marked'))" class="ml-3"></v-text-field>
+        </v-layout>
+        <v-layout v-if="settings.map4vue">
+          <v-checkbox v-model="settings.infowindowMarkdownEnabled" :label="localize('Markdown')" class="mr-4"></v-checkbox>
+          <v-text-field :value="settings.infowindowMarkedTemplate" readonly :disabled="!settings.infowindowMarkdownEnabled" :label="localize('Content template (Markdown)')" 
+            @click:append-outer="selected = 'infowindow-markdown'" placeholder=" " class="" hide-details append-outer-icon="mdi-pencil">
+          </v-text-field>
+        </v-layout>
+        <v-layout v-if="settings.map4vue">
+          <vx-slider class="mr-2" v-model="settings.infowindowWidth" :min="180" :max="400" :label="localize('Width')"></vx-slider>
+          <vx-slider class="mr-2" v-model="settings.infowindowHeight" :min="100" :max="420" :label="localize('Height')"></vx-slider>
+          <v-checkbox v-model="settings.infowindowHeightLock" :label="localize('Lock')"></v-checkbox>
         </v-layout>
         <v-layout>
           <v-checkbox v-model="settings.infowindowDirections" :label="localize('Add a Directions link')" class="pr-4"></v-checkbox>
           <v-checkbox v-model="settings.infowindowZoomIn" :label="localize('Add a Zoom in link')"></v-checkbox>
-        </v-layout>
-
-        <v-layout v-if="uidata.map4vue">
-          <vx-slider class="mr-2" v-model="settings.infowindowWidth" :min="200" :max="400" :label="localize('Width')"></vx-slider>
-          <vx-slider class="mr-2" v-model="settings.infowindowHeight" :min="200" :max="420" :label="localize('Height')"></vx-slider>
-          <v-checkbox v-model="settings.infowindowHeightLock" :label="localize('Lock')"></v-checkbox>
         </v-layout>
 
         <template v-if="uidata.editingAvailable">
@@ -174,6 +194,17 @@ Vue.component('vi-gas', {
         </template>
       </div>
 
+      <div v-if="selected === 'infowindow-markdown'">
+        <v-layout>
+          <v-textarea :value="settings.infowindowMarkedTemplate" @input="debouncing" xautofocus :label="localize('Content template (Markdown)')" rows=19 no-resize background-color="grey lighten-2" placeholder=" " style="margin-right:8px" hide-details></v-textarea>
+          <v-btn @click="selected = 'infowindow'" style="top:394px; left:10px" fab small icon outlined absolute top left><v-icon>mdi-arrow-left</v-icon></v-btn>
+          <div style="overflow-y: auto; overflow-x: hidden; border-bottom: 1px solid lightgray;" 
+            :style="{ 'width': settings.infowindowWidth + 'px', ...(settings.infowindowHeightLock ? {'height': settings.infowindowHeight + 'px'} : {'height': 'fit-content', 'max-height': settings.infowindowHeight + 'px'}) }">
+            <vx-marked :template="settings.infowindowMarkedTemplate" :json="uidata.infowindowMarkedJson" :sanitize="true" :style="iwStyle" ></vx-marked>
+          </div>
+        </v-layout>
+      </div>
+
       <div v-show="selected === 'listing'">
         <v-text-field v-model="settings.listingTemplate" placeholder=" " append-icon="mdi-eye" @click:append="settings.listingTemplate = uidata.listingTemplate" :label="'%s {{}}'.format(localize('label-listing'))"></v-text-field>
         <v-checkbox v-model="settings.listingOpenInfowindow" :label="localize('Click an anchor (✜) to open the item Infowindow, if not within a cluster')"></v-checkbox>
@@ -189,7 +220,7 @@ Vue.component('vi-gas', {
         <v-layout>
           <v-checkbox v-model="settings.routingEnabled" :disabled="!premium" append-icon="mdi-help-circle" @click:append="$open('https://www.thexs.ca/xsmapping/optimal-routing')" :label="'%s (%s)'.format(localize('label-enable-routing'), localize('premium'))"></v-checkbox>
           <v-checkbox v-show="settings.routingEnabled" v-model="settings.routingF2LEnabled" :label="localize('label-F2L')" class="ml-4"></v-checkbox>
-          <v-checkbox v-show="settings.routingEnabled && uidata.map4vue" v-model="settings.routingAsIsEnabled" :label="localize('As-Is')" class="ml-4"></v-checkbox>
+          <v-checkbox v-show="settings.routingEnabled && settings.map4vue" v-model="settings.routingAsIsEnabled" :label="localize('As-Is')" class="ml-4"></v-checkbox>
         </v-layout>
         <div v-show="settings.routingEnabled">
           <v-layout>
@@ -275,21 +306,23 @@ Vue.component('vi-gas', {
 
   data() {
     if (!window.google || !window.google.script) { // local values for uidata, picker, settings
-      data.uidata = {unattendedAlwaysAvailable:true,listingSortableAvailable:true,"map4vue":true, "headers":"Name,Category,Address,Company,Status,Range,More Info,Picture,Notes,Latitude,Longitude,Extras","headersAll":["Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"headersAllOptional":["","Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"filtersMaxQty":10,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}}\\n {{Address}}","routingHbOptions":["Roundtrip","Start","End"],"routingTravelModes":["BICYCLING","DRIVING","WALKING"],"routingUnitSystems":["IMPERIAL","METRIC"],"placeUnits":["km","mi","m","ft"],"filtersSplit":",","icons":["locas","pins","flags","dots-10","triangles-10","mdi/pin","mdi/place","mdi/truck","mdi/water"],"styledMap":"","mapsApiKeyAvailable":true,"alpha":true,"unattendedAvailable":true,"unattendedFrequencies":["1","2","4","6","8","12"],layerTripBufferAvailable:true,editingAvailable:true};
+      data.uidata = {infowindowMarkedJson:{Name:"Jane Does",Address:"123 Nowhere Road"},unattendedAlwaysAvailable:true,listingSortableAvailable:true,"map4vue":true, "headers":"Name,Category,Address,Company,Status,Range,More Info,Picture,Notes,Latitude,Longitude,Extras","headersAll":["Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"headersAllOptional":["","Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"filtersMaxQty":10,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}}\\n {{Address}}","routingHbOptions":["Roundtrip","Start","End"],"routingTravelModes":["BICYCLING","DRIVING","WALKING"],"routingUnitSystems":["IMPERIAL","METRIC"],"placeUnits":["km","mi","m","ft"],"filtersSplit":",","icons":["locas","pins","flags","dots-10","triangles-10","mdi/pin","mdi/place","mdi/truck","mdi/water"],"styledMap":"","mapsApiKeyAvailable":true,"alpha":true,"unattendedAvailable":true,"unattendedFrequencies":["1","2","4","6","8","12"],layerTripBufferAvailable:true,editingAvailable:!true};
       data.picker = {"ViewId":"SPREADSHEETS","itsme":false,"showModeDialog":"showModalDialog","DeveloperKey":"DeveloperKey","AppId":"AppId","width":600,"height":425,"title":"Select current Spreadsheet from the list","query":"MS Testing as None"};
-      data.settings = {"headers":"",searchHeaders:"","beta":false,"dataHeadersRowIndex":1,"dataGetDisplayValues":false,"spreadsheetLocale":"en_US","infowindowDirections":true,"infowindowZoomIn":true,infowindowWidth:250,infowindowHeight:300,infowindowHeightLock:true,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}} ({{Range}})\\n {{Address}}","listingOpenInfowindow":true,"listingExportNewTab":true,"iconSet":"mdi/pin","pageTitle":"Mapping as None","routingEnabled":true,"routingF2LEnabled":true,"routingHbEnabled":true,"routingHbOption":"Roundtrip","routingHbAddress":"CN Tower","routingHbLatLng":"43.6425662,-79.3870568","routingHbDraggable":true,"routingHbAlwaysVisible":true,"routingTravelMode":"DRIVING","routingUnitSystem":"METRIC","routingDirectionPanelEnabled":true,"routingSuppressMarkers":true,"showPlace":true,"placeRadius":10,"placeFilter":true,"placeUnit":"km","mapCenterOnClick":false,"filtersQty":1,"filtersTag":true,"filtersSplit":"","styledMap":"","styledMapDefault":false,"mapTypes":["roadmap","satellite","hybrid","terrain"],"markerCluster":true,"markerClusterMinimumClusterSize":5,"markerClusterMaxZoom":15,"markerSpider":true,"mapsApiKey":"","mapsPageSuffix":"","lastBuildDate":"12345678","unattendedEnabled":false,"unattendedFrequency":"8","layers":{"circles":{"radiusUnit":"km","fillOpacity":"0.1","enabled":false,"radiusHeader":"Range"},"heatmap":{"enabled":false,"weightHeader":"","fillOpacity":0.6},"geojson":{"enabled":false,"fillOpacity":0.1},"kml":{"enabled":false,"viewport":true},"buffer":{maxWaypoints:0,maxRadius:2,units:"kilometers",step:0.5}}};
+      data.settings = {footerInfoAbout:"",infowindowMarkedTemplate:"## Header...","headers":"",searchHeaders:"","beta":false,"dataHeadersRowIndex":1,"dataGetDisplayValues":false,"spreadsheetLocale":"en_US","infowindowDirections":true,"infowindowZoomIn":true,infowindowWidth:250,infowindowHeight:300,infowindowHeightLock:true,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}} ({{Range}})\\n {{Address}}","listingOpenInfowindow":true,"listingExportNewTab":true,"iconSet":"mdi/pin","pageTitle":"Mapping as None","routingEnabled":true,"routingF2LEnabled":true,"routingHbEnabled":true,"routingHbOption":"Roundtrip","routingHbAddress":"CN Tower","routingHbLatLng":"43.6425662,-79.3870568","routingHbDraggable":true,"routingHbAlwaysVisible":true,"routingTravelMode":"DRIVING","routingUnitSystem":"METRIC","routingDirectionPanelEnabled":true,"routingSuppressMarkers":true,"showPlace":true,"placeRadius":10,"placeFilter":true,"placeUnit":"km","mapCenterOnClick":false,"filtersQty":1,"filtersTag":true,"filtersSplit":"","styledMap":"","styledMapDefault":false,"mapTypes":["roadmap","satellite","hybrid","terrain"],"markerCluster":true,"markerClusterMinimumClusterSize":5,"markerClusterMaxZoom":15,"markerSpider":true,"mapsApiKey":"","mapsPageSuffix":"","lastBuildDate":"12345678","unattendedEnabled":false,"unattendedFrequency":"8","layers":{"circles":{"radiusUnit":"km","fillOpacity":"0.1","enabled":false,"radiusHeader":"Range"},"heatmap":{"enabled":false,"weightHeader":"","fillOpacity":0.6},"geojson":{"enabled":false,"fillOpacity":0.1},"kml":{"enabled":false,"viewport":true},"buffer":{maxWaypoints:0,maxRadius:2,units:"kilometers",step:0.5}}};
       picker = data.picker;
     }
     data.mapTypeIds = ['roadmap','satellite','hybrid','terrain'];
     data.working = false;
+    // iwStyle below comes from mapping-vue map.css x-iw-marked class (keep it synced)
+    data.iwStyle = "font-weight: 300!important; font-size: 13px!important; letter-spacing: .0178571429em!important; line-height: 1.25rem; font-family: Roboto,sans-serif!important;";
     return data
   },
 
   async mounted() {
     if (!window.google || !window.google.script) Vue.loadScript("./vx-google.script.js");
-
+    this.localeResources["infowindow-markdown"] = this.localize("infowindow") + " (Markdown)"; // hacking localeResources for infowindow-markdown page
     // await Vue.loadScript("./vx-file-picker.js");
-    await Vue.loadScript("https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.5/vx-file-picker.js");
+    await Vue.loadScript("https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.24/vx-file-picker.js");
     Vue.loadScript("https://apis.google.com/js/api.js?onload=onApiLoad");
   },
 
@@ -297,6 +330,7 @@ Vue.component('vi-gas', {
 
   methods: {
     localize(key) { return this.localeResources[key] || key },
+    debouncing: debounce(function(v) { this.settings.infowindowMarkedTemplate = v; }, 1000),
 
     iconUrl: function (iconSet) { return "https://thexs-host.firebaseapp.com/icons/%s/Blue.svg".format(iconSet) },
 
