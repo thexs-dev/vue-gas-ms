@@ -22,7 +22,7 @@ Vue.component('vi-gas', {
     VxSlider, VxMarked
   },
 
-  template: `<!--  -->
+  template: /*html*/`<!--  -->
 <div>
   <v-app-bar app>
     <v-menu open-on-hover>
@@ -58,9 +58,13 @@ Vue.component('vi-gas', {
 
       <div class="mt-3" v-show="selected === 'general'">
         <p>{{ localize('preferences-general-description') }}</p>
-        <v-checkbox v-model="settings.beta" label="Beta version opt-in for this spreadsheet (Build the map when opt-in/out)" hide-details></v-checkbox>
-        <v-checkbox v-model="settings.map4vue" :disabled="!uidata.map4vue" label="Mapping 4.0 opt-in for this spreadsheet (Build the map when opt-in/out)" hide-details></v-checkbox>
-        <v-text-field v-model="settings.footerInfoAbout" class="mt-4" :disabled="!settings.map4vue || !premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.footerInfoAbout = 'Powered by [Mapping Sheets](https://www.thexs.ca/xsmapping)'" :label="localize('About information (Markdown)')"></v-text-field>
+        <v-layout>
+          <v-checkbox v-model="settings.beta" label="Beta (β) version opt-in" hide-details class="mr-4"></v-checkbox>
+          <v-checkbox v-model="settings.map4vue" :disabled="!uidata.map4vue" label="Mapping 4.0 (α) opt-in request" hide-details></v-checkbox>
+        </v-layout>
+        <v-text-field v-model="settings.footerInfoAbout" class="mt-4" :disabled="!settings.map4vue || !premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.footerInfoAbout = 'Powered by [Mapping Sheets](https://www.thexs.ca/xsmapping)'" :label="localize('About information (Markdown)') + ' (α+)'"></v-text-field>
+        <v-checkbox v-if="settings.spreadsheetLocale.indexOf('en') !== 0" v-model="settings.useEnglishLocale" :label="'Use English language instead of (%s)'.format(settings.spreadsheetLocale)"></v-checkbox>
+        <v-flex class="mt-8 align-end" style="">{{ "Leyend: (β) Beta, (α) Alpha/Extended, (+) Premium".format() }}</v-flex>
       </div>
 
       <div v-show="selected === 'document'">
@@ -77,22 +81,30 @@ Vue.component('vi-gas', {
             <p hidden id='picker-result'></p>
           </div>
         </div>
-        <vx-slider v-model="settings.dataHeadersRowIndex" :min="1" :max="10" :label="localize('label-data-headers-row-index')"></vx-slider>
-        <v-checkbox v-model="settings.dataGetDisplayValues" :disabled="!settings.beta" label="Get data as displayed, in text format (experimental)"></v-checkbox>
+        <v-layout>
+          <vx-slider v-model="settings.dataHeadersRowIndex" :min="1" :max="10" :label="localize('label-data-headers-row-index')"></vx-slider>
+          <v-checkbox v-model="settings.dataGetDisplayValues" :disabled="!settings.beta" label="Get data as displayed (β)"></v-checkbox>
+        </v-layout>
         <v-text-field v-model="settings.locationTemplate" placeholder=" " append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/using-multiple-columns-for-geocoding-with-a-location-template')" :label="'%s {{}}'.format(localize('label-location-template'))"></v-text-field>
-        <v-checkbox v-model="settings.useEnglishLocale" :label="'Use English language instead of this G Sheets locale (%s)'.format(settings.spreadsheetLocale)"></v-checkbox>
       </div>
 
       <div v-show="selected === 'filters'">
         <v-layout v-if="settings.map4vue">
-          <v-checkbox class="mr-3" v-model="settings.searchEnabled" :disabled="!premium" :label="localize('Search')"></v-checkbox>
+          <v-checkbox class="mr-3" v-model="settings.searchEnabled" :disabled="!premium" :label="localize('Search') + ' (+)'"></v-checkbox>
           <v-text-field v-model="settings.searchHeaders" :disabled="!premium || !settings.searchEnabled" placeholder=" " append-icon="mdi-eye" @click:append="settings.searchHeaders = uidata.headers" :label="localize('label-search-headers')"></v-text-field>
         </v-layout>
-        <vx-slider v-model="settings.filtersQty" :disabled="!premium" :min="0" :max="uidata.filtersMaxQty" :label="'%s (%s)'.format(localize('label-filters-qty'), localize('premium'))"></vx-slider>
-        <v-checkbox class="ml-3" v-model="settings.filtersTag" :label="localize('label-filters-tag')"></v-checkbox>
-        <v-checkbox class="ml-3" v-model="settings.filtersDisplay" :label="localize('label-filters-display')"></v-checkbox>
-        <v-text-field class="ml-3" v-model="settings.filtersSplit" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.filtersSplit = uidata.filtersSplit" :label="localize('label-filters-split')"></v-text-field>
-        <v-checkbox v-model="settings.hideFilters" :label="localize('label-hide-filters-on-load')"></v-checkbox>
+        <vx-slider v-model="settings.filtersQty" :disabled="!premium" :min="0" :max="uidata.filtersMaxQty" :label="'%s (%s)'.format(localize('label-filters-qty'), localize('+'))"></vx-slider>
+        <v-layout>
+          <v-checkbox class="ml-3" v-model="settings.filtersTag" :label="localize('label-filters-tag')"></v-checkbox>
+          <v-text-field class="ml-4" v-model="settings.filtersSplit" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.filtersSplit = uidata.filtersSplit" :label="localize('label-filters-split')"></v-text-field>
+        </v-layout>
+        <v-checkbox v-if="!settings.map4vue" class="ml-3" v-model="settings.filtersDisplay" :label="localize('label-filters-display')"></v-checkbox>
+        <v-checkbox v-if="!settings.map4vue" v-model="settings.hideFilters" :label="localize('label-hide-filters-on-load')"></v-checkbox>
+        <v-layout v-if="settings.map4vue">
+          <v-checkbox class="" v-model="settings.sidebarEnabled" :label="localize('Sidebar enabled')"></v-checkbox>
+          <v-checkbox class="ml-4" v-model="settings.sidebarCollapsed" :label="localize('Sidebar collapsed')"></v-checkbox>
+          <v-checkbox class="ml-4" v-model="settings.appSaveState" :label="localize('Save state (local+)')"></v-checkbox>
+        </v-layout>
       </div>
 
       <div v-show="selected === 'map'">
@@ -206,14 +218,19 @@ Vue.component('vi-gas', {
       </div>
 
       <div v-show="selected === 'listing'">
-        <v-text-field v-model="settings.listingTemplate" placeholder=" " append-icon="mdi-eye" @click:append="settings.listingTemplate = uidata.listingTemplate" :label="'%s {{}}'.format(localize('label-listing'))"></v-text-field>
-        <v-checkbox v-model="settings.listingOpenInfowindow" :label="localize('Click an anchor (✜) to open the item Infowindow, if not within a cluster')"></v-checkbox>
         <v-layout>
-          <v-checkbox v-model="settings.listingExportNewTab" :label="localize('Export Listing to a new tab')" class="mr-3"></v-checkbox>
-          <v-checkbox v-model="settings.listingExportCsv" :label="localize('Export Listing as a CSV file')" class="mr-3"></v-checkbox>
-          <v-checkbox v-if="uidata.listingSortableAvailable" v-model="settings.listingSortable" :label="localize('Sortable')"></v-checkbox>
+          <v-checkbox v-if="settings.map4vue" v-model="settings.listingEnabled" :label="localize('Enabled')" class="mr-3"></v-checkbox>
+          <v-text-field v-model="settings.listingTemplate" placeholder=" " :disabled="!settings.listingEnabled"
+            append-icon="mdi-eye" @click:append="settings.listingTemplate = uidata.listingTemplate" append-outer-icon="mdi-pencil" @click:append-outer=""
+            :label="'%s {{}}'.format(localize('label-listing'))"></v-text-field>
         </v-layout>
-        <v-checkbox class="ml-3" v-model="settings.listingExportNewTabDirections" :label="localize('View Directions on Google Maps')"></v-checkbox>
+        <v-checkbox v-model="settings.listingOpenInfowindow" :disabled="!settings.listingEnabled" :label="localize('Click an anchor (✜) to open the item Infowindow, if not within a cluster')"></v-checkbox>
+        <v-layout>
+          <v-checkbox v-model="settings.listingExportNewTab" :disabled="!settings.listingEnabled" :label="localize('Export Listing to a new tab')" class="mr-3"></v-checkbox>
+          <v-checkbox v-model="settings.listingExportCsv" :disabled="!settings.listingEnabled" :label="localize('Export Listing as a CSV file')" class="mr-3"></v-checkbox>
+          <v-checkbox v-if="uidata.listingSortableAvailable" v-model="settings.listingSortable" :disabled="!settings.listingEnabled" :label="localize('Sortable')"></v-checkbox>
+        </v-layout>
+        <v-checkbox class="ml-3" v-model="settings.listingExportNewTabDirections" :disabled="!settings.listingEnabled" :label="localize('View Directions on Google Maps')"></v-checkbox>
       </div>
 
       <div v-show="selected === 'routing'">
@@ -237,10 +254,11 @@ Vue.component('vi-gas', {
             <v-text-field class="ml-3" v-model="settings.routingHbLatLng" :disabled="!settings.routingHbEnabled" :label="localize('label-hb-lat-lng')" placeholder=" "></v-text-field>
           </v-layout>
           <v-layout>
-            <v-select class="mr-3" :items="uidata.routingTravelModes" v-model="settings.routingTravelMode" :label="localize('label-travel-mode')"></v-select>
-            <v-select :items="uidata.routingUnitSystems" v-model="settings.routingUnitSystem" :label="localize('label-unit-system')"></v-select>
+            <v-select class="flex xs3 mr-3" :items="uidata.routingTravelModes" v-model="settings.routingTravelMode" :label="localize('label-travel-mode')"></v-select>
+            <v-select class="flex xs3 mr-3" :items="uidata.routingUnitSystems" v-model="settings.routingUnitSystem" :label="localize('label-unit-system')"></v-select>
+            <v-select v-if="settings.map4vue" class="flex xs6" :items="'Highways,Tolls,Ferries'.split(',')" v-model="settings.routingAvoid" multiple :label="localize('avoid')" placeholder=" "></v-select>
           </v-layout>
-          <v-layout>
+          <v-layout v-if="!settings.map4vue">
             <span class="mt-4 mr-3">{{localize('avoid')}}:</span>
             <v-checkbox class="mr-3" v-model="settings.routingAvoidHighways" :label="localize('label-highways')"></v-checkbox>
             <v-checkbox class="mr-3" v-model="settings.routingAvoidTolls" :label="localize('label-tolls')"></v-checkbox>
@@ -308,7 +326,7 @@ Vue.component('vi-gas', {
     if (!window.google || !window.google.script) { // local values for uidata, picker, settings
       data.uidata = {infowindowMarkedJson:{Name:"Jane Does",Address:"123 Nowhere Road"},unattendedAlwaysAvailable:true,listingSortableAvailable:true,"map4vue":true, "headers":"Name,Category,Address,Company,Status,Range,More Info,Picture,Notes,Latitude,Longitude,Extras","headersAll":["Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"headersAllOptional":["","Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"filtersMaxQty":10,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}}\\n {{Address}}","routingHbOptions":["Roundtrip","Start","End"],"routingTravelModes":["BICYCLING","DRIVING","WALKING"],"routingUnitSystems":["IMPERIAL","METRIC"],"placeUnits":["km","mi","m","ft"],"filtersSplit":",","icons":["locas","pins","flags","dots-10","triangles-10","mdi/pin","mdi/place","mdi/truck","mdi/water"],"styledMap":"","mapsApiKeyAvailable":true,"alpha":true,"unattendedAvailable":true,"unattendedFrequencies":["1","2","4","6","8","12"],layerTripBufferAvailable:true,editingAvailable:!true};
       data.picker = {"ViewId":"SPREADSHEETS","itsme":false,"showModeDialog":"showModalDialog","DeveloperKey":"DeveloperKey","AppId":"AppId","width":600,"height":425,"title":"Select current Spreadsheet from the list","query":"MS Testing as None"};
-      data.settings = {footerInfoAbout:"",infowindowMarkedTemplate:"## Header...","headers":"",searchHeaders:"","beta":false,"dataHeadersRowIndex":1,"dataGetDisplayValues":false,"spreadsheetLocale":"en_US","infowindowDirections":true,"infowindowZoomIn":true,infowindowWidth:250,infowindowHeight:300,infowindowHeightLock:true,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}} ({{Range}})\\n {{Address}}","listingOpenInfowindow":true,"listingExportNewTab":true,"iconSet":"mdi/pin","pageTitle":"Mapping as None","routingEnabled":true,"routingF2LEnabled":true,"routingHbEnabled":true,"routingHbOption":"Roundtrip","routingHbAddress":"CN Tower","routingHbLatLng":"43.6425662,-79.3870568","routingHbDraggable":true,"routingHbAlwaysVisible":true,"routingTravelMode":"DRIVING","routingUnitSystem":"METRIC","routingDirectionPanelEnabled":true,"routingSuppressMarkers":true,"showPlace":true,"placeRadius":10,"placeFilter":true,"placeUnit":"km","mapCenterOnClick":false,"filtersQty":1,"filtersTag":true,"filtersSplit":"","styledMap":"","styledMapDefault":false,"mapTypes":["roadmap","satellite","hybrid","terrain"],"markerCluster":true,"markerClusterMinimumClusterSize":5,"markerClusterMaxZoom":15,"markerSpider":true,"mapsApiKey":"","mapsPageSuffix":"","lastBuildDate":"12345678","unattendedEnabled":false,"unattendedFrequency":"8","layers":{"circles":{"radiusUnit":"km","fillOpacity":"0.1","enabled":false,"radiusHeader":"Range"},"heatmap":{"enabled":false,"weightHeader":"","fillOpacity":0.6},"geojson":{"enabled":false,"fillOpacity":0.1},"kml":{"enabled":false,"viewport":true},"buffer":{maxWaypoints:0,maxRadius:2,units:"kilometers",step:0.5}}};
+      data.settings = {listingEnabled:true,"map4vue":true,footerInfoAbout:"",infowindowMarkedTemplate:"## Header...","headers":"",searchHeaders:"","beta":false,"dataHeadersRowIndex":1,"dataGetDisplayValues":false,"spreadsheetLocale":"en_US","infowindowDirections":true,"infowindowZoomIn":true,infowindowWidth:250,infowindowHeight:300,infowindowHeightLock:true,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}} ({{Range}})\\n {{Address}}","listingOpenInfowindow":true,"listingExportNewTab":true,"iconSet":"mdi/pin","pageTitle":"Mapping as None","routingEnabled":true,"routingF2LEnabled":true,"routingHbEnabled":true,"routingHbOption":"Roundtrip","routingHbAddress":"CN Tower","routingHbLatLng":"43.6425662,-79.3870568","routingHbDraggable":true,"routingHbAlwaysVisible":true,"routingTravelMode":"DRIVING","routingUnitSystem":"METRIC","routingDirectionPanelEnabled":true,"routingSuppressMarkers":true,"showPlace":true,"placeRadius":10,"placeFilter":true,"placeUnit":"km","mapCenterOnClick":false,"filtersQty":1,"filtersTag":true,"filtersSplit":"","styledMap":"","styledMapDefault":false,"mapTypes":["roadmap","satellite","hybrid","terrain"],"markerCluster":true,"markerClusterMinimumClusterSize":5,"markerClusterMaxZoom":15,"markerSpider":true,"mapsApiKey":"","mapsPageSuffix":"","lastBuildDate":"12345678","unattendedEnabled":false,"unattendedFrequency":"8","layers":{"circles":{"radiusUnit":"km","fillOpacity":"0.1","enabled":false,"radiusHeader":"Range"},"heatmap":{"enabled":false,"weightHeader":"","fillOpacity":0.6},"geojson":{"enabled":false,"fillOpacity":0.1},"kml":{"enabled":false,"viewport":true},"buffer":{maxWaypoints:0,maxRadius:2,units:"kilometers",step:0.5}}};
       picker = data.picker;
     }
     data.mapTypeIds = ['roadmap','satellite','hybrid','terrain'];
@@ -320,10 +338,10 @@ Vue.component('vi-gas', {
 
   async mounted() {
     if (!window.google || !window.google.script) Vue.loadScript("./vx-google.script.js");
-    this.localeResources["infowindow-markdown"] = this.localize("infowindow") + " (Markdown)"; // hacking localeResources for infowindow-markdown page
     // await Vue.loadScript("./vx-file-picker.js");
     await Vue.loadScript("https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.24/vx-file-picker.js");
     Vue.loadScript("https://apis.google.com/js/api.js?onload=onApiLoad");
+    this.localeResources["infowindow-markdown"] = this.localize("infowindow") + " (Markdown)"; // hacking localeResources for infowindow-markdown page
   },
 
   computed: {},
@@ -388,8 +406,6 @@ Vue.component('vi-gas', {
 
     test() {
       console.log(this.settings, this.uidata);
-      console.log(this.settings.layers);
-      console.log(this.uidata.headers);
       this.$gae("test");
     }
   }
