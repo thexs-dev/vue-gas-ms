@@ -60,7 +60,7 @@ Vue.component('vi-gas', {
         <p>{{ localize('preferences-general-description') }}</p>
         <v-layout>
           <v-checkbox v-model="settings.beta" label="Beta (β) version opt-in" hide-details class="mr-4"></v-checkbox>
-          <v-checkbox v-model="settings.map4vue" :disabled="!uidata.map4vue" label="Mapping 4.0 (α) opt-in request" hide-details></v-checkbox>
+          <v-checkbox v-model="settings.map4vue" :disabled="!uidata.map4vue" label="Mapping 4.0 (α+) opt-in request" hide-details></v-checkbox>
         </v-layout>
         <v-text-field v-model="settings.footerInfoAbout" class="mt-4" :disabled="!settings.map4vue || !premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.footerInfoAbout = 'Powered by [Mapping Sheets](https://www.thexs.ca/xsmapping)'" :label="localize('About information (Markdown)') + ' (α+)'"></v-text-field>
         <v-checkbox v-if="settings.spreadsheetLocale.indexOf('en') !== 0" v-model="settings.useEnglishLocale" :label="'Use English language instead of (%s)'.format(settings.spreadsheetLocale)"></v-checkbox>
@@ -90,10 +90,10 @@ Vue.component('vi-gas', {
 
       <div v-show="selected === 'filters'">
         <v-layout v-if="settings.map4vue">
-          <v-checkbox class="mr-3" v-model="settings.searchEnabled" :disabled="!premium" :label="localize('Search') + ' (+)'"></v-checkbox>
+          <v-checkbox class="mr-3" v-model="settings.searchEnabled" :disabled="!premium" :label="localize('Search') + plus"></v-checkbox>
           <v-text-field v-model="settings.searchHeaders" :disabled="!premium || !settings.searchEnabled" placeholder=" " append-icon="mdi-eye" @click:append="settings.searchHeaders = uidata.headers" :label="localize('label-search-headers')"></v-text-field>
         </v-layout>
-        <vx-slider v-model="settings.filtersQty" :disabled="!premium" :min="0" :max="uidata.filtersMaxQty" :label="'%s (%s)'.format(localize('label-filters-qty'), localize('+'))"></vx-slider>
+        <vx-slider v-model="settings.filtersQty" :disabled="!premium" :min="0" :max="uidata.filtersMaxQty" :label="'%s%s'.format(localize('label-filters-qty'), plus)"></vx-slider>
         <v-layout>
           <v-checkbox class="ml-3" v-model="settings.filtersTag" :label="localize('label-filters-tag')"></v-checkbox>
           <v-text-field class="ml-4" v-model="settings.filtersSplit" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.filtersSplit = uidata.filtersSplit" :label="localize('label-filters-split')"></v-text-field>
@@ -101,51 +101,51 @@ Vue.component('vi-gas', {
         <v-checkbox v-if="!settings.map4vue" class="ml-3" v-model="settings.filtersDisplay" :label="localize('label-filters-display')"></v-checkbox>
         <v-checkbox v-if="!settings.map4vue" v-model="settings.hideFilters" :label="localize('label-hide-filters-on-load')"></v-checkbox>
         <v-layout v-if="settings.map4vue">
-          <v-checkbox class="" v-model="settings.sidebarEnabled" :label="localize('Sidebar enabled')"></v-checkbox>
+          <v-checkbox class="" v-model="settings.sidebarEnabled" :disabled="!premium" :label="localize('Sidebar enabled') + plus"></v-checkbox>
           <v-checkbox class="ml-4" v-model="settings.sidebarCollapsed" :label="localize('Sidebar collapsed')"></v-checkbox>
-          <v-checkbox class="ml-4" v-model="settings.appSaveState" :label="localize('Save state (local+)')"></v-checkbox>
+          <v-checkbox class="ml-4" v-model="settings.appSaveState" :disabled="!premium" :label="'%s %s%s'.format (localize('Save state'), '@local', plus)"></v-checkbox>
         </v-layout>
       </div>
 
       <div v-show="selected === 'map'">
         <v-layout>
-          <v-checkbox class="flex grow mr-3" v-model="settings.showPlace" :disabled="!premium" :label="'%s (%s)'.format(localize('label-find-place'), localize('premium'))"></v-checkbox>
+          <v-checkbox class="flex grow mr-3" v-model="settings.showPlace" :disabled="!premium" :label="'%s %s'.format(localize('label-find-place'), plus)"></v-checkbox>
           <v-text-field class="mr-3" v-model="settings.placeRadius" :disabled="!premium" type="number" min="0" :label="localize('label-place-radius')"></v-text-field>
           <v-select class="mr-3" :items="uidata.placeUnits" v-model="settings.placeUnit" :disabled="!premium" :label="localize('label-place-unit')"></v-select>
           <v-checkbox class="mr-3" v-model="settings.placeStrictBounds" :disabled="!premium" :label="localize('Viewport')"></v-checkbox>
           <v-checkbox v-model="settings.placeFilter" :disabled="!premium" :label="localize('filter')"></v-checkbox>
         </v-layout>
         <v-layout>
-          <v-text-field class="flex xs4 mr-3" v-model="settings.pageTitle" :disabled="!premium" :label="'%s (%s)'.format(localize('label-page-title'), localize('premium'))"></v-text-field>
-          <v-checkbox class="mr-3" v-model="settings.mapCenterOnClick" :label="localize('label-center-on-click')"></v-checkbox>
+          <v-text-field class="flex xs3 mr-3" v-model="settings.pageTitle" :disabled="!premium" :label="'%s %s'.format(localize('Mapping app title'), plus)"></v-text-field>
+          <v-checkbox class="mr-3" v-model="settings.mapCenterOnClick" :label="localize('Center @click')"></v-checkbox>
           <template v-if="settings.map4vue">
-            <v-checkbox class="mr-3" v-model="settings.mapFindMe" :disabled="!premium" :label="localize('Find me')"></v-checkbox>
-            <v-checkbox class="" v-model="settings.mapFollowMe" :disabled="!premium" :label="localize('Follow me')"></v-checkbox>
+            <v-checkbox class="mr-3" v-model="settings.mapFindMe" :disabled="!premium" :label="localize('Find me') + plus"></v-checkbox>
+            <v-checkbox class="" v-model="settings.mapFollowMe" :disabled="!premium" :label="localize('Follow me') + plus"></v-checkbox>
           </template>
         </v-layout>
         <v-layout v-if="!settings.map4vue">
-          <v-text-field class="flex xs11 mr-3" v-model="settings.styledMap" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="localize('label-styled-map')"></v-text-field>
+          <v-text-field class="flex xs11 mr-3" v-model="settings.styledMap" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="localize('label-styled-map') + plus"></v-text-field>
           <v-checkbox v-model="settings.styledMapDefault" :disabled="!premium" :label="localize('default')"></v-checkbox>
           <!-- <v-select :items="uidata.mapTypeIds" v-model="settings.styledMapDefault" :label="localize('default')"></v-select> -->
         </v-layout>
 
         <v-layout v-if="settings.map4vue">
-          <v-select class="flex xs6 mr-3" multiple clearable :items="[...mapTypeIds, ... settings.styledMap ? ['styled'] : []]" v-model="settings.mapTypes" :disabled="!premium" :label="localize('Map types')"></v-select>
-          <v-text-field class="flex xs6 xmr-3" v-model="settings.styledMap" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="localize('label-styled-map')"></v-text-field>
+          <v-select class="flex xs6 mr-3" multiple clearable :items="[...mapTypeIds, ... settings.styledMap ? ['styled'] : []]" v-model="settings.mapTypes" :disabled="!premium" :label="localize('Map types') + plus"></v-select>
+          <v-text-field class="flex xs6 xmr-3" v-model="settings.styledMap" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="localize('label-styled-map') + plus"></v-text-field>
         </v-layout>
 
         <!-- mapsApiKey might be required even for non premium/custom plans -->
         <div v-if="uidata.mapsApiKeyAvailable">
           <v-layout>
-            <v-text-field class="flex xs8" v-model="settings.mapsApiKey" :label="localize('Maps Api key (for the Mapping web app)')" placeholder=" "></v-text-field>
-            <v-text-field class="ml-3" v-model="settings.mapsPageSuffix" prefix="-" :label="localize('Suffix') + ' (mapping-%s.html)'.format(settings.mapsPageSuffix)" placeholder=" " append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/how-to-get-and-use-my-own-maps-api-key')"></v-text-field>
+            <v-text-field class="flex xs8" v-model="settings.mapsApiKey" :label="localize('Maps Api key (for the Mapping web app)') + plusalpha" placeholder=" "></v-text-field>
+            <v-text-field class="ml-3" v-model="settings.mapsPageSuffix" prefix="-" :label="localize('Suffix') + ' (mapping-%s.html)'.format(settings.mapsPageSuffix) + plusalpha" placeholder=" " append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/how-to-get-and-use-my-own-maps-api-key')"></v-text-field>
           </v-layout>
         </div>
       </div>
 
       <div v-show="selected === 'icons'">
         <v-layout class="mt-3">
-          <v-select dense class="mr-3" :items="uidata.icons" v-model="settings.iconSet" :disabled="!premium" :label="'%s (%s)'.format(localize('label-icon-set'), localize('premium'))">
+          <v-select dense class="flex xs4 mr-3" :items="uidata.icons" v-model="settings.iconSet" :disabled="!premium" :label="'%s %s'.format(localize('label-icon-set'), plus)">
             <template slot="selection" slot-scope="data">
               <img height="24" width="auto" :src="iconUrl(data.item)"></img>
               <div class='ml-3'> {{ data.item }}</div>
@@ -155,6 +155,7 @@ Vue.component('vi-gas', {
               <div class='ml-3'> {{ data.item }}</div>
             </template>
           </v-select>
+          <!-- select header for alternative icon shape as defined in Icons sheet -->
           <v-checkbox v-model="settings.markerDraggable" :label="localize('Draggable')" class="mr-4"></v-checkbox>
           <v-checkbox v-model="settings.markerSpider" :label="localize('Overlapping')"></v-checkbox>
         </v-layout>
@@ -170,10 +171,10 @@ Vue.component('vi-gas', {
       <div v-show="selected === 'infowindow'">
         <v-layout>
           <v-text-field v-model="settings.headers" placeholder=" " append-icon="mdi-eye" @click:append="settings.headers = uidata.headers" :label="'%s (csv)'.format(localize('label-headers-show'))"></v-text-field>
-          <v-text-field v-model="settings.infowindowMarkedHeaders" :disabled="!settings.map4vue" placeholder=" " :label="'%s (csv)'.format(localize('label-headers-marked'))" class="ml-3"></v-text-field>
+          <v-text-field v-model="settings.infowindowMarkedHeaders" :disabled="!settings.map4vue || !premium" placeholder=" " :label="'%s (csv)%s'.format(localize('label-headers-marked'), plusalpha)" class="ml-3"></v-text-field>
         </v-layout>
         <v-layout v-if="settings.map4vue">
-          <v-checkbox v-model="settings.infowindowMarkdownEnabled" :label="localize('Markdown')" class="mr-4"></v-checkbox>
+          <v-checkbox v-model="settings.infowindowMarkdownEnabled" :disabled="!premium" :label="localize('Markdown') + plus" class="mr-4"></v-checkbox>
           <v-text-field :value="settings.infowindowMarkedTemplate" readonly :disabled="!settings.infowindowMarkdownEnabled" :label="localize('Content template (Markdown)')" 
             @click:append-outer="selected = 'infowindow-markdown'" placeholder=" " class="" hide-details append-outer-icon="mdi-pencil">
           </v-text-field>
@@ -235,9 +236,10 @@ Vue.component('vi-gas', {
 
       <div v-show="selected === 'routing'">
         <v-layout>
-          <v-checkbox v-model="settings.routingEnabled" :disabled="!premium" append-icon="mdi-help-circle" @click:append="$open('https://www.thexs.ca/xsmapping/optimal-routing')" :label="'%s (%s)'.format(localize('label-enable-routing'), localize('premium'))"></v-checkbox>
+          <v-checkbox v-model="settings.routingEnabled" :disabled="!premium" append-icon="mdi-help-circle" @click:append="$open('https://www.thexs.ca/xsmapping/optimal-routing')" :label="'%s %s'.format(localize('label-enable-routing'), plus)"></v-checkbox>
           <v-checkbox v-show="settings.routingEnabled" v-model="settings.routingF2LEnabled" :label="localize('label-F2L')" class="ml-4"></v-checkbox>
           <v-checkbox v-show="settings.routingEnabled && settings.map4vue" v-model="settings.routingAsIsEnabled" :label="localize('As-Is')" class="ml-4"></v-checkbox>
+          <v-checkbox v-show="settings.routingEnabled && settings.map4vue" v-model="settings.routingReverseEnabled" :label="localize('Reverse')" class="ml-4"></v-checkbox>
         </v-layout>
         <div v-show="settings.routingEnabled">
           <v-layout>
@@ -329,6 +331,8 @@ Vue.component('vi-gas', {
       data.settings = {listingEnabled:true,"map4vue":true,footerInfoAbout:"",infowindowMarkedTemplate:"## Header...","headers":"",searchHeaders:"","beta":false,"dataHeadersRowIndex":1,"dataGetDisplayValues":false,"spreadsheetLocale":"en_US","infowindowDirections":true,"infowindowZoomIn":true,infowindowWidth:250,infowindowHeight:300,infowindowHeightLock:true,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}} ({{Range}})\\n {{Address}}","listingOpenInfowindow":true,"listingExportNewTab":true,"iconSet":"mdi/pin","pageTitle":"Mapping as None","routingEnabled":true,"routingF2LEnabled":true,"routingHbEnabled":true,"routingHbOption":"Roundtrip","routingHbAddress":"CN Tower","routingHbLatLng":"43.6425662,-79.3870568","routingHbDraggable":true,"routingHbAlwaysVisible":true,"routingTravelMode":"DRIVING","routingUnitSystem":"METRIC","routingDirectionPanelEnabled":true,"routingSuppressMarkers":true,"showPlace":true,"placeRadius":10,"placeFilter":true,"placeUnit":"km","mapCenterOnClick":false,"filtersQty":1,"filtersTag":true,"filtersSplit":"","styledMap":"","styledMapDefault":false,"mapTypes":["roadmap","satellite","hybrid","terrain"],"markerCluster":true,"markerClusterMinimumClusterSize":5,"markerClusterMaxZoom":15,"markerSpider":true,"mapsApiKey":"","mapsPageSuffix":"","lastBuildDate":"12345678","unattendedEnabled":false,"unattendedFrequency":"8","layers":{"circles":{"radiusUnit":"km","fillOpacity":"0.1","enabled":false,"radiusHeader":"Range"},"heatmap":{"enabled":false,"weightHeader":"","fillOpacity":0.6},"geojson":{"enabled":false,"fillOpacity":0.1},"kml":{"enabled":false,"viewport":true},"buffer":{maxWaypoints:0,maxRadius:2,units:"kilometers",step:0.5}}};
       picker = data.picker;
     }
+    data.plus = " (+)"; // tag for premium features, it was localize('premium')
+    data.plusalpha = " (α+)";
     data.mapTypeIds = ['roadmap','satellite','hybrid','terrain'];
     data.working = false;
     // iwStyle below comes from mapping-vue map.css x-iw-marked class (keep it synced)
