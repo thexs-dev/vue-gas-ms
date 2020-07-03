@@ -187,7 +187,7 @@ Vue.component('vi-gas', {
         <v-layout>
           <v-checkbox v-model="settings.infowindowDirections" :label="localize('Add a Directions link')" class="pr-4"></v-checkbox>
           <v-checkbox v-model="settings.infowindowZoomIn" :label="localize('Add a Zoom in link')"></v-checkbox>
-          <v-text-field class="ml-4" v-model="settings.linksAnchorText" :label="localize('Links anchor text')" placeholder=" "></v-text-field>
+          <v-text-field class="ml-4" v-model="settings.linksAnchorText" :label="localize('Link text')" placeholder=" "></v-text-field>
         </v-layout>
 
         <template v-if="uidata.editingAvailable">
