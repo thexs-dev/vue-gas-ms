@@ -156,7 +156,7 @@ Vue.component('vi-gas', {
             </template>
           </v-select>
           <!-- select header for alternative icon shape as defined in Icons sheet -->
-          <v-select v-if="uidata.iconShapeHeaderAvailable" xdense class="flex xs4 mr-3" :items="uidata.headersAll" v-model="settings.iconShapeHeader" :label="localize('Icon shape header') + plusalpha" placeholder=" "></v-select>
+          <v-select v-if="uidata.iconShapeHeaderAvailable" xdense class="flex xs4 mr-3" :items="uidata.headersAllOptional" v-model="settings.iconShapeHeader" :label="localize('Icon shape header') + plusalpha" placeholder=" "></v-select>
           <v-checkbox v-model="settings.markerDraggable" :label="localize('Draggable')" class="mr-4"></v-checkbox>
           <v-checkbox v-model="settings.markerSpider" :label="localize('Overlapping')"></v-checkbox>
         </v-layout>
