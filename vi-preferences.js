@@ -164,7 +164,7 @@ Vue.component('vi-gas', {
           <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.labels.enabled" :label="localize('Labels') +aster"></v-checkbox>
           <v-combobox class="flex xs4 mr-3" :items="uidata.headersAll" v-model="settings.layers.labels.text" :disabled="!settings.layers.labels.enabled" :label="localize('Text')" placeholder=" "></v-combobox>
           <v-select class="flex xs4 mr-3" :items="'center,top,bottom'.split(',')" v-model="settings.layers.labels.position" :disabled="!settings.layers.labels.enabled" :label="localize('Position')" placeholder=" "></v-select>
-          <v-text-field class="mr-3" v-model="settings.layers.labels.config" :disabled="!settings.layers.labels.enabled || true" :label="localize('Configuration')" placeholder=" " append-icon="mdi-eye" @click:append="settings.layers.labels.config = 'k:v; x,y,css,zoom'"></v-text-field>
+          <v-text-field class="mr-3" v-model="settings.layers.labels.options" :disabled="!settings.layers.labels.enabled || true" :label="localize('Options')" placeholder=" " append-icon="mdi-eye" @click:append="settings.layers.labels.options = 'k:v; x,y,css,zoom'"></v-text-field>
           <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
        </v-layout>
         <v-text-field v-model="settings.titleTemplate" placeholder=" " append-icon="mdi-eye" @click:append="settings.titleTemplate = uidata.titleTemplate" :label="'%s {{}}'.format(localize('label-icon-title'))"></v-text-field>
