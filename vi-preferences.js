@@ -364,7 +364,7 @@ Vue.component('vi-gas', {
     localize(key) { return this.localeResources[key] || key },
     debouncing: debounce(function(v) { this.settings.infowindowMarkedTemplate = v; }, 1000),
 
-    iconUrl: function (iconSet) { return "https://thexs-host.firebaseapp.com/icons/%s/Blue.svg".format(iconSet) },
+    iconUrl: function (iconSet) { return "https://thexs-mapping.firebaseapp.com/icons/%s/Blue.png".format(iconSet) },
 
     getHbLatLng() {
       this.working = true;
