@@ -146,7 +146,7 @@ Vue.component('vi-gas', {
       <div v-show="selected === 'icons'">
         <v-layout class="mt-3" align-center>
           <img xstyle="max-height:24px;" :src="iconUrl(settings.iconSet)"></img>
-          <v-select xdense class="flex xs4 ml-2 mr-3" :items="uidata.icons" v-model="settings.iconSet" :disabled="!premium" xprepend-icon="mdi-help" :label="'%s %s'.format(localize('Icon set'), plus)">
+          <v-select xdense class="flex xs3 ml-2 mr-3" :items="uidata.icons" v-model="settings.iconSet" :disabled="!premium" xprepend-icon="mdi-help" :label="'%s %s'.format(localize('Icon set'), plus)">
             <!-- <template slot="selection" slot-scope="data">
               <div class="v-select__selection v-select__selection--comma">
                 <img style="max-height:24px;" :src="iconUrl(data.item)"></img>
