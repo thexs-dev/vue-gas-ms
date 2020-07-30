@@ -144,12 +144,15 @@ Vue.component('vi-gas', {
       </div>
 
       <div v-show="selected === 'icons'">
-        <v-layout class="mt-3">
-          <v-select xdense class="flex xs4 mr-3" :items="uidata.icons" v-model="settings.iconSet" :disabled="!premium" :label="'%s %s'.format(localize('Icon set'), plus)">
-            <template slot="selection" slot-scope="data">
-              <img style="max-height:24px;" :src="iconUrl(data.item)"></img>
-              <div class='ml-2'> {{ data.item }}</div>
-            </template>
+        <v-layout class="mt-3" align-center>
+          <img xstyle="max-height:24px;" :src="iconUrl(settings.iconSet)"></img>
+          <v-select xdense class="flex xs4 ml-2 mr-3" :items="uidata.icons" v-model="settings.iconSet" :disabled="!premium" xprepend-icon="mdi-help" :label="'%s %s'.format(localize('Icon set'), plus)">
+            <!-- <template slot="selection" slot-scope="data">
+              <div class="v-select__selection v-select__selection--comma">
+                <img style="max-height:24px;" :src="iconUrl(data.item)"></img>
+                <span class='ml-0' style="overflow: hidden; text-overflow: ellipsis;"> {{ data.item }}</span>
+              </div>
+            </template> -->
             <template slot="item" slot-scope="data">
               <img style="max-height:24px;" :src="iconUrl(data.item)"></img>
               <div class='ml-2'> {{ data.item }}</div>
