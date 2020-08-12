@@ -130,9 +130,10 @@ Vue.component('vi-gas', {
         </v-layout>
 
         <v-layout v-if="settings.map4vue">
-          <v-select class="flex xs6 mr-3" multiple clearable :items="[...mapTypeIds, ... settings.styledMap ? ['styled'] : []]" v-model="settings.mapTypes" :disabled="!premium" :label="localize('Map types') + plus"></v-select>
-          <v-text-field class="flex xs6 xmr-3" v-model="settings.styledMap" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="localize('label-styled-map') + plus"></v-text-field>
+          <v-select class="flex xs6 mr-1" multiple clearable :items='["fullscreen", "rotate", "scale", "streetView", "zoom"]' v-model="settings.mapControls" :disabled="!premium" placeholder=" " :label="localize('Controls') + plus"></v-select>
+          <v-select class="flex xs6" multiple clearable :items="[...mapTypeIds, ... settings.styledMap ? ['styled'] : []]" v-model="settings.mapTypes" :disabled="!premium" placeholder=" " :label="localize('Types') + plus"></v-select>
         </v-layout>
+        <v-text-field v-if="settings.map4vue" class="flex xs12" v-model="settings.styledMap" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="localize('label-styled-map') + plus"></v-text-field>
 
         <!-- mapsApiKey might be required even for non premium/custom plans -->
         <div v-if="uidata.mapsApiKeyAvailable">
