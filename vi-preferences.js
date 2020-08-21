@@ -240,9 +240,11 @@ Vue.component('vi-gas', {
       <div v-show="selected === 'listing'">
         <v-layout>
           <v-checkbox v-if="settings.map4vue" v-model="settings.listingEnabled" :label="localize('Enabled')" class="mr-3"></v-checkbox>
-          <v-text-field v-model="settings.listingTemplate" placeholder=" " :disabled="!settings.listingEnabled"
-            append-icon="mdi-eye" @click:append="settings.listingTemplate = uidata.listingTemplate" append-outer-icon="mdi-pencil" @click:append-outer=""
-            :label="'%s {{}}'.format(localize('label-listing'))"></v-text-field>
+          <v-text-field v-model="settings.listingTemplate" placeholder=" " :disabled="!settings.listingEnabled" :readonly="uidata.listingTemplateMarked"
+            append-icon="mdi-eye" @click:append="settings.listingTemplate = uidata.listingTemplate; uidata.listingTemplateMarked=false" 
+            append-outer-icon="mdi-pencil" @click:append-outer="if (settings.map4vue) {selected = 'listing-markdown'; uidata.listingTemplateMarked=true}"
+            :label="'%s {{}}'.format(localize('label-listing'))">
+          </v-text-field>
         </v-layout>
         <v-checkbox v-model="settings.listingOpenInfowindow" :disabled="!settings.listingEnabled" :label="localize('Click an anchor (✜) to open the item Infowindow, if not within a cluster')"></v-checkbox>
         <v-layout>
@@ -251,6 +253,17 @@ Vue.component('vi-gas', {
           <v-checkbox v-if="uidata.listingSortableAvailable" v-model="settings.listingSortable" :disabled="!settings.listingEnabled" :label="localize('Sortable')"></v-checkbox>
         </v-layout>
         <v-checkbox class="ml-3" v-model="settings.listingExportNewTabDirections" :disabled="!settings.listingEnabled" :label="localize('View Directions on Google Maps')"></v-checkbox>
+      </div>
+
+      <div v-if="selected === 'listing-markdown'">
+        <v-layout>
+          <v-textarea :value="settings.listingTemplate" @input="debouncing2" xautofocus :label="localize('Content template (Markdown)')" rows=19 no-resize background-color="grey lighten-2" placeholder=" " style="margin-right:8px" hide-details></v-textarea>
+          <v-btn @click="selected = 'listing'" style="top:394px; left:10px" fab small icon outlined absolute top left><v-icon>mdi-arrow-left</v-icon></v-btn>
+          <div style="overflow-y: auto; overflow-x: hidden; border-bottom: 1px solid lightgray;" 
+            :style="{ 'width': settings.listingWidth + 'px', 'height': 'fit-content', 'max-height': '75vh' }">
+            <vx-marked :template="settings.listingTemplate" :json="uidata.infowindowMarkedJson" :sanitize="true" :style="iwStyle" ></vx-marked>
+          </div>
+        </v-layout>
       </div>
 
       <div v-show="selected === 'routing'">
@@ -347,7 +360,7 @@ Vue.component('vi-gas', {
     if (!window.google || !window.google.script) { // local values for uidata, picker, settings
       data.uidata = {iconLabelsAvailable:true,iconShapeHeaderAvailable:true,iconSizeHeaderAvailable:true,infowindowMarkedJson:{Name:"Jane Does",Address:"123 Nowhere Road"},unattendedAlwaysAvailable:true,listingSortableAvailable:true,"map4vue":true, "headers":"Name,Category,Address,Company,Status,Range,More Info,Picture,Notes,Latitude,Longitude,Extras","headersAll":["Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"headersAllOptional":["","Name","Category","Address","Company","Status","Range","More Info","Picture","Notes","Latitude","Longitude","Extras"],"filtersMaxQty":10,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}}\\n {{Address}}","routingHbOptions":["Roundtrip","Start","End"],"routingTravelModes":["BICYCLING","DRIVING","WALKING"],"routingUnitSystems":["IMPERIAL","METRIC"],"placeUnits":["km","mi","m","ft"],"filtersSplit":",","icons":["locas","pins","flags","dots-10","triangles-10","mdi/pin","mdi/place","mdi/truck","mdi/water"],"styledMap":"","mapsApiKeyAvailable":true,"alpha":true,"unattendedAvailable":true,"unattendedFrequencies":["1","2","4","6","8","12"],layerTripBufferAvailable:true,editingAvailable:!true};
       data.picker = {"ViewId":"SPREADSHEETS","itsme":false,"showModeDialog":"showModalDialog","DeveloperKey":"DeveloperKey","AppId":"AppId","width":600,"height":425,"title":"Select current Spreadsheet from the list","query":"MS Testing as None"};
-      data.settings = {filtersEmpties:"[empty]",icontitleEnabled:true,infowindowEnabled:true,infowindowButtonsPosition:"Top",listingEnabled:true,"map4vue":true,footerInfoAbout:"",infowindowMarkedTemplate:"## Header...","headers":"",searchHeaders:"","beta":false,"dataHeadersRowIndex":1,"dataGetDisplayValues":false,"spreadsheetLocale":"en_US","infowindowDirections":true,"infowindowZoomIn":true,infowindowWidth:250,infowindowHeight:300,infowindowHeightLock:true,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}} ({{Range}})\\n {{Address}}","listingOpenInfowindow":true,"listingExportNewTab":true,"iconSet":"mdi/pin","pageTitle":"Mapping as None","routingEnabled":true,"routingF2LEnabled":true,"routingHbEnabled":true,"routingHbOption":"Roundtrip","routingHbAddress":"CN Tower","routingHbLatLng":"43.6425662,-79.3870568","routingHbDraggable":true,"routingHbAlwaysVisible":true,"routingTravelMode":"DRIVING","routingUnitSystem":"METRIC","routingDirectionPanelEnabled":true,"routingSuppressMarkers":true,"showPlace":true,"placeRadius":10,"placeFilter":true,"placeUnit":"km","mapCenterOnClick":false,"filtersQty":1,"filtersTag":true,"filtersSplit":"","styledMap":"","styledMapDefault":false,"mapTypes":["roadmap","satellite","hybrid","terrain"],"markerCluster":true,"markerClusterMinimumClusterSize":5,"markerClusterMaxZoom":15,"markerSpider":true,"mapsApiKey":"","mapsPageSuffix":"","lastBuildDate":"12345678","unattendedEnabled":false,"unattendedFrequency":"8","layers":{"circles":{"radiusUnit":"km","fillOpacity":"0.1","enabled":false,"radiusHeader":"Range"},"heatmap":{"enabled":false,"weightHeader":"","fillOpacity":0.6},"geojson":{"enabled":false,"fillOpacity":0.1},"kml":{"enabled":false,"viewport":true},"buffer":{maxWaypoints:0,maxRadius:2,units:"kilometers",step:0.5},"labels":{config:""}}};
+      data.settings = {listingWidth:350,filtersEmpties:"[empty]",icontitleEnabled:true,infowindowEnabled:true,infowindowButtonsPosition:"Top",listingEnabled:true,"map4vue":true,footerInfoAbout:"",infowindowMarkedTemplate:"## Header...","headers":"",searchHeaders:"","beta":false,"dataHeadersRowIndex":1,"dataGetDisplayValues":false,"spreadsheetLocale":"en_US","infowindowDirections":true,"infowindowZoomIn":true,infowindowWidth:250,infowindowHeight:300,infowindowHeightLock:true,"titleTemplate":"{{Name}} ({{Category}})\\n {{Address}}","listingTemplate":"{{Name}} ({{Range}})\\n {{Address}}","listingOpenInfowindow":true,"listingExportNewTab":true,"iconSet":"mdi/pin","pageTitle":"Mapping as None","routingEnabled":true,"routingF2LEnabled":true,"routingHbEnabled":true,"routingHbOption":"Roundtrip","routingHbAddress":"CN Tower","routingHbLatLng":"43.6425662,-79.3870568","routingHbDraggable":true,"routingHbAlwaysVisible":true,"routingTravelMode":"DRIVING","routingUnitSystem":"METRIC","routingDirectionPanelEnabled":true,"routingSuppressMarkers":true,"showPlace":true,"placeRadius":10,"placeFilter":true,"placeUnit":"km","mapCenterOnClick":false,"filtersQty":1,"filtersTag":true,"filtersSplit":"","styledMap":"","styledMapDefault":false,"mapTypes":["roadmap","satellite","hybrid","terrain"],"markerCluster":true,"markerClusterMinimumClusterSize":5,"markerClusterMaxZoom":15,"markerSpider":true,"mapsApiKey":"","mapsPageSuffix":"","lastBuildDate":"12345678","unattendedEnabled":false,"unattendedFrequency":"8","layers":{"circles":{"radiusUnit":"km","fillOpacity":"0.1","enabled":false,"radiusHeader":"Range"},"heatmap":{"enabled":false,"weightHeader":"","fillOpacity":0.6},"geojson":{"enabled":false,"fillOpacity":0.1},"kml":{"enabled":false,"viewport":true},"buffer":{maxWaypoints:0,maxRadius:2,units:"kilometers",step:0.5},"labels":{config:""}}};
       picker = data.picker;
     }
     data.plus = " (+)"; // tag for premium features, it was localize('premium')
@@ -366,6 +379,7 @@ Vue.component('vi-gas', {
     await Vue.loadScript("https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.24/vx-file-picker.js");
     Vue.loadScript("https://apis.google.com/js/api.js?onload=onApiLoad");
     this.localeResources["infowindow-markdown"] = this.localize("infowindow") + " (Markdown)"; // hacking localeResources for infowindow-markdown page
+    this.localeResources["listing-markdown"] = this.localize("listing") + " (Markdown)"; // hacking localeResources for listing-markdown page
   },
 
   computed: {},
@@ -373,6 +387,7 @@ Vue.component('vi-gas', {
   methods: {
     localize(key) { return this.localeResources[key] || key },
     debouncing: debounce(function(v) { this.settings.infowindowMarkedTemplate = v; }, 1000),
+    debouncing2: debounce(function(v) { this.settings.listingTemplate = v; }, 1000),
 
     iconUrl: function (iconSet) { return "https://thexs-mapping.firebaseapp.com/icons/%s/Blue.png".format(iconSet) },
 
