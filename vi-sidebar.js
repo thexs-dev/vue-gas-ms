@@ -91,7 +91,6 @@ Vue.component('vi-gas', {
 
   data() {
     if (!window.google || !window.google.script) {
-      data.uidata = {"fid":"1hNt8yd6Vd-zxj6anWN0Xe8frzwHaEddh","headers":["Name","Category","Address","Company","Status","Range","Due on","Days since Due","More Info","Picture","Notes","Latitude","Longitude","Buffer"],"filters":[],"xfilters":[{"property":"Status","kind":"checkboxes"},{"property":"Range","kind":"slider"}],"fields":{"filter":"Category","name":"Name","address":"Address"},"urlPath":"https://thexs-mapping.firebaseapp.com/mapping.html"}
       data.uidata.custom = { xvuejs:"./vi.gp-sidebar.js", baseDate:"2019-11-15", min:"2019-11-01", max:"2019-11-30", disabled:!true };
     }
     data.snackbar = false;
