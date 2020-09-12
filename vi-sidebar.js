@@ -134,7 +134,7 @@ Vue.component('vi-gas', {
           Object.keys(d).forEach(k => this.uidata[k] = d[k]);
         }
         if (!this.uidata.message) this.uidata.message = "%s (%s)".format("OK", fnName);
-        window.setTimeout(() => { this.status = "ready"; this.working = false; }, 1000);
+        window.setTimeout(() => { this.status = this.uidata.status || "ready"; this.working = false; }, 1000);
         console.timeEnd(fnName);
       })
       .withFailureHandler(e => {
