@@ -129,7 +129,7 @@ Vue.component('vi-gas', {
       .withSuccessHandler(d => {
         if (this.itsme) console.log(fnName,param,d);
         // assuming it always comes back with the full/partial uidata object ...
-        this.uidata.message = "";
+        this.uidata.message = this.uidata.status = "";
         if (typeof d === 'object' && d !== null) {
           Object.keys(d).forEach(k => this.uidata[k] = d[k]);
         }
