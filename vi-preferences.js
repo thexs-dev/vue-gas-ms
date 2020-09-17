@@ -152,7 +152,7 @@ Vue.component('vi-gas', {
       <div v-show="selected === 'icons'">
         <v-layout class="mt-3" align-center>
           <img :src="iconUrl(settings.iconSet)"></img>
-          <v-select class="flex xs3 ml-2 mr-3" :items="uidata.icons" v-model="settings.iconSet" :disabled="!premium" xprepend-icon="mdi-help" :label="'%s (+)'.format(localize('Icon set'))">
+          <v-select class="flex xs3 ml-2 mr-3" :items="uidata.icons" v-model="settings.iconSet" :disabled="!(premium || settings.map4vue)" xprepend-icon="mdi-help" :label="'%s (+)'.format(localize('Icon set'))">
             <template slot="item" slot-scope="data">
               <img style="max-height:24px;" :src="iconUrl(data.item)"></img>
               <div class='ml-2'> {{ data.item }}</div>
@@ -248,7 +248,10 @@ Vue.component('vi-gas', {
             :label="'%s {{}}'.format(localize('label-listing'))">
           </v-text-field>
         </v-layout>
-        <v-checkbox v-model="settings.listingOpenInfowindow" :disabled="!settings.listingEnabled" :label="localize('Click an anchor (✜) to open the item Infowindow, if not within a cluster')"></v-checkbox>
+        <v-layout>
+          <vx-slider v-if="settings.map4vue" class="flex xs5 mr-2" v-model="settings.listingWidth" :min="250" :max="450" :label="localize('Width')"></vx-slider>
+          <v-checkbox v-model="settings.listingOpenInfowindow" :disabled="!settings.listingEnabled" :label="localize('Open Infowindow on (✜) anchor click')"></v-checkbox>
+        </v-layout>
         <v-layout>
           <v-checkbox v-model="settings.listingExportNewTab" :disabled="!settings.listingEnabled" :label="localize('Export Listing to a new tab')" class="mr-3"></v-checkbox>
           <v-checkbox v-model="settings.listingExportCsv" :disabled="!settings.listingEnabled" :label="localize('Export Listing as a CSV file')" class="mr-3"></v-checkbox>
