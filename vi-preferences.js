@@ -60,7 +60,7 @@ Vue.component('vi-gas', {
         <p>{{ localize('preferences-general-description') }}</p>
         <v-layout align-center>
           <v-checkbox v-model="settings.beta" label="Beta (β) version opt-in" hide-details class="mr-4"></v-checkbox>
-          <v-checkbox v-model="settings.map4vue" :disabled="!uidata.map4vue" label="Mapping 4.0 (α+) opt-in" hide-details></v-checkbox>
+          <v-checkbox v-model="settings.map4vue" :disabled="!uidata.map4vueAvailable" label="Mapping 4.0 (α+) opt-in" hide-details></v-checkbox>
           <!-- <div class="ml-4 mt-4"><a href="https://www.thexs.ca/xsmapping/faq-and-feedback">[request access]</a></div> -->
         </v-layout>
         <v-text-field v-if="uidata.footerInfoAboutAvailable || extended" v-model="settings.footerInfoAbout" class="mt-4" placeholder=" " append-icon="mdi-eye" 
