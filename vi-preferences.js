@@ -96,13 +96,14 @@ Vue.component('vi-gas', {
           <v-text-field v-model="settings.searchHeaders" :disabled="!premium || !settings.searchEnabled" placeholder=" " append-icon="mdi-eye" @click:append="settings.searchHeaders = uidata.headers" :label="'%s (csv) (+)'.format(localize('Headers to search from '))"></v-text-field>
         </v-layout>
         <v-layout>
-          <vx-slider v-model="settings.filtersQty" :disabled="!premium" :min="0" :max="uidata.filtersMaxQty" :label="'%s (+)'.format(localize('label-filters-qty'))"></vx-slider>
+          <!-- <vx-slider v-model="settings.filtersQty" :disabled="!premium" :min="0" :max="uidata.filtersMaxQty" :label="'%s (+)'.format(localize('label-filters-qty'))"></vx-slider> -->
+          <vx-slider v-model="settings.filtersQty" :disabled="!premium && !settings.map4vue" :min="0" :max="premium *3 + settings.map4vue *1 + (settings.map4vue && premium) *1" :label="'%s (+)'.format(localize('label-filters-qty'))"></vx-slider>
           <v-text-field v-model="settings.filtersExpandedPanels" :disabled="!settings.map4vue" placeholder=" " append-icon="mdi-eye" @click:append="settings.filtersExpandedPanels = [...Array(1 + settings.filtersQty).keys()].join(',')" :label="'%s (csv)'.format(localize('Panels'))" class="flex xs3"></v-text-field>
         </v-layout>
         <v-layout>
           <v-checkbox class="ml-3 text-no-wrap" v-model="settings.filtersTag" :label="localize('Show quantity')"></v-checkbox>
-          <v-text-field class="ml-4" v-model="settings.filtersSplit" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.filtersSplit = uidata.filtersSplit" :label="localize('label-filters-split')"></v-text-field>
-          <v-text-field class="ml-4" v-model="settings.filtersEmpties" :disabled="!premium" placeholder=" " :label="localize('Empties')"></v-text-field>
+          <v-text-field class="ml-4" v-model="settings.filtersSplit" :disabled="!premium && !settings.map4vue" placeholder=" " append-icon="mdi-eye" @click:append="settings.filtersSplit = uidata.filtersSplit" :label="localize('label-filters-split')"></v-text-field>
+          <v-text-field class="ml-4" v-model="settings.filtersEmpties" :disabled="!premium && !settings.map4vue" placeholder=" " :label="localize('Empties')"></v-text-field>
         </v-layout>
         <v-checkbox v-if="!settings.map4vue" class="ml-3" v-model="settings.filtersDisplay" :label="localize('label-filters-display')"></v-checkbox>
         <v-checkbox v-if="!settings.map4vue" v-model="settings.hideFilters" :label="localize('label-hide-filters-on-load')"></v-checkbox>
@@ -135,10 +136,10 @@ Vue.component('vi-gas', {
         </v-layout>
 
         <v-layout v-if="settings.map4vue">
-          <v-select class="flex xs6 mr-1" multiple clearable :items='["fullscreen", "rotate", "scale", "streetView", "zoom"]' v-model="settings.mapControls" :disabled="!premium" placeholder=" " :label="'%s (+)'.format(localize('Controls'))"></v-select>
-          <v-select class="flex xs6" multiple clearable :items="[...mapTypeIds, ... settings.styledMap ? ['styled'] : []]" v-model="settings.mapTypes" :disabled="!premium" placeholder=" " :label="'%s (+)'.format(localize('Types'))"></v-select>
+          <v-select class="flex xs6 mr-1" multiple clearable :items='["fullscreen", "rotate", "scale", "streetView", "zoom"]' v-model="settings.mapControls" placeholder=" " :label="'%s'.format(localize('Controls'))"></v-select>
+          <v-select class="flex xs6" multiple clearable :items="[...mapTypeIds, ... settings.styledMap ? ['styled'] : []]" v-model="settings.mapTypes" placeholder=" " :label="'%s'.format(localize('Types'))"></v-select>
         </v-layout>
-        <v-text-field v-if="settings.map4vue" class="flex xs12" v-model="settings.styledMap" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="'%s (+)'.format(localize('label-styled-map'))"></v-text-field>
+        <v-text-field v-if="settings.map4vue" class="flex xs12" v-model="settings.styledMap" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="'%s'.format(localize('label-styled-map'))"></v-text-field>
 
         <!-- mapsApiKey might be required even for non premium/custom plans -->
         <div v-if="uidata.mapsApiKeyAvailable">
