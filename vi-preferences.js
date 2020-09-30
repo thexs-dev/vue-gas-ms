@@ -97,7 +97,7 @@ Vue.component('vi-gas', {
         </v-layout>
         <v-layout>
           <!-- <vx-slider v-model="settings.filtersQty" :disabled="!premium" :min="0" :max="uidata.filtersMaxQty" :label="'%s (+)'.format(localize('label-filters-qty'))"></vx-slider> -->
-          <vx-slider v-model="settings.filtersQty" :disabled="!premium && !settings.map4vue" :min="0" :max="premium *3 + settings.map4vue *1 + (settings.map4vue && premium) *1" :label="'%s (+)'.format(localize('label-filters-qty'))"></vx-slider>
+          <vx-slider v-model="settings.filtersQty" :disabled="!premium && !settings.map4vue" :min="0" :max="uidata.filtersMaxQty || premium *3 + settings.map4vue *1 + (settings.map4vue && premium) *1" :label="'%s (+)'.format(localize('label-filters-qty'))"></vx-slider>
           <v-text-field v-model="settings.filtersExpandedPanels" :disabled="!settings.map4vue" placeholder=" " append-icon="mdi-eye" @click:append="settings.filtersExpandedPanels = [...Array(1 + settings.filtersQty).keys()].join(',')" :label="'%s (csv)'.format(localize('Panels'))" class="flex xs3"></v-text-field>
         </v-layout>
         <v-layout>
