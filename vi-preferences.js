@@ -61,12 +61,12 @@ Vue.component('vi-gas', {
         <v-layout align-center>
           <v-checkbox v-model="settings.beta" label="Beta (β) version opt-in" hide-details class="mr-4"></v-checkbox>
           <v-checkbox v-model="settings.map4vue" :disabled="!uidata.map4vueAvailable" label="Mapping 4.0 (α+) opt-in" hide-details></v-checkbox>
-          <!-- <div class="ml-4 mt-4"><a href="https://www.thexs.ca/xsmapping/faq-and-feedback">[request access]</a></div> -->
+          <!-- <div v-if="!uidata.map4vueAvailable" class="ml-2 mt-4"><a :href="'https://docs.google.com/forms/d/e/1FAIpQLSdnZxQP7-3q4OpVg3Si4rAKaXAy1lb_G_CKqp6lAZloLBibKw/viewform?usp=pp_url&entry.1705383554=%s&entry.1564022075=Question&entry.272808407=Mapping+4.0+opt-in+request+access'.format(user)">[request access]</a></div> -->
         </v-layout>
         <v-text-field v-if="uidata.footerInfoAboutAvailable || extended" v-model="settings.footerInfoAbout" class="mt-4" placeholder=" " append-icon="mdi-eye" 
           @click:append="settings.footerInfoAbout = 'Powered by [Mapping Sheets](https://www.thexs.ca/xsmapping)'" :label="'%s (∗)'.format(localize('About information (Markdown)'))"></v-text-field>
         <v-checkbox v-if="settings.spreadsheetLocale.indexOf('en') !== 0" v-model="settings.useEnglishLocale" :label="'Use English language instead of (%s)'.format(settings.spreadsheetLocale)"></v-checkbox>
-        <div class="mt-8" style="">{{ "Leyend: (β) Beta, (α∗) Alpha/Extended, (+) Premium".format() }}</div>
+        <div class="mt-8" style="">{{ "Legend: (β) Beta, (α∗) Alpha/Extended, (+) Premium".format() }}</div>
       </div>
 
       <div v-show="selected === 'document'">
@@ -153,12 +153,12 @@ Vue.component('vi-gas', {
       <div v-show="selected === 'icons'">
         <v-layout class="mt-3" align-center>
           <img :src="iconUrl(settings.iconSet)"></img>
-          <v-select class="flex xs3 ml-2 mr-3" :items="uidata.icons" v-model="settings.iconSet" :disabled="!(premium || settings.map4vue)" xprepend-icon="mdi-help" :label="'%s (+)'.format(localize('Icon set'))">
+          <v-autocomplete class="flex xs3 ml-2 mr-3" :items="uidata.icons" v-model="settings.iconSet" :disabled="!(premium || settings.map4vue)" xprepend-icon="mdi-help" :label="'%s (+)'.format(localize('Icon set'))">
             <template slot="item" slot-scope="data">
               <img style="max-height:24px;" :src="iconUrl(data.item)"></img>
               <div class='ml-2'> {{ data.item }}</div>
             </template>
-          </v-select>
+          </v-autocomplete>
           <!-- select header for alternative icon shape and size as defined in Icons sheet under Shape and Size columns -->
           <v-select v-if="settings.map4vue" class="flex xs3 mr-3" :items="uidata.headersAllOptional" v-model="settings.iconShapeHeader" :disabled="!premium" :label="'%s (+)'.format(localize('Icon shape'))" placeholder=" "></v-select>
           <v-select v-if="settings.map4vue" class="flex xs3 mr-3" :items="uidata.headersAllOptional" v-model="settings.iconSizeHeader" :disabled="!premium" :label="'%s (+)'.format(localize('Icon size'))" placeholder=" "></v-select>
@@ -236,7 +236,7 @@ Vue.component('vi-gas', {
         <v-layout style="position:absolute; top:380px; left:10px" align-center>
           <v-btn @click="selected = 'infowindow'" fab small icon outlined><v-icon>mdi-arrow-left</v-icon></v-btn>
           <v-checkbox v-model="settings.markdownPreserveLinebreaksInData" :label="localize('Preserve linebreaks in data')" class="ml-2 mr-2"></v-checkbox>
-          <v-icon @click="$open('https://www.thexs.ca/xsmapping/mapping-sheets-add-on-preferences')">mdi-help-circle</v-icon>
+          <v-icon @click="$open('https://www.thexs.ca/posts/how-to-use-markdown-for-a-content-template')">mdi-help-circle</v-icon>
         </v-layout>
       </div>
 
@@ -272,7 +272,7 @@ Vue.component('vi-gas', {
         <v-layout style="position:absolute; top:380px; left:10px" align-center>
           <v-btn @click="selected = 'listing'" fab small icon outlined><v-icon>mdi-arrow-left</v-icon></v-btn>
           <v-checkbox v-model="settings.markdownPreserveLinebreaksInData" :label="localize('Preserve linebreaks in data')" class="ml-2 mr-2"></v-checkbox>
-          <v-icon @click="$open('https://www.thexs.ca/xsmapping/mapping-sheets-add-on-preferences')">mdi-help-circle</v-icon>
+          <v-icon @click="$open('https://www.thexs.ca/posts/how-to-use-markdown-for-a-content-template')">mdi-help-circle</v-icon>
         </v-layout>
       </div>
 
@@ -450,7 +450,7 @@ Vue.component('vi-gas', {
     },
 
     test() {
-      console.log(this.settings);
+      console.log(this.$data);
       this.$gae("test");
     }
   }

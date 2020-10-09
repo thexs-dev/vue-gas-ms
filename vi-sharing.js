@@ -48,7 +48,8 @@ Vue.component('vi-gas', {
 
   computed: {
     shareUrl() { return "https://drive.google.com/file/d/" + this.fileId + "/view?userstoinvite=%20"; },
-    mapUrl() { return "https://thexs-mapping.firebaseapp.com/mapping.html?fid=" + this.fileId; },
+    // mapUrl() { return "https://thexs-mapping.firebaseapp.com/mapping.html?fid=" + this.fileId; },
+    mapUrl() { return "%s?fid=%s".format(this.urlPath, this.fileId); },
   },
 
   methods: {
