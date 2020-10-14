@@ -61,7 +61,7 @@ Vue.component('vi-gas', {
         <v-layout align-center>
           <v-checkbox v-model="settings.beta" label="Beta (β) version opt-in" hide-details class="mr-4"></v-checkbox>
           <v-checkbox v-model="settings.map4vue" :disabled="!uidata.map4vueAvailable" label="Mapping 4.0 (α+) opt-in" hide-details></v-checkbox>
-          <!-- <div v-if="!uidata.map4vueAvailable" class="ml-2 mt-4"><a :href="'https://docs.google.com/forms/d/e/1FAIpQLSdnZxQP7-3q4OpVg3Si4rAKaXAy1lb_G_CKqp6lAZloLBibKw/viewform?usp=pp_url&entry.1705383554=%s&entry.1564022075=Question&entry.272808407=Mapping+4.0+opt-in+request+access'.format(user)">[request access]</a></div> -->
+          <div v-if="!uidata.map4vueAvailable" class="ml-2 mt-4"><a :href="'https://docs.google.com/forms/d/e/1FAIpQLSdnZxQP7-3q4OpVg3Si4rAKaXAy1lb_G_CKqp6lAZloLBibKw/viewform?usp=pp_url&entry.1705383554=%s&entry.1564022075=Question&entry.272808407=Mapping+4.0+opt-in+request+access'.format(user)">[request access]</a></div>
         </v-layout>
         <v-text-field v-if="uidata.footerInfoAboutAvailable || extended" v-model="settings.footerInfoAbout" class="mt-4" placeholder=" " append-icon="mdi-eye" 
           @click:append="settings.footerInfoAbout = 'Powered by [Mapping Sheets](https://www.thexs.ca/xsmapping)'" :label="'%s (∗)'.format(localize('About information (Markdown)'))"></v-text-field>
@@ -85,7 +85,7 @@ Vue.component('vi-gas', {
         </div>
         <v-layout>
           <vx-slider v-model="settings.dataHeadersRowIndex" :min="1" :max="10" :label="localize('label-data-headers-row-index')"></vx-slider>
-          <v-checkbox v-model="settings.dataGetDisplayValues" :disabled="!settings.beta" label="Get data as displayed (β)"></v-checkbox>
+          <v-checkbox v-model="settings.dataGetDisplayValues" label="Get data as displayed"></v-checkbox>
         </v-layout>
         <v-text-field v-model="settings.locationTemplate" placeholder=" " append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/using-multiple-columns-for-geocoding-with-a-location-template')" :label="'%s {{}}'.format(localize('label-location-template'))"></v-text-field>
       </div>
@@ -94,6 +94,7 @@ Vue.component('vi-gas', {
         <v-layout v-if="settings.map4vue">
           <v-checkbox class="mr-3" v-model="settings.searchEnabled" :disabled="!premium" :label="'%s (+)'.format(localize('Search'))"></v-checkbox>
           <v-text-field v-model="settings.searchHeaders" :disabled="!premium || !settings.searchEnabled" placeholder=" " append-icon="mdi-eye" @click:append="settings.searchHeaders = uidata.headers" :label="'%s (csv) (+)'.format(localize('Headers to search from '))"></v-text-field>
+          <v-icon class="ml-3" @click="$open('https://www.thexs.ca/xsmapping/filtering-on-your-map')">mdi-help-circle</v-icon>
         </v-layout>
         <v-layout>
           <!-- <vx-slider v-model="settings.filtersQty" :disabled="!premium" :min="0" :max="uidata.filtersMaxQty" :label="'%s (+)'.format(localize('label-filters-qty'))"></vx-slider> -->
