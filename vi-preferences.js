@@ -138,7 +138,7 @@ Vue.component('vi-gas', {
 
         <v-layout v-if="settings.map4vue">
           <v-select class="flex xs6 mr-1" multiple clearable :items='["fullscreen", "rotate", "scale", "streetView", "zoom"]' v-model="settings.mapControls" placeholder=" " :label="'%s'.format(localize('Controls'))"></v-select>
-          <v-select class="flex xs6" multiple clearable :items="[...mapTypeIds, ... settings.styledMap ? ['styled'] : []]" v-model="settings.mapTypes" placeholder=" " :label="'%s'.format(localize('Types'))"></v-select>
+          <v-select class="flex xs6" multiple clearable :items="mapTypeIds" v-model="settings.mapTypes" placeholder=" " :label="'%s'.format(localize('Types'))"></v-select>
         </v-layout>
         <v-text-field v-if="settings.map4vue" class="flex xs12" v-model="settings.styledMap" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="'%s'.format(localize('label-styled-map'))"></v-text-field>
 
@@ -368,7 +368,6 @@ Vue.component('vi-gas', {
 </div>`,
 
   data() {
-    data.mapTypeIds = ['roadmap','satellite','hybrid','terrain'];
     data.working = false;
     // iwStyle below comes from mapping-vue map.css x-iw-marked class (keep it synced)
     data.iwStyle = "font-weight: 300!important; font-size: 13px!important; letter-spacing: .0178571429em!important; line-height: 1.25rem; font-family: Roboto,sans-serif!important;";
@@ -384,7 +383,9 @@ Vue.component('vi-gas', {
     this.localeResources["listing-markdown"] = this.localize("listing") + " (Markdown)"; // hacking localeResources for listing-markdown page
   },
 
-  computed: {},
+  computed: {
+    mapTypeIds() { return ['roadmap','satellite','hybrid','terrain', ... this.settings.styledMap ? ['styled'] : [], ... this.uidata.mapTypeOsmAvailable ? ['OSM'] : []] }
+  },
 
   methods: {
     localize(key) { return this.localeResources[key] || key },
