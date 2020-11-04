@@ -81,7 +81,8 @@ Vue.component('vi-gas', {
         <v-spacer></v-spacer>
         <!-- <v-btn v-if="itsme" color="secundary" @click="$open('http://127.0.0.1:5505/mapping.html?fid=' + uidata.fid + '&dev=1')" :disabled="working || !uidata.fid">vu-dev</v-btn> -->
         <v-btn v-if="itsme" color="secundary" @click="$open('%s?fid=%s&dev=1'.format(uidata.urlPath.replace(new RegExp('h(.*\/)'), 'http://localhost:5505/'), uidata.fid))" :disabled="working || !uidata.fid">vu-dev</v-btn>
-        <v-btn color="primary" @click="$open(uidata.urlPath + '?fid=' + uidata.fid)" :disabled="working || !uidata.fid">{{ $localize('view') }}</v-btn>
+        <!-- <v-btn color="primary" @click="$open(uidata.urlPath + '?fid=' + uidata.fid)" :disabled="working || !uidata.fid">{{ $localize('view') }}</v-btn> -->
+        <v-btn color="primary" @click="$open('%s?fid=%s%s'.format(uidata.urlPath, uidata.fid, itsme?'&dev=1':''))" :disabled="working || !uidata.fid">{{ $localize('view') }}</v-btn>
       </v-layout>
       <div>Mapping Sheets by <a href="http://www.thexs.ca/xsmapping">theXS</a> {{ version }}</div>
     </v-container>

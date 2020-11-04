@@ -154,7 +154,7 @@ Vue.component('vi-gas', {
       <div v-show="selected === 'icons'">
         <v-layout class="mt-3" align-center>
           <img :src="iconUrl(settings.iconSet)"></img>
-          <v-autocomplete class="flex xs3 ml-2 mr-3" :items="uidata.icons" v-model="settings.iconSet" :disabled="!(premium || settings.map4vue)" xprepend-icon="mdi-help" :label="'%s (+)'.format(localize('Icon set'))">
+          <v-autocomplete class="flex xs3 ml-2 mr-3" :items="uidata.icons" v-model="settings.iconSet" :disabled="!(premium || settings.map4vue)" :title="settings.iconSet" :label="'%s (+)'.format(localize('Icon set'))">
             <template slot="item" slot-scope="data">
               <img style="max-height:24px;" :src="iconUrl(data.item)"></img>
               <div class='ml-2'> {{ data.item }}</div>
@@ -171,7 +171,7 @@ Vue.component('vi-gas', {
           <v-combobox class="flex xs4 mr-3" :items="uidata.headersAll" v-model="settings.layers.labels.text" :disabled="!settings.layers.labels.enabled" :label="localize('Text')" placeholder=" "></v-combobox>
           <v-select class="flex xs4 mr-3" :items="'center,top,bottom'.split(',')" v-model="settings.layers.labels.position" :disabled="!settings.layers.labels.enabled" :label="localize('Position')" placeholder=" "></v-select>
           <v-text-field class="mr-3" v-model="settings.layers.labels.options" :disabled="!settings.layers.labels.enabled" :label="localize('Options')" placeholder=" " append-icon="mdi-eye" @click:append="settings.layers.labels.options = 'k:v; x,y,css,zoom'"></v-text-field>
-          <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
+          <v-icon @click="$open('https://www.thexs.ca/posts/how-to-use-custom-labels-for-icons')">mdi-help-circle</v-icon>
         </v-layout>
         <v-layout>
           <v-checkbox v-model="settings.icontitleEnabled" :disabled="!settings.map4vue" :label="localize('Enabled')" class="mr-3"></v-checkbox>
