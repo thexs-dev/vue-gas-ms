@@ -245,7 +245,7 @@ Vue.component('vi-gas', {
         <v-layout>
           <v-checkbox v-if="settings.map4vue" v-model="settings.listingEnabled" :label="localize('Enabled')" class="mr-3"></v-checkbox>
           <v-text-field v-model="settings.listingTemplate" placeholder=" " :disabled="!settings.listingEnabled" :readonly="uidata.listingTemplateMarked"
-            append-icon="mdi-eye" @click:append="settings.listingTemplate = settings.map4vue ? uidata.listingTemplateMarked : uidata.listingTemplate; uidata.listingTemplateMarked=false" 
+            append-icon="mdi-eye" @click:append="settings.listingTemplate = settings.map4vue ? uidata.listingTemplateMarkdown : uidata.listingTemplate; uidata.listingTemplateMarked=false" 
             append-outer-icon="mdi-pencil" @click:append-outer="if (settings.map4vue) {selected = 'listing-markdown'; uidata.listingTemplateMarked=true}"
             :label="'%s {{}}'.format(localize('label-listing'))">
           </v-text-field>
