@@ -43,7 +43,13 @@ Vue.component('vi-gas', {
     <v-container fluid>
       <v-layout class="align-center">
         <div class="flex body-2">{{localize('fields-header')}} (*)</div>
-        <v-icon @click="$open('https://www.thexs.ca/posts/required-headers-for-mapping')" :title="localize('help')">mdi-help-circle</v-icon>
+        <v-icon v-if="!missingHeaders" @click="$open('https://www.thexs.ca/posts/required-headers-for-mapping')" :title="localize('help')">mdi-help-circle</v-icon>
+        <v-tooltip v-if="missingHeaders" bottom v-model="missingHeaders" min-width="240">
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon @click="$open('https://www.thexs.ca/posts/required-headers-for-mapping')" v-bind="attrs" v-on="on">mdi-help-circle</v-icon>
+          </template>
+          <div>Click on <img src="https://thexs-mapping.firebaseapp.com/images/help-circle-outline.png"> to learn how to start</div>
+        </v-tooltip>
       </v-layout>
       <v-select v-model="uidata.fields.name" :items="uidata.headers" :label="localize('title')" :disabled="working"></v-select>
       <v-select v-model="uidata.fields.filter" :items="uidata.headers" :label="localize('filter')" :disabled="working"></v-select>
@@ -77,7 +83,8 @@ Vue.component('vi-gas', {
       <div>{{ localize(status)}}</div>
       <div class="text-truncate">:: {{ localize(uidata.message)}}</div>
       <v-layout class="mt-2 mb-2">
-        <v-btn color="success" @click="Call('buildJsonFile',uidata);$gae('build');" :disabled="working || !uidata.fields.name || !uidata.fields.address || !uidata.fields.filter">{{ $localize('build') }}</v-btn>
+        <!-- <v-btn color="success" @click="Call('buildJsonFile',uidata);$gae('build');" :disabled="working || !uidata.fields.name || !uidata.fields.address || !uidata.fields.filter">{{ $localize('build') }}</v-btn> -->
+        <v-btn color="success" @click="Call('buildJsonFile',uidata);$gae('build');" :disabled="working || missingHeaders">{{ $localize('build') }}</v-btn>
         <v-spacer></v-spacer>
         <!-- <v-btn v-if="itsme" color="secundary" @click="$open('http://127.0.0.1:5505/mapping.html?fid=' + uidata.fid + '&dev=1')" :disabled="working || !uidata.fid">vu-dev</v-btn> -->
         <v-btn v-if="itsme" color="secundary" @click="$open('%s?fid=%s&dev=1'.format(uidata.urlPath.replace(new RegExp('h(.*\/)'), 'http://localhost:5505/'), uidata.fid))" :disabled="working || !uidata.fid">vu-dev</v-btn>
@@ -116,7 +123,9 @@ Vue.component('vi-gas', {
       if (this.$gae) this.$gae('load'); else console.log("$gae not yet available");
     }, 1000);
   },
-  computed: {},
+  computed: {
+    missingHeaders() { return [this.uidata.fields.name, this.uidata.fields.address, this.uidata.fields.filter].some(v => !this.uidata.headers.includes(v)) }
+  },
 
   methods: {
     localize(key) { return this.localeResources[key] || key },
