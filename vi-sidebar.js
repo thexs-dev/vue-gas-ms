@@ -124,7 +124,7 @@ Vue.component('vi-gas', {
     }, 1000);
   },
   computed: {
-    missingHeaders() { return [this.uidata.fields.name, this.uidata.fields.address, this.uidata.fields.filter].some(v => !this.uidata.headers.includes(v)) }
+    missingHeaders() { return [this.uidata.fields.name, this.uidata.fields.address, this.uidata.fields.filter].some(v => !v || !this.uidata.headers.includes(v)) }
   },
 
   methods: {
