@@ -43,13 +43,14 @@ Vue.component('vi-gas', {
     <v-container fluid>
       <v-layout class="align-center">
         <div class="flex body-2">{{localize('fields-header')}} (*)</div>
-        <v-icon v-if="!missingHeaders" @click="$open('https://www.thexs.ca/posts/required-headers-for-mapping')" :title="localize('help')">mdi-help-circle</v-icon>
-        <v-tooltip v-if="missingHeaders" bottom v-model="missingHeaders" min-width="240">
+        <v-icon @click="$open('https://www.thexs.ca/posts/required-headers-for-mapping')" :title="localize('help')">mdi-help-circle</v-icon>
+        <!-- <v-icon v-if="!missingHeaders" @click="$open('https://www.thexs.ca/posts/required-headers-for-mapping')" :title="localize('help')">mdi-help-circle</v-icon>
+        <v-tooltip v-if="missingHeaders" left v-model="missingHeaders" min-width="240">
           <template v-slot:activator="{ on, attrs }">
             <v-icon @click="$open('https://www.thexs.ca/posts/required-headers-for-mapping')" v-bind="attrs" v-on="on">mdi-help-circle</v-icon>
           </template>
           <div>Click on <img src="https://thexs-mapping.firebaseapp.com/images/help-circle-outline.png"> to learn how to start</div>
-        </v-tooltip>
+        </v-tooltip> -->
       </v-layout>
       <v-select v-model="uidata.fields.name" :items="uidata.headers" :label="localize('title')" :disabled="working"></v-select>
       <v-select v-model="uidata.fields.filter" :items="uidata.headers" :label="localize('filter')" :disabled="working"></v-select>
@@ -81,7 +82,11 @@ Vue.component('vi-gas', {
     <v-progress-linear :indeterminate="working"></v-progress-linear>
     <v-container>
       <div>{{ localize(status)}}</div>
-      <div class="text-truncate">:: {{ localize(uidata.message)}}</div>
+      <!-- <div class="text-truncate">:: {{ localize(uidata.message)}}</div> -->
+      <div class="text-truncate">
+        <span v-if="missingHeaders" >:: <a href="https://www.thexs.ca/posts/required-headers-for-mapping" title="">{{ localize("Warning") }}</a> {{ localize("Headers required") }}</span>
+        <span v-else>:: {{ localize(uidata.message)}}</span>
+      </div>
       <v-layout class="mt-2 mb-2">
         <!-- <v-btn color="success" @click="Call('buildJsonFile',uidata);$gae('build');" :disabled="working || !uidata.fields.name || !uidata.fields.address || !uidata.fields.filter">{{ $localize('build') }}</v-btn> -->
         <v-btn color="success" @click="Call('buildJsonFile',uidata);$gae('build');" :disabled="working || missingHeaders">{{ $localize('build') }}</v-btn>
