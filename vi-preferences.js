@@ -60,8 +60,8 @@ Vue.component('vi-gas', {
         <p>{{ localize('preferences-general-description') }}</p>
         <v-layout align-center>
           <v-checkbox v-model="settings.beta" label="Beta (β) version opt-in" hide-details class="mr-4"></v-checkbox>
-          <v-checkbox v-model="settings.map4vue" :disabled="!uidata.map4vueAvailable" label="Mapping 4.0 (α+) opt-in" hide-details></v-checkbox>
-          <div v-if="!uidata.map4vueAvailable" class="ml-2 mt-4"><a :href="'https://docs.google.com/forms/d/e/1FAIpQLSdnZxQP7-3q4OpVg3Si4rAKaXAy1lb_G_CKqp6lAZloLBibKw/viewform?usp=pp_url&entry.1705383554=%s&entry.1564022075=Question&entry.272808407=Mapping+4.0+opt-in+request+access'.format(user)">[request access]</a></div>
+          <v-checkbox v-model="settings.map4vue" :disabled="!uidata.map4vueAvailable" label="Mapping 4.0 opt-in" hide-details></v-checkbox>
+          <!-- <div v-if="!uidata.map4vueAvailable" class="ml-2 mt-4"><a :href="'https://docs.google.com/forms/d/e/1FAIpQLSdnZxQP7-3q4OpVg3Si4rAKaXAy1lb_G_CKqp6lAZloLBibKw/viewform?usp=pp_url&entry.1705383554=%s&entry.1564022075=Question&entry.272808407=Mapping+4.0+opt-in+request+access'.format(user)">[request access]</a></div> -->
         </v-layout>
         <v-text-field v-if="uidata.footerInfoAboutAvailable || extended" v-model="settings.footerInfoAbout" class="mt-4" placeholder=" " append-icon="mdi-eye" 
           @click:append="settings.footerInfoAbout = 'Powered by [Mapping Sheets](https://www.thexs.ca/xsmapping)'" :label="'%s (∗)'.format(localize('About information (Markdown)'))"></v-text-field>
