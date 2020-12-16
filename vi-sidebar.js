@@ -55,7 +55,7 @@ Vue.component('vi-gas', {
       <v-select v-model="uidata.fields.name" :items="uidata.headers" :label="localize('title')" :disabled="working"></v-select>
       <v-select v-model="uidata.fields.filter" :items="uidata.headers" :label="localize('filter')" :disabled="working"></v-select>
       <v-layout>
-        <v-select v-model="uidata.fields.address" :items="uidata.headers" :label="localize('location')" :disabled="working" :placeholder="settings.locationTemplate" :readonly="!!settings.locationTemplate"></v-select>
+        <v-select v-model="uidata.fields.address" :items="uidata.headers" :label="localize('location')" :disabled="working" :placeholder="uidata.locationTemplate" :readonly="!!uidata.locationTemplate"></v-select>
         <v-icon @click="google.script.run.vuePreferences('document')" title="Location template">mdi-dots-horizontal</v-icon>
       </v-layout>
 
@@ -131,7 +131,7 @@ Vue.component('vi-gas', {
   computed: {
     // missingHeaders() { return [this.uidata.fields.name, this.uidata.fields.address, this.uidata.fields.filter].some(v => !v || !this.uidata.headers.includes(v)) },
     missingHeaders() { return [this.uidata.fields.name, this.uidata.fields.filter].some(v => !v || !this.uidata.headers.includes(v)) 
-      || !this.uidata.fields.address || ( this.settings.locationTemplate ? this.settings.locationTemplate !== this.uidata.fields.address : !this.uidata.headers.includes(this.uidata.fields.address) ) }
+      || !this.uidata.fields.address || ( this.uidata.locationTemplate ? this.uidata.locationTemplate !== this.uidata.fields.address : !this.uidata.headers.includes(this.uidata.fields.address) ) }
   },
 
   methods: {
