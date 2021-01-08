@@ -35,13 +35,7 @@ Vue.component('vi-gas', {
               @click.stop="hackDialog" src="https://www.paypalobjects.com/en_US/i/btn/btn_unsubscribe_LG.gif" style="cursor: pointer;">
           </div>
           <div v-else>
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-              <input type="hidden" name="cmd" value="_s-xclick">
-              <input type="hidden" name="hosted_button_id" value="F3HETXH884ANQ">
-              <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-              <input type="hidden" name="custom" :value="custom">
-              <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-            </form>
+            <div id="paypal-button-container"></div>
           </div>
         </v-flex>
       </v-layout>
@@ -92,6 +86,7 @@ Vue.component('vi-gas', {
     data.dialog = false;
     data.working = false;
     data.reasons = "";
+    data.paypalCustomField = "app=Mapping&uid=" + data.user.dot();
     return data
   },
   
@@ -99,6 +94,30 @@ Vue.component('vi-gas', {
     if (!window.google || !window.google.script) Vue.loadScript("./vx-google.script.js");
     // only listen if not premium, waiting for subscription to complete (IPN response)
     if (this.premium || this.subscription.domain) return;
+
+    await Vue.loadScript("https://www.paypal.com/sdk/js?client-id=AVdfQrEmQhAK6pMtqx8Mk44bNqtLGtAy-oa2jEEEzrXiAWWZewptt2EutaFyDWojYtdvDCID41RNXTw5&vault=true&intent=subscription");
+    let paypalCustomField = data.paypalCustomField;
+    console.log(paypalCustomField);
+
+    paypal.Buttons({
+      style: {
+        shape: 'pill',
+        color: 'blue',
+        layout: 'vertical',
+        label: 'subscribe'
+      },
+      createSubscription: function (data, actions) {
+        return actions.subscription.create({
+          'custom': paypalCustomField,
+          'custom_id': paypalCustomField,
+          'plan_id': 'P-8M4515934T397614EL725EAA'
+        });
+      },
+      onApprove: function (data, actions) {
+        console.log(data);
+        alert(data.subscriptionID);
+      }
+    }).render('#paypal-button-container');
     
     await Vue.loadScript("https://www.gstatic.com/firebasejs/6.2.3/firebase-app.js");
     await Vue.loadScript("https://www.gstatic.com/firebasejs/6.2.3/firebase-database.js");
@@ -165,6 +184,7 @@ Vue.component('vi-gas', {
     
     test() {
       console.log(this.subscription);
+      console.log(data);
       this.$gae("test");
     }
   }

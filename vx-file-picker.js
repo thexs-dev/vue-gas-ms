@@ -102,4 +102,5 @@ function pickerCallback(data) {
 */
 function showError(message) {
   document.getElementById('picker-result').innerHTML = 'Error: ' + message;
+  xsLogger.log("Error: " + message, "filePicker");
 }
