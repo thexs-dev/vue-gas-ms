@@ -58,7 +58,8 @@ function createPicker(token) {
     .setDeveloperKey(picker.DeveloperKey)
     .setAppId(picker.AppId)
     .setCallback(pickerCallback)
-    .setOrigin(google.script.host.origin)
+    // .setOrigin(google.script.host.origin) // 2021-01-08 issue Invalid origin value.
+    .setOrigin('https://docs.google.com')
     // Instruct Picker to 'fill' the dialog.
     .setSize(picker.width - 20, picker.height *.5)
     .build();
