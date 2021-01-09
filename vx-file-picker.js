@@ -55,7 +55,7 @@ function createPicker(token) {
     .hideTitleBar()
     .setTitle(picker.title || "")
     .setOAuthToken(token)
-    .setDeveloperKey(picker.DeveloperKey)
+    // .setDeveloperKey(picker.DeveloperKey)
     .setAppId(picker.AppId)
     .setCallback(pickerCallback)
     // .setOrigin(google.script.host.origin) // 2021-01-08 issue Invalid origin value.
