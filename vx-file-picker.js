@@ -55,7 +55,7 @@ function createPicker(token) {
     .hideTitleBar()
     .setTitle(picker.title || "")
     .setOAuthToken(token)
-    // .setDeveloperKey(picker.DeveloperKey)
+    .setDeveloperKey(picker.DeveloperKey)
     .setAppId(picker.AppId)
     .setCallback(pickerCallback)
     // .setOrigin(google.script.host.origin) // 2021-01-08 issue Invalid origin value.
@@ -63,6 +63,7 @@ function createPicker(token) {
     // Instruct Picker to 'fill' the dialog.
     .setSize(picker.width - 20, picker.height *.5)
     .build();
+    console.log("PickerBuilder", thePicker)
     thePicker.setVisible(true);
   } else {
     showError('Unable to load the file picker.');
