@@ -158,7 +158,7 @@ Vue.component('vi-gas', {
         if (this.itsme) console.log(fnName,param,e);
         var extras = ""; // hacking the toast message for specific issues
         var keywordAuthorization = "is not defi-ned,ScriptError,Spreadsheets,permission,do not have access,разрешения,Authorization,Authorisation,toestemming,認が,הרשאה,autorisations,autorización,εξουσιοδότηση,인증이,autoryzacja,ตรวจสอบสิทธิ์,авторизация,yetki,autorizzazione,autorisée,lupa,授权,otorisasi,承認,授權,Berechtigung,phép,ترخيص.";
-        if (keywordAuthorization.split(",").some(function(v){ return e.message.indexOf(v) > -1; })) {
+        if (keywordAuthorization.split(",").some(function(v){ return e.message && e.message.indexOf(v) > -1; })) {
           extras += "<br><br>If you are using (logged in or not) multiple Google accounts, please: <br>" +
           "* Disconnect the other Google accounts <br>" +
           "* Or ensure that your current account ("+this.user+") is the Default" +

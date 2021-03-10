@@ -20,21 +20,34 @@ Vue.component('vi-gas', {
       <v-layout ma-3>
         <v-flex xs6 mr-2>
           <!-- <v-select items="['user','domain']"></v-select> -->
-          <div>{{localize('user')}}: {{user}}</div>
-          <div>{{localize('subscribe-contribution')}}: {{subscription.current.mc_gross ? (subscription.current.mc_gross*1).toFixed() : 25}} USD / {{localize(subscription.current.period || "year")}}</div>
-          <div v-if="premium">{{localize('thanks')}}!</div>
-          <div v-else><br></div><br>
+          <div class="text-truncate">{{localize('user')}}: {{user}}</div>
+          <template v-if="premium">
+            <div>{{localize('subscribe-contribution')}}: {{(subscription.current.mc_gross*1).toFixed()}} USD / {{localize(subscription.current.period)}}</div>
+            <div>{{localize('thanks')}}!</div>
+          </template>
+          <template v-else>
+            <div>
+              {{localize('subscribe-contribution')}}: 
+              <span v-if="!plans.current.standard" style="text-decoration:line-through; color:gray;">{{plans.standard[selected].price}}</span> 
+              <span>{{plans.current[selected].price}} USD / {{localize(plans.current[selected].period)}}</span>
+            </div>
+            <v-radio-group v-model="selected" row class="mt-0" hide-details>
+              <v-radio label="Monthly" value="Monthly" :disabled="!plans.current.Monthly"></v-radio>
+              <v-radio label="Annual (↓50%)" value="Annual" :disabled="!plans.current.Annual"></v-radio>
+            </v-radio-group>
+            <div class="body-2 ml-2 mt-2">{{plans.current.message}}</div>
+          </template>
         </v-flex>
 
         <v-flex xs6 ml-2>
-          <div v-if="premium">
-            {{localize('paid')}}: {{subscription.current.payment_date}}<br>
-            {{localize('by')}}: {{subscription.current.payer_email}}<br>
-            {{localize(subscription.current.txn_type==='subscr_cancel'?'Expiry':'next')}}: {{subscription.current.next_payment_date}} {{status()}}<br>
+          <template v-if="premium">
+            <div>{{localize('paid')}}: {{subscription.current.payment_date}}</div>
+            <div class="text-truncate">{{localize('by')}}: {{subscription.current.payer_email}}</div>
+            <div>{{localize(subscription.current.txn_type==='subscr_cancel'?'Expiry':'next')}}: {{subscription.current.next_payment_date}} {{status()}}</div>
             <img v-if="subscription.current.subscr_id && !'subscr_cancel,cancelling'.split(',').some(v => subscription.current.txn_type === v)" 
               @click.stop="hackDialog" src="https://www.paypalobjects.com/en_US/i/btn/btn_unsubscribe_LG.gif" style="cursor: pointer;">
-          </div>
-          <div v-else>
+          </template>
+          <div v-show="!premium">
             <div id="paypal-button-container"></div>
           </div>
         </v-flex>
@@ -58,7 +71,7 @@ Vue.component('vi-gas', {
     </v-container>
   </v-content>
 
-  <template>
+  <template unsubscribe-dialog>
     <v-row justify="center">
       <v-dialog v-model="dialog" persistent max-width="500">
         <v-card>
@@ -66,8 +79,9 @@ Vue.component('vi-gas', {
           <v-card-text>You can cancel the subscription at any given time within the term<br>
             - It will stop any future automatic renewal payments<br>
             - You will keep the premium plan until the end of the term<br>
-            - We would process your request within 1 business day<br>
-            - You should get a notification from PayPal when done<br><br>
+            - We would process your request shortly after you submit it<br>
+            <!-- - We would process your request within 1 business day<br> -->
+            - You should also get a notification from PayPal when done<br><br>
             Please let us know the reasons for your cancellation in case we can do better in the future. Thanks.<br>
             <v-text-field v-model="reasons" xlabel="Reasons for cancellation?" ref="reasons" autofocus placeholder=" "></v-text-field>
           </v-card-text>
@@ -87,6 +101,7 @@ Vue.component('vi-gas', {
     data.working = false;
     data.reasons = "";
     data.paypalCustomField = "app=Mapping&uid=" + data.user.dot();
+    data.selected = data.plans.current.Monthly ? "Monthly" : "Annual";
     return data
   },
   
@@ -98,6 +113,7 @@ Vue.component('vi-gas', {
     await Vue.loadScript("https://www.paypal.com/sdk/js?client-id=AVdfQrEmQhAK6pMtqx8Mk44bNqtLGtAy-oa2jEEEzrXiAWWZewptt2EutaFyDWojYtdvDCID41RNXTw5&vault=true&intent=subscription");
     let paypalCustomField = data.paypalCustomField;
     console.log(paypalCustomField);
+    let thisVue = this;
 
     paypal.Buttons({
       style: {
@@ -108,14 +124,25 @@ Vue.component('vi-gas', {
       },
       createSubscription: function (data, actions) {
         return actions.subscription.create({
-          'custom': paypalCustomField,
-          'custom_id': paypalCustomField,
-          'plan_id': 'P-8M4515934T397614EL725EAA'
+          'custom_id': paypalCustomField + "&period=%s".format(thisVue.plans.current[thisVue.selected].period),
+          'application_context': {
+            'shipping_preference': 'NO_SHIPPING'
+          },
+          'plan_id': thisVue.plans.current[thisVue.selected].plan_id
         });
       },
       onApprove: function (data, actions) {
         console.log(data);
-        alert(data.subscriptionID);
+        thisVue.premium = true;
+      },
+      onCancel: function (data) {
+        // Show a cancel page, or return to cart
+        console.log(data);
+      },
+      onError: function (err) {
+        // For example, redirect to a specific error page
+        // window.location.href = "/your-error-page-here";
+        console.error('error from the onError callback', err);
       }
     }).render('#paypal-button-container');
     
@@ -168,7 +195,9 @@ Vue.component('vi-gas', {
     status() {
       const message = {
         subscr_cancel: this.$localize("cancelled"),
+        subscr_CANCELLED: this.$localize("cancelled"),
         subscr_failed: this.$localize("failing"),
+        subscr_FAILED: this.$localize("failing"),
         cancelling: this.$localize("cancelling")
       }
       let s = message[this.subscription.current.txn_type];
