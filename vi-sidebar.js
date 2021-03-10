@@ -64,8 +64,8 @@ Vue.component('vi-gas', {
         <v-icon @click="$open('https://www.thexs.ca/xsmapping/filtering-on-your-map')" :title="localize('help')">mdi-help-circle</v-icon>
       </v-layout>
       <v-layout v-for="(item, index) in uidata.filters">
-        <v-select v-model="item.property" :items="uidata.headers" :disabled="working"></v-select>
-        <v-select class="ml-2" v-model="item.kind" :items="filtersKind" :disabled="working"></v-select>
+        <v-select class="flex xs6" v-model="item.property" :items="uidata.headers" :disabled="working"></v-select>
+        <v-select class="flex xs6 ml-2" v-model="item.kind" :items="filtersKind" :disabled="working"></v-select>
       </v-layout>
 
       <vx-custom :custom="uidata.custom"></vx-custom>
