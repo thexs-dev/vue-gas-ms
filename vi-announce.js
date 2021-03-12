@@ -141,12 +141,6 @@ Vue.component('vi-gas', {
     test() {
       console.log(this.key, this.announce);
       this.$gae("test");
-      
-      async function f1() {
-        await Vue.loadScript("https://cdn.jsdelivr.net/npm/dompurify@2.0.7/dist/purify.min.js")
-        console.log(DOMPurify.sanitize("<img src='x' onerror='alert(1)'>"));
-      }
-      f1();
     }
   }
 });

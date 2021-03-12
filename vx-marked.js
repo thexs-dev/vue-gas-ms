@@ -5,7 +5,7 @@ if (!window.marked) window.marked = marked;
 // https://github.com/cure53/DOMPurify
 // DOMPurify() is loaded async/await/then on demand if sanitize is required (only for user's content)
 // window.DOMPurify = false;
-import ("https://cdn.jsdelivr.net/npm/dompurify@2.0.11/dist/purify.min.js")
+import ("https://cdn.jsdelivr.net/npm/dompurify@2.2/dist/purify.min.js")
 
 // replace {{key-field}} placeholders with matching json key-field
 String.prototype.mustache = function(json){
@@ -40,7 +40,7 @@ export default {
       local = window.marked(local);
       if (!this.sanitize) return local;
       else if (!DOMPurify) {
-        Vue.loadScript("https://cdn.jsdelivr.net/npm/dompurify@2.0.11/dist/purify.min.js")
+        Vue.loadScript("https://cdn.jsdelivr.net/npm/dompurify@2.2/dist/purify.min.js")
         .then(() => {
           return DOMPurify.sanitize(local);
         })
