@@ -120,7 +120,7 @@ Vue.component('vi-gas', {
         shape: 'pill',
         color: 'blue',
         layout: 'vertical',
-        label: 'subscribe'
+        label: 'paypal' // subscribe or paypal
       },
       createSubscription: function (data, actions) {
         return actions.subscription.create({
