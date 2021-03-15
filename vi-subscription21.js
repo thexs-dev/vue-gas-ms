@@ -43,8 +43,9 @@ Vue.component('vi-gas', {
           <template v-if="premium">
             <div>{{localize('paid')}}: {{subscription.current.payment_date}}</div>
             <div class="text-truncate">{{localize('by')}}: {{subscription.current.payer_email}}</div>
-            <div>{{localize(subscription.current.txn_type==='subscr_cancel'?'Expiry':'next')}}: {{subscription.current.next_payment_date}} {{status()}}</div>
-            <img v-if="subscription.current.subscr_id && !'subscr_cancel,cancelling'.split(',').some(v => subscription.current.txn_type === v)" 
+            <!-- <div>{{localize(subscription.current.txn_type==='subscr_cancel'?'Expiry':'next')}}: {{subscription.current.next_payment_date}} {{status()}}</div> -->
+            <div>{{localize('subscr_cancel,subscr_CANCELLED'.split(',').some(v => subscription.current.txn_type === v)?'Expiry':'next')}}: {{subscription.current.next_payment_date}} {{status()}}</div>
+            <img v-if="subscription.current.subscr_id && !'subscr_cancel,subscr_CANCELLED,cancelling'.split(',').some(v => subscription.current.txn_type === v)" 
               @click.stop="hackDialog" src="https://www.paypalobjects.com/en_US/i/btn/btn_unsubscribe_LG.gif" style="cursor: pointer;">
           </template>
           <div v-show="!premium">
@@ -133,16 +134,16 @@ Vue.component('vi-gas', {
       },
       onApprove: function (data, actions) {
         console.log(data);
+        thisVue.subscription.current.txn_type = "processing";
         thisVue.premium = true;
       },
       onCancel: function (data) {
         // Show a cancel page, or return to cart
         console.log(data);
       },
-      onError: function (err) {
-        // For example, redirect to a specific error page
-        // window.location.href = "/your-error-page-here";
-        console.error('error from the onError callback', err);
+      onError: function (e) {
+        // 
+        xsLogger.log(e, "createSubscription");
       }
     }).render('#paypal-button-container');
     
@@ -154,7 +155,7 @@ Vue.component('vi-gas', {
     
     db.ref("/IPN/Mapping/" + this.user.dot() + "/active/")
     .on("value", (snapshot) => {
-      if (this.premium === snapshot.val() || this.subscription.domain) return;
+      // if (this.premium === snapshot.val() || this.subscription.domain) return; // what was this for? blocking the update on subs21 onApprove due to active set to true
       
       google.script.run
       .withFailureHandler((e) => {
@@ -198,6 +199,7 @@ Vue.component('vi-gas', {
         subscr_CANCELLED: this.$localize("cancelled"),
         subscr_failed: this.$localize("failing"),
         subscr_FAILED: this.$localize("failing"),
+        processing: this.$localize("processing"),
         cancelling: this.$localize("cancelling")
       }
       let s = message[this.subscription.current.txn_type];
