@@ -35,7 +35,8 @@ Vue.component('vi-gas', {
               <v-radio label="Monthly" value="Monthly" :disabled="!plans.current.Monthly"></v-radio>
               <v-radio label="Annual" value="Annual" :disabled="!plans.current.Annual"></v-radio>
             </v-radio-group>
-            <div class="body-2 ml-2 mt-2">{{plans.current.message}}</div>
+            <div class="body-2 ml-0 mt-2">{{plans.current.message}}</div>
+            <div class="body-2 ml-2 mt-0">{{plans.current.subtext}}</div>
           </template>
         </v-flex>
 
