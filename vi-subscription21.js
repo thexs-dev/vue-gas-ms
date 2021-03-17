@@ -164,6 +164,7 @@ Vue.component('vi-gas', {
       })
       .withSuccessHandler((subscr) => {
         if (this.itsme) console.log(subscr);
+        if (!subscr.current.mc_gross) subscr.current.mc_gross = this.plans.current[this.selected].price; // it might not be available if first event arriving @WHL is ACTIVATED
         this.subscription = subscr;
         this.premium = snapshot.val(); // or this.subscription.active
       })
