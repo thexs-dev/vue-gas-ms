@@ -81,7 +81,7 @@ Vue.component('vi-gas', {
           <v-card-text>You can cancel the subscription at any given time within the term<br>
             - It will stop any future automatic renewal payments<br>
             - You will keep the premium plan until the end of the term<br>
-            - We would process your request shortly after you submit it<br>
+            - We will process your request shortly after you submit it<br>
             <!-- - We would process your request within 1 business day<br> -->
             - You should also get a notification from PayPal when done<br><br>
             Please let us know the reasons for your cancellation in case we can do better in the future. Thanks.<br>
