@@ -60,8 +60,8 @@ Vue.component('vi-gas', {
         </p>
         ■ Basic Free Plan: Up to 50 locations per map. Includes all the basic (−) features.
         <br>
-        ■ Advanced Premium Plan (†): No restrictions in the number of locations per map. Includes all the basic (−) and
-        advanced (+) features.
+        ■ Advanced Premium Plan (†): No restrictions in the number of locations per map. 
+          Includes <a href="https://www.thexs.ca/xsmapping#h.p_ZRc-UATAYomL">all the basic (−) and advanced (+) features</a>.
         <br><br>
         (†) <b>Disclaimer</b>: The Advanced Premium Plan <b>does not avoid</b>
         <a href="https://www.thexs.ca/xsmapping/limitations-known-issues-and-common-errors">service errors, limitations
