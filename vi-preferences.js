@@ -124,12 +124,11 @@ Vue.component('vi-gas', {
           <v-checkbox v-model="settings.placeFilter" :disabled="!premium" :label="localize('filter')"></v-checkbox>
         </v-layout>
         <v-layout>
-          <v-text-field class="flex xs3 mr-3" v-model="settings.pageTitle" :disabled="!premium" :label="'%s (+)'.format(localize('Mapping app title'))"></v-text-field>
-          <v-checkbox class="mr-3" v-model="settings.mapCenterOnClick" :label="localize('Center @click')"></v-checkbox>
-          <template v-if="settings.map4vue && (extended || uidata.geolocationAvailable)">
-            <v-checkbox class="mr-3" v-model="settings.mapFindMe" :disabled="!premium" :label="'%s (∗)'.format(localize('Find me'))"></v-checkbox>
-            <v-checkbox class="" v-model="settings.mapFollowMe" :disabled="!premium" :label="'%s (∗)'.format(localize('Follow me'))"></v-checkbox>
-          </template>
+          <v-text-field class="flex xs3 mr-2" v-model="settings.pageTitle" :disabled="!premium" :label="'%s (+)'.format(localize('Mapping app title'))"></v-text-field>
+          <v-checkbox class="flex xs3 mr-2" v-model="settings.mapCenterOnClick" :label="localize('Center @click')"></v-checkbox>
+          <v-select class="flex xs3 mr-2" :items='["", "Find me", "Follow me"]' v-model="settings.mapLocation" :disabled="!premium || !itsme" placeholder=" " :label="'%s (+)'.format(localize('Location'))"></v-select>
+          <v-checkbox class="flex" v-model="settings.mapMeasureToolEnabled" :disabled="!premium || !itsme" label=""></v-checkbox>
+          <v-select class="flex xs3 mr-2" :items='["METRIC", "IMPERIAL", "NAUTICAL"]' v-model="settings.mapMeasureToolUnit" :disabled="!premium || !settings.mapMeasureToolEnabled" placeholder=" " :label="'%s (+)'.format(localize('Measures'))"></v-select>
         </v-layout>
         <v-layout v-if="!settings.map4vue">
           <v-text-field class="flex xs11 mr-3" v-model="settings.styledMap" :disabled="!premium" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="'%s (+)'.format(localize('label-styled-map'))"></v-text-field>
@@ -145,8 +144,8 @@ Vue.component('vi-gas', {
         <!-- mapsApiKey might be required even for non premium/custom plans -->
         <div v-if="uidata.mapsApiKeyAvailable">
           <v-layout>
-            <v-text-field class="flex xs8" v-model="settings.mapsApiKey" :label="'%s (∗)'.format(localize('Maps Api key (for the Mapping web app)'))" placeholder=" "></v-text-field>
-            <v-text-field class="ml-3" v-model="settings.mapsPageSuffix" prefix="-" :label="'%s (mapping-%s.html) (∗)'.format(localize('Suffix'), settings.mapsPageSuffix)" placeholder=" " append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/how-to-get-and-use-my-own-maps-api-key')"></v-text-field>
+            <v-text-field class="flex xs8" v-model="settings.mapsApiKey" :label="'%s (∗)'.format(localize('Maps Api key (for the Mapping web app)'))" placeholder=" " hide-details></v-text-field>
+            <v-text-field class="ml-3" v-model="settings.mapsPageSuffix" prefix="-" :label="'%s (mapping-%s.html) (∗)'.format(localize('Suffix'), settings.mapsPageSuffix)" placeholder=" " hide-details append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/how-to-get-and-use-my-own-maps-api-key')"></v-text-field>
           </v-layout>
         </div>
         <v-text-field v-if="uidata.footerInfoAboutAvailable || extended" v-model="settings.footerInfoAbout" class="flex xs6 mt-4" placeholder=" " append-icon="mdi-eye" hide-details
@@ -326,22 +325,22 @@ Vue.component('vi-gas', {
           <v-select class="mr-3" :items="uidata.headersAll" v-model="settings.layers.circles.radiusHeader" :disabled="!settings.layers.circles.enabled" :label="localize('label-place-radius')"></v-select>
           <v-select class="mr-3" :items="uidata.placeUnits" v-model="settings.layers.circles.radiusUnit" :disabled="!settings.layers.circles.enabled" :label="localize('label-place-unit')"></v-select>
           <v-text-field class="mr-3" v-model="settings.layers.circles.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.circles.enabled" :label="localize('label-fill-opacity')"></v-text-field>
-          <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
+          <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_jGK0BUMuCQJ_')">mdi-help-circle</v-icon>
         </v-layout>
         <v-layout>
           <v-checkbox class="mr-3" v-model="settings.layers.heatmap.enabled" :label="localize('heatmap')"></v-checkbox>
           <v-select class="mr-3" :items="uidata.headersAllOptional" v-model="settings.layers.heatmap.weightHeader" :disabled="!settings.layers.heatmap.enabled" :label="'%s (%s)'.format(localize('label-heatmap-weight'), localize('optional'))"></v-select>
           <v-text-field class="mr-3" v-model="settings.layers.heatmap.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.heatmap.enabled" :label="localize('label-fill-opacity')"></v-text-field>
-          <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
+          <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_BbzJ2FAGQ00s')">mdi-help-circle</v-icon>
         </v-layout>
-        <v-layout v-if="uidata.layerGeoJSONAvailable || extended">
-          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.geojson.enabled" :label="'%s (∗)'.format(localize('GeoJSON'))"></v-checkbox>
+        <v-layout v-if="uidata.layerGeoJSONAvailable || itsme">
+          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.geojson.enabled" :disabled="!premium" :label="'%s (+)'.format(localize('GeoJSON'))"></v-checkbox>
           <v-text-field class="mr-3" v-model="settings.layers.geojson.url" :disabled="!settings.layers.geojson.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
           <v-text-field class="mr-3" v-model="settings.layers.geojson.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.geojson.enabled" :label="localize('label-fill-opacity')"></v-text-field>
           <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
         </v-layout>
-        <v-layout v-if="uidata.layerKmlAvailable || extended">
-          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.kml.enabled" :label="'%s (∗)'.format(localize('Kml/Kmz'))"></v-checkbox>
+        <v-layout v-if="uidata.layerKmlAvailable || itsme">
+          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.kml.enabled" :disabled="!premium" :label="'%s (+)'.format(localize('Kml/Kmz'))"></v-checkbox>
           <v-text-field class="mr-3" v-model="settings.layers.kml.url" :disabled="!settings.layers.kml.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
           <v-checkbox class="mr-3" v-model="settings.layers.kml.viewport" :disabled="!settings.layers.kml.enabled" :label="localize('Viewport')"></v-checkbox>
           <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
