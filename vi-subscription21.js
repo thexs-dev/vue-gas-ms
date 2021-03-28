@@ -45,8 +45,9 @@ Vue.component('vi-gas', {
             <div>{{localize('paid')}}: {{subscription.current.payment_date}}</div>
             <div class="text-truncate">{{localize('by')}}: {{subscription.current.payer_email}}</div>
             <!-- <div>{{localize(subscription.current.txn_type==='subscr_cancel'?'Expiry':'next')}}: {{subscription.current.next_payment_date}} {{status()}}</div> -->
-            <div>{{localize('subscr_cancel,subscr_CANCELLED'.split(',').some(v => subscription.current.txn_type === v)?'Expiry':'next')}}: {{subscription.current.next_payment_date}} {{status()}}</div>
-            <img v-if="subscription.current.subscr_id && !'subscr_cancel,subscr_CANCELLED,cancelling'.split(',').some(v => subscription.current.txn_type === v)" 
+            <div>{{localize('subscr_cancel,subscr_CANCELLED'.split(',').some(v => subscription.current.txn_type === v)?'Expiry':'next')}}: 
+              {{subscription.current.next_payment_date}} {{status()}} <v-progress-circular v-if="subscription.current.txn_type === 'processing'" indeterminate></v-progress-circular></div>
+            <img v-if="subscription.current.subscr_id && !'subscr_cancel,subscr_CANCELLED,cancelling,processing'.split(',').some(v => subscription.current.txn_type === v)" 
               @click.stop="hackDialog" src="https://www.paypalobjects.com/en_US/i/btn/btn_unsubscribe_LG.gif" style="cursor: pointer;">
           </template>
           <div v-show="!premium">
@@ -90,7 +91,7 @@ Vue.component('vi-gas', {
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text @click="dialog = false" :disabled="working">Close</v-btn>
-            <v-btn text @click.stop="unsubscribe" :disabled="!reasons || working">Unsubscribe</v-btn>
+            <v-btn text @click.stop="unsubscribe" :disabled="working">Unsubscribe</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -112,7 +113,8 @@ Vue.component('vi-gas', {
     // only listen if not premium, waiting for subscription to complete (IPN response)
     if (this.premium || this.subscription.domain) return;
 
-    await Vue.loadScript("https://www.paypal.com/sdk/js?client-id=AVdfQrEmQhAK6pMtqx8Mk44bNqtLGtAy-oa2jEEEzrXiAWWZewptt2EutaFyDWojYtdvDCID41RNXTw5&vault=true&intent=subscription");
+    if (this.subscription.sandbox) await Vue.loadScript("https://www.paypal.com/sdk/js?client-id=AWGXzoqoRDx1IfKny9nUONkuq1vVb4RfmGijensZaJKni9V86jfliPdaRCQKraFRDrM2Q6lmTphuNOyb&vault=true&intent=subscription"); // sandbox testing @localhost
+    else await Vue.loadScript("https://www.paypal.com/sdk/js?client-id=AVdfQrEmQhAK6pMtqx8Mk44bNqtLGtAy-oa2jEEEzrXiAWWZewptt2EutaFyDWojYtdvDCID41RNXTw5&vault=true&intent=subscription");
     let paypalCustomField = data.paypalCustomField;
     console.log(paypalCustomField);
     let thisVue = this;
@@ -135,7 +137,7 @@ Vue.component('vi-gas', {
       },
       onApprove: function (data, actions) {
         console.log(data);
-        thisVue.subscription.current.txn_type = "processing";
+        if (!thisVue.premium) thisVue.subscription.current.txn_type = "processing"; // in case onApprove is last to arrive (avoid the spinner)
         thisVue.premium = true;
       },
       onCancel: function (data) {
@@ -157,6 +159,7 @@ Vue.component('vi-gas', {
     db.ref("/IPN/Mapping/" + this.user.dot() + "/active/")
     .on("value", (snapshot) => {
       // if (this.premium === snapshot.val() || this.subscription.domain) return; // what was this for? blocking the update on subs21 onApprove due to active set to true
+      this.premium = snapshot.val(); // set it true in advance of getIpnSubscription() details, just in case PP.B.onAprove is not there yet
       
       google.script.run
       .withFailureHandler((e) => {
