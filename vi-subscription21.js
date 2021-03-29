@@ -138,6 +138,8 @@ Vue.component('vi-gas', {
       onApprove: function (data, actions) {
         if (!thisVue.premium) thisVue.subscription.current.txn_type = "processing"; // in case onApprove is last to arrive (avoid the spinner)
         thisVue.premium = true;
+        thisVue.subscription.current.mc_gross = thisVue.plans.current[thisVue.selected].price;
+        thisVue.subscription.current.period = thisVue.plans.current[thisVue.selected].period;
         console.log(data);
         xsLogger.log("Info: Approve at %s \n %s".format(new Date(), JSON.stringify(data,null,2)), "onApproveSubs21");
       },
