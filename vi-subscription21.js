@@ -163,16 +163,19 @@ Vue.component('vi-gas', {
     .on("value", (snapshot) => {
       // if (this.premium === snapshot.val() || this.subscription.domain) return; // what was this for? blocking the update on subs21 onApprove due to active set to true
       this.premium = snapshot.val(); // set it true in advance of getIpnSubscription() details, just in case PP.B.onAprove is not there yet
+      xsLogger.log("Info: Active %s at %s".format(this.premium, new Date()), "onValueActiveChanged");
       
       google.script.run
       .withFailureHandler((e) => {
         $gsdlog(e);
+        xsLogger.log(e, "getIpnSubscription");
+        window.alert("Unexpected error: \n" + e);
       })
       .withSuccessHandler((subscr) => {
-        if (this.itsme) console.log(subscr);
         if (!subscr.current.mc_gross) subscr.current.mc_gross = this.plans.current[this.selected].price; // it might not be available if first event arriving @WHL is ACTIVATED
         this.subscription = subscr;
         this.premium = snapshot.val(); // or this.subscription.active
+        xsLogger.log("Info: subscr at %s \n %s".format(new Date(), JSON.stringify(subscr,null,2)), "getIpnSubscription");
       })
       .getIpnSubscription();
     });
