@@ -136,17 +136,20 @@ Vue.component('vi-gas', {
         });
       },
       onApprove: function (data, actions) {
-        console.log(data);
         if (!thisVue.premium) thisVue.subscription.current.txn_type = "processing"; // in case onApprove is last to arrive (avoid the spinner)
         thisVue.premium = true;
+        console.log(data);
+        xsLogger.log("Info: Approve at %s \n %s".format(new Date(), JSON.stringify(data,null,2)), "onApproveSubs21");
       },
       onCancel: function (data) {
         // Show a cancel page, or return to cart
         console.log(data);
+        xsLogger.log("Info: Cancel at %s \n %s".format(new Date(), JSON.stringify(data,null,2)), "onCancelSubs21");
       },
       onError: function (e) {
         // 
-        xsLogger.log(e, "createSubscription");
+        xsLogger.log(e, "onErrorSubs21");
+        window.alert("Unexpected error: \n" + e);
       }
     }).render('#paypal-button-container');
     
