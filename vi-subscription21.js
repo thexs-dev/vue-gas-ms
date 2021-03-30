@@ -142,6 +142,7 @@ Vue.component('vi-gas', {
         thisVue.subscription.current.period = thisVue.plans.current[thisVue.selected].period;
         console.log(data);
         xsLogger.log("Info: Approve at %s \n %s".format(new Date(), JSON.stringify(data,null,2)), "onApproveSubs21");
+        thisVue.startTime = new Date();
       },
       onCancel: function (data) {
         // Show a cancel page, or return to cart
@@ -177,7 +178,7 @@ Vue.component('vi-gas', {
         if (!subscr.current.mc_gross) subscr.current.mc_gross = this.plans.current[this.selected].price; // it might not be available if first event arriving @WHL is ACTIVATED
         this.subscription = subscr;
         this.premium = snapshot.val(); // or this.subscription.active
-        if (this.premium) xsLogger.log("Info: subscr at %s \n %s".format(new Date(), JSON.stringify(subscr,null,2)), "getIpnSubscription");
+        if (this.premium) xsLogger.log("Alert: Subscribed after %s secs \n %s".format(Math.round((new Date() - this.startTime) /1000), JSON.stringify(subscr)), "getIpnSubscription");
       })
       .getIpnSubscription();
     });
