@@ -141,7 +141,7 @@ Vue.component('vi-gas', {
         thisVue.subscription.current.mc_gross = thisVue.plans.current[thisVue.selected].price;
         thisVue.subscription.current.period = thisVue.plans.current[thisVue.selected].period;
         console.log(data);
-        xsLogger.log("Info: Approve at %s \n %s".format(new Date(), JSON.stringify(data,null,2)), "onApproveSubs21");
+        xsLogger.log("Alert: Approve at %s \n %s".format(new Date(), JSON.stringify(data,null,2)), "onApproveSubs21");
         thisVue.startTime = new Date();
       },
       onCancel: function (data) {
@@ -167,6 +167,7 @@ Vue.component('vi-gas', {
       // if (this.premium === snapshot.val() || this.subscription.domain) return; // what was this for? blocking the update on subs21 onApprove due to active set to true
       this.premium = snapshot.val(); // set it true in advance of getIpnSubscription() details, just in case PP.B.onAprove is not there yet
       if (this.premium) xsLogger.log("Info: Active %s at %s".format(this.premium, new Date()), "onValueActiveChanged");
+      if (!this.premium && !snapshot.val()) return; // avoid calling getIpnSubscription() on the first entry, but keep listening for true when subscribed
       
       google.script.run
       .withFailureHandler((e) => {
