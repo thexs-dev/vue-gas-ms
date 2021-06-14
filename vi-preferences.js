@@ -1,5 +1,5 @@
-import VxSlider from "https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.24/vx-slider.js"
-import VxMarked from 'https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.24/vx-marked.js';
+import VxSlider from "https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@4.x/vx-slider.js"
+import VxMarked from 'https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@4.x/vx-marked.js';
 // import VxMarked from './vx-marked.js';
 
 function debounce(func, wait, immediate) {
@@ -378,7 +378,7 @@ Vue.component('vi-gas', {
   async mounted() {
     if (!window.google || !window.google.script) Vue.loadScript("./vx-google.script.js");
     // await Vue.loadScript("./vx-file-picker.js");
-    await Vue.loadScript("https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.x/vx-file-picker.js");
+    await Vue.loadScript("https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@4.x/vx-file-picker.js");
     Vue.loadScript("https://apis.google.com/js/api.js?onload=onApiLoad");
     this.localeResources["infowindow-markdown"] = this.localize("infowindow") + " (Markdown)"; // hacking localeResources for infowindow-markdown page
     this.localeResources["listing-markdown"] = this.localize("listing") + " (Markdown)"; // hacking localeResources for listing-markdown page
