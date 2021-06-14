@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <base target="_blank">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>v-gas-ms</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.1.6/dist/vuetify.min.css" rel="stylesheet">
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+    html {
+      overflow-y: auto;
+    }
+    .theme--light.v-application {
+      background: white;
+    }
+    .theme--light.v-messages {
+      min-height: 6px;
+    }
+    .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6 {
+      margin-bottom: 8px!important;
+    }
+    a[title=""]::after {
+      content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
+      margin: 0 3px 0 5px;
+    }
+  </style>
+
+  <script>
+    // GAS: uncomment (1) lines below, fix da-ta name (just an error-flag) and remove the demo data (var data and if import, BUT keep var picker =)
+    // var data = <?!=JSON.stringify(da-ta)?>; // ready for GAS HtmlService...evaluate()
+    var data = data || {
+      // common to most vi-gas-ms components
+      viComponent: "vi-preferences.js", // 1template, about, announce, preferences, sharing, sidebar, subscription, subscription21
+      viPath: "./",
+      itsme: true,
+      user: "fausto@thexs.ca",
+      hashedUid: "hashed-uid",
+      version: "v.12345",
+      premium: true, // subscription.active
+      extended: !true, // if would coming from user.flags.extendedEnabled
+      map4vue: true,
+      localesPath: "https://thexs-mapping.firebaseapp.com/locales/",
+      language: "en",
+      GA: { gaid: "UA-31069312-8", title: "MS.addon", path: "/vueTest", category: "testing", uid: "hashed-uid" },
+      // vi-about
+      // vi-announce
+      key: "99",
+      json: { SubscribeNow: "yesnone"},
+      // vi-preferences
+      selected: "map",
+      // vi-sharing
+      fileId: "1hNt8yd6Vd-zxj6anWN0Xe8frzwHaEddh", urlPath: "https://mapping.thexs.app/map.html",
+      // vi-sidebar
+      filtersKind: "checkboxes,checkbox-list,slider,slider-right,range,date,date-range,select,select-multiple,select-dynamic".split(","),
+      // vi-subscription
+      subscription: { sandbox: true, current: {subscr_id:"I-673r3g6yy", mc_gross: 25, period: "year", txn_type:"xsubscr_cancel", payer_email:"fausto@thexs.ca", payment_date:"2017-04-04", next_payment_date:"2020-04-21"} }, // settings.subscription
+      "plans":{"standard":{"message":" ","Monthly":{"plan_id":"ssssssssss","price":16,"period":"month"},"Annual":{"plan_id":"ssssssssss","price":96,"period":"year"}},"current":{"message":"Special 'Buck a Beer' for a few testers","subtext":"Available until 2021-04-30 🔥","Monthly":{"plan_id":"P-01030766BG430501MMBQLB3Q","price":1,"period":"week"},"Annual":false,"Annual":{"plan_id":"ssssssssss","price":6,"period":"year"},"standard":false}}
+      // vi-warning
+    }
+    if (!window.google || !window.google.script) // local values for uidata, picker, settings coming from commented Logger.log on function vuePreferences (add-on)
+      import("./uxs/ui-data.js").then(() => { data = {...data, ...localData}; console.log(data)} );
+    var picker = data.picker || false;
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/stackdriver-errors-js@0.7.0/dist/stackdriver-errors-concat.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.24/xs-logging.min.js"></script>
+  <script type="text/javascript">
+    const xsLogger = new cLogClient(data.viComponent,data.user);
+    const stackdriverHandler = new StackdriverErrorReporter();
+    stackdriverHandler.start({
+      key: 'AIzaSyAcIOgK-4EKwI-t5tJHkyR1syNzSrAAOxo',
+      projectId: '736233853391',
+      service: data.viComponent,
+      disabled: !true,
+      version: data.version,
+      context: { user: data.hashedUid }
+    });
+    const $gsdlog = (msg) => stackdriverHandler.report(msg);
+  </script>
+  <script>
+    String.prototype.format = function () {
+      return [...arguments].reduce((p, c) => p.replace(/%s/, c), this);
+    };
+  </script>
+</head>
+
+<body>
+
+  <v-app v-cloak id="app">
+    <vi-gas></vi-gas>
+  </v-app>
+  
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.1.6/dist/vuetify.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.24/vx-plugin-load-script.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@0.7.24/vx-plugin-analytics.js"></script>
+
+  <!-- firebase for announce,[-sidebar],subscription but loaded async mounted() await as required -->
+
+  <script>
+    Vue.config.errorHandler = (err, vm, info) => {
+      console.log(err);
+      $gsdlog(err);
+      xsLogger.log(err, "vueHandler");
+      window.alert("Unexpected error: \n" + err);
+    };
+
+    Vue.prototype.$gae = () => null; // dummy in case is not yet ready on first call
+    Vue.use(VxAnalytics, data.GA);
+
+    Vue.prototype.$open = (url) => { window.open(url) }
+    data.localeResources = {};
+    Vue.prototype.$localize = (key) => { return data.localeResources[key] || key }
+    window.fetch(data.localesPath + data.language + ".json")
+      .then((response) => response.json())
+      .then((json) => data.localeResources = json[data.language])
+
+    Vue.loadScript(data.viPath + data.viComponent, {type:"module"})
+      .then(() => { }).catch((e) => { $gsdlog("Problem loading " + data.viComponent); console.log(e) });
+  </script>
+
+</body>
+
+</html>
