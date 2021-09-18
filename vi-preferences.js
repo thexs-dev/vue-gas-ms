@@ -356,6 +356,11 @@ Vue.component('vi-gas', {
           <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
         </v-layout>
 
+        <v-layout v-if="uidata.layerShapesAvailable || extended">
+          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.shapes.enabled" :label="'%s (∗)'.format(localize('Shapes'))"></v-checkbox>
+          <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
+        </v-layout>
+
       </div>
 
       <div class="mt-3" v-show="selected === 'extend'">
