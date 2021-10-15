@@ -302,7 +302,7 @@ Vue.component('vi-gas', {
           <v-layout>
             <v-select class="flex xs3 mr-3" :items="uidata.routingTravelModes" v-model="settings.routingTravelMode" :label="localize('label-travel-mode')"></v-select>
             <v-select class="flex xs3 mr-3" :items="uidata.routingUnitSystems" v-model="settings.routingUnitSystem" :label="localize('label-unit-system')"></v-select>
-            <v-select v-if="settings.map4vue" class="flex xs6" :items="'Highways,Tolls,Ferries'.split(',')" v-model="settings.routingAvoid" multiple :label="localize('avoid')" placeholder=" "></v-select>
+            <v-select v-if="settings.map4vue" class="flex xs6" :items="'Highways,Tolls,Ferries'.split(',')" v-model="settings.routingAvoid" multiple clearable :label="localize('avoid')" placeholder=" "></v-select>
           </v-layout>
           <v-layout v-if="!settings.map4vue">
             <span class="mt-4 mr-3">{{localize('avoid')}}:</span>
@@ -359,7 +359,7 @@ Vue.component('vi-gas', {
         <div x-shapes v-if="uidata.layerShapesAvailable || extended">
           <v-layout class="mb-1">
             <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.shapes.enabled" :label="'%s (∗)'.format(localize('Shapes'))" hide-details></v-checkbox>
-            <v-select class="flex xs10 mr-3" :items="uidata.layerShapesModes" v-model="settings.layers.shapes.modes" multiple :label="localize('Modes')" placeholder=" " :disabled="!settings.layers.shapes.enabled" hide-details></v-select>
+            <v-select class="flex xs10 mr-3" :items="uidata.layerShapesModes" v-model="settings.layers.shapes.modes" multiple clearable :label="localize('Modes')" placeholder=" " :disabled="!settings.layers.shapes.enabled" hide-details></v-select>
             <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
           </v-layout>
           <v-layout>
