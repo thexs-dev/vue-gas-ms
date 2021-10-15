@@ -320,33 +320,33 @@ Vue.component('vi-gas', {
       </div>
 
       <div v-show="selected === 'layers'">
-        <v-layout>
+        <v-layout x-circles>
           <v-checkbox class="mr-3" v-model="settings.layers.circles.enabled" :label="localize('circles')"></v-checkbox>
           <v-select class="mr-3" :items="uidata.headersAll" v-model="settings.layers.circles.radiusHeader" :disabled="!settings.layers.circles.enabled" :label="localize('label-place-radius')"></v-select>
           <v-select class="mr-3" :items="uidata.placeUnits" v-model="settings.layers.circles.radiusUnit" :disabled="!settings.layers.circles.enabled" :label="localize('label-place-unit')"></v-select>
           <v-text-field class="mr-3" v-model="settings.layers.circles.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.circles.enabled" :label="localize('label-fill-opacity')"></v-text-field>
           <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_jGK0BUMuCQJ_')">mdi-help-circle</v-icon>
         </v-layout>
-        <v-layout>
+        <v-layout x-heatmap>
           <v-checkbox class="mr-3" v-model="settings.layers.heatmap.enabled" :label="localize('heatmap')"></v-checkbox>
           <v-select class="mr-3" :items="uidata.headersAllOptional" v-model="settings.layers.heatmap.weightHeader" :disabled="!settings.layers.heatmap.enabled" :label="'%s (%s)'.format(localize('label-heatmap-weight'), localize('optional'))"></v-select>
           <v-text-field class="mr-3" v-model="settings.layers.heatmap.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.heatmap.enabled" :label="localize('label-fill-opacity')"></v-text-field>
           <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_BbzJ2FAGQ00s')">mdi-help-circle</v-icon>
         </v-layout>
-        <v-layout>
+        <v-layout x-geojson>
           <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.geojson.enabled" :disabled="!premium" :label="'%s (+)'.format(localize('GeoJSON'))"></v-checkbox>
           <v-text-field class="mr-3" v-model="settings.layers.geojson.url" :disabled="!settings.layers.geojson.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
           <v-text-field class="mr-3" v-model="settings.layers.geojson.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.geojson.enabled" :label="localize('label-fill-opacity')"></v-text-field>
           <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_KN6nws9-AFBH')">mdi-help-circle</v-icon>
         </v-layout>
-        <v-layout>
+        <v-layout x-kml>
           <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.kml.enabled" :disabled="!premium" :label="'%s (+)'.format(localize('Kml/Kmz'))"></v-checkbox>
           <v-text-field class="mr-3" v-model="settings.layers.kml.url" :disabled="!settings.layers.kml.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
           <v-checkbox class="mr-3" v-model="settings.layers.kml.viewport" :disabled="!settings.layers.kml.enabled" :label="localize('Viewport')"></v-checkbox>
           <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.7yhzkyk5xdib')">mdi-help-circle</v-icon>
         </v-layout>
 
-        <v-layout v-if="uidata.layerTripBufferAvailable || extended">
+        <v-layout x-buffer v-if="uidata.layerTripBufferAvailable || extended">
           <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.buffer.enabled" :label="'%s (∗)'.format(localize('Trip:Buffer'))"></v-checkbox>
           <v-text-field class="mr-0 col-2" v-model.number="settings.layers.buffer.maxWaypoints" type="number" step="1" min=0 max=10 :disabled="!settings.layers.buffer.enabled" :label="localize('Waypoints')"></v-text-field>
           <v-text-field class="mr-0 col-2" v-model.number="settings.layers.buffer.maxRadius" type="number" step="1" min="0" max="10" :disabled="!settings.layers.buffer.enabled" :label="localize('Radius')"></v-text-field>
@@ -356,10 +356,21 @@ Vue.component('vi-gas', {
           <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
         </v-layout>
 
-        <v-layout v-if="uidata.layerShapesAvailable || extended">
-          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.shapes.enabled" :label="'%s (∗)'.format(localize('Shapes'))"></v-checkbox>
-          <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
-        </v-layout>
+        <div x-shapes v-if="uidata.layerShapesAvailable || extended">
+          <v-layout class="mb-1">
+            <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.shapes.enabled" :label="'%s (∗)'.format(localize('Shapes'))" hide-details></v-checkbox>
+            <v-select class="flex xs10 mr-3" :items="uidata.layerShapesModes" v-model="settings.layers.shapes.modes" multiple :label="localize('Modes')" placeholder=" " :disabled="!settings.layers.shapes.enabled" hide-details></v-select>
+            <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
+          </v-layout>
+          <v-layout>
+            <v-spacer></v-spacer>
+            <v-checkbox class="mr-3" v-model="settings.layers.shapes.draggable" :disabled="!settings.layers.shapes.enabled" :label="localize('Draggable')"></v-checkbox>
+            <v-checkbox class="mr-3" v-model="settings.layers.shapes.editable" :disabled="!settings.layers.shapes.enabled" :label="localize('Editable')"></v-checkbox>
+            <v-checkbox class="mr-3" v-model="settings.layers.shapes.download" :disabled="!settings.layers.shapes.enabled" :label="localize('Download')"></v-checkbox>
+            <v-combobox class="flex xs2 mr-3" :items="shapesFillColors" v-model="settings.layers.shapes.fillColor" :label="localize('Color')" placeholder=" " :disabled="!settings.layers.shapes.enabled"></v-combobox>
+            <v-text-field class="mr-3" v-model="settings.layers.shapes.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.shapes.enabled" :label="localize('Opacity')"></v-text-field>
+          </v-layout>
+        </div>
 
       </div>
 
@@ -377,6 +388,7 @@ Vue.component('vi-gas', {
     data.working = false;
     // iwStyle below comes from mapping-vue map.css x-iw-marked class (keep it synced)
     data.iwStyle = "font-weight: 300!important; font-size: 13px!important; letter-spacing: .0178571429em!important; line-height: 1.25rem; font-family: Roboto,sans-serif!important;";
+    data.shapesFillColors = "black,white,red,green,yellow,blue,gray,brown".split(",").sort();
     return data
   },
 
