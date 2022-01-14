@@ -282,8 +282,8 @@ Vue.component('vi-gas', {
         <v-layout>
           <v-checkbox v-model="settings.routingEnabled" :disabled="!premium" append-icon="mdi-help-circle" @click:append="$open('https://www.thexs.ca/xsmapping/optimal-routing')" :label="'%s (+)'.format(localize('label-enable-routing'))"></v-checkbox>
           <v-checkbox v-show="settings.routingEnabled" v-model="settings.routingF2LEnabled" :label="localize('label-F2L')" class="ml-4"></v-checkbox>
-          <v-checkbox v-show="settings.routingEnabled && settings.map4vue && (uidata.routingAsIsAvailable || extended)" v-model="settings.routingAsIsEnabled" :label="localize('As-Is')" class="ml-4"></v-checkbox>
-          <v-checkbox v-show="settings.routingEnabled && settings.map4vue && (uidata.routingReverseAvailable || extended)" v-model="settings.routingReverseEnabled" :label="localize('Reverse')" class="ml-4"></v-checkbox>
+          <v-checkbox v-show="settings.routingEnabled && settings.map4vue" v-model="settings.routingAsIsEnabled" :label="localize('As-Is')" class="ml-4"></v-checkbox>
+          <v-checkbox v-show="settings.routingEnabled && settings.map4vue" v-model="settings.routingReverseEnabled" :label="localize('Reverse')" class="ml-4"></v-checkbox>
         </v-layout>
         <div v-show="settings.routingEnabled">
           <v-layout>
