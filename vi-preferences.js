@@ -211,7 +211,7 @@ Vue.component('vi-gas', {
 
         <template v-if="uidata.editingAvailable">
           <v-layout>
-            <v-checkbox v-model="settings.editingEnabled" :label="localize('Editing')" class="flex xs4"></v-checkbox>
+            <v-checkbox v-model="settings.editingEnabled" :label="'%s (∗)'.format(localize('Editing'))" class="flex xs4"></v-checkbox>
             <v-checkbox v-model="settings.editingAddOverlay" :disabled="!settings.editingEnabled" :label="localize('Add new')" class="flex xs4"></v-checkbox>
             <v-checkbox v-model="settings.editingHeadersOnly" :disabled="!settings.editingEnabled" :label="localize('Only listed')" class="flex xs4"></v-checkbox>
             <v-checkbox v-model="settings.editingAppendCarryOver" :disabled="!settings.editingEnabled" :label="localize('Carry over')" class="flex xs4"></v-checkbox>
@@ -261,6 +261,13 @@ Vue.component('vi-gas', {
           <v-checkbox v-if="uidata.listingSortableAvailable || extended" v-model="settings.listingSortable" :disabled="!settings.listingEnabled" :label="'%s (∗)'.format(localize('Sortable'))"></v-checkbox>
         </v-layout>
         <v-checkbox class="ml-3" v-model="settings.listingExportNewTabDirections" :disabled="!settings.listingEnabled" :label="localize('View Directions on Google Maps')"></v-checkbox>
+        <template v-if="uidata.editingColumnAvailable">
+          <v-layout>
+            <v-checkbox v-model="settings.editingColumnEnabled" :disabled="!premium" :label="'%s (∗)'.format(localize('Editing'))" class="mr-3"></v-checkbox>
+            <v-text-field v-model="settings.editingColumnCsv" :disabled="!premium || !settings.editingColumnEnabled" placeholder=" " append-icon="mdi-eye" @click:append="settings.editingColumnCsv = uidata.headers" :label="'%s (csv)'.format(localize('Headers to select from '))"></v-text-field>
+            <v-icon class="ml-3" disabled @click="$open('https://www.thexs.ca/xsmapping/filtering-on-your-map')">mdi-help-circle</v-icon>
+          </v-layout>
+        </template>
       </div>
 
       <div v-if="selected === 'listing-markdown'">
