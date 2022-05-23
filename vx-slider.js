@@ -1,5 +1,5 @@
 export default {
-  template: `<!--  -->
+  template: /*html*/`<!--  -->
 <v-layout>
   <v-slider class="align-center mr-3" :value="value" :disabled="disabled" :min="min" :max="max" :label="label" @input="$emit('input', $event)" hide-details>
     <template v-slot:append>

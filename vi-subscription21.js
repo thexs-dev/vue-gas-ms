@@ -2,7 +2,7 @@
 String.prototype.dot = function () { return this.replace(/[\.%]/g, "_"); }
 
 Vue.component('vi-gas', {
-  template: `<!--  -->
+  template: /*html*/`<!--  -->
 <div>
   <v-app-bar app>
     <v-toolbar-title>{{localize('advanced-premium-plan')}} - {{localize('subscription')}}</v-toolbar-title>
