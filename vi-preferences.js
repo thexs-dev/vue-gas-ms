@@ -384,7 +384,7 @@ Vue.component('vi-gas', {
           <v-text-field class="mr-3" v-model="settings.layers.ogcwms.url" :disabled="!settings.layers.ogcwms.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
           <v-text-field class="mr-3" v-model="settings.layers.ogcwms.layers" :disabled="!settings.layers.ogcwms.enabled" :label="localize('Layers')" placeholder=" "></v-text-field>
           <v-range-slider class="flex mr-2 mt-4 xs6" v-model="settings.layers.ogcwms.zoom" :disabled="!settings.layers.ogcwms.enabled" :min="0" :max="20" :label="localize('Zoom')" thumb-label="xalways" thumb-size="20" hide-details></v-range-slider>
-          <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.7yhzkyk5xdib')">mdi-help-circle</v-icon>
+          <v-icon @click="$open('https://www.thexs.ca/posts/adding-overlay-layers-from-public-ogcwms-servers')">mdi-help-circle</v-icon>
         </v-layout>
 
       </div>
