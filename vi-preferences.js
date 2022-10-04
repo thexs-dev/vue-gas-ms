@@ -387,6 +387,14 @@ Vue.component('vi-gas', {
           <v-icon @click="$open('https://www.thexs.ca/posts/adding-overlay-layers-from-public-ogcwms-servers')">mdi-help-circle</v-icon>
         </v-layout>
 
+        <v-layout x-ogcwmts v-if="uidata.layerOgcWmtsAvailable || extended">
+          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.ogcwmts.enabled" :disabled="!premium" :label="'%s (∗)'.format(localize('OGC:WMTS'))"></v-checkbox>
+          <v-select class="flex xs3 mr-3" :items="'TileJSON'.split(',')" v-model="settings.layers.ogcwmts.type" :label="localize('Type')" placeholder=" " :disabled="!settings.layers.ogcwmts.enabled" hide-details></v-select>
+          <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.tileJsonUrl" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
+          <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.opacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('Opacity')"></v-text-field>
+          <v-icon @click="$open('https://www.thexs.ca/posts/adding-overlay-layers-from-public-ogcwms-servers')">mdi-help-circle</v-icon>
+        </v-layout>
+
       </div>
 
       <div class="mt-3" v-show="selected === 'extend'">
