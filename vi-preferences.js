@@ -43,12 +43,25 @@ Vue.component('vi-gas', {
     <v-toolbar-title>{{ localize(selected) }}</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-icon v-if="itsme" @click="test">mdi-bug</v-icon>
-    <v-btn icon @click="$open('http://addon.thexs.ca/mapping-sheets'); $gae('review');">
+    <v-btn icon small @click="$open('http://addon.thexs.ca/mapping-sheets'); $gae('review');">
       <v-icon :title="localize('my-review')">mdi-star</v-icon>
     </v-btn>
-    <v-btn icon @click="$open('https://www.thexs.ca/xsmapping/mapping-sheets-add-on-preferences')">
+    <v-btn icon small @click="$open('https://www.thexs.ca/xsmapping/mapping-sheets-add-on-preferences')">
       <v-icon :title="localize('help')">mdi-help-circle</v-icon>
     </v-btn>
+
+    <template v-if="uidata.preferencesExportImportAvailable || extended">
+      <v-btn icon small @click="downloadFile">
+        <v-icon :title="localize('Export')">mdi-download</v-icon>
+      </v-btn>
+      <v-btn icon small @click="document.getElementById('importing').click()">
+        <v-icon :title="localize('Import')">mdi-upload</v-icon>
+      </v-btn>
+      <div hidden>
+        <v-file-input id="importing" @change="uploadFile" v-model="chosenFile" accept=".msprefs"></v-file-input>
+      </div>
+    </template>
+
     <v-btn icon @click="savePreferences" :disabled="working">
       <v-icon :title="localize('save')">mdi-content-save</v-icon>
     </v-btn>
@@ -60,8 +73,6 @@ Vue.component('vi-gas', {
         <p>{{ localize('preferences-general-description') }}</p>
         <v-layout align-center>
           <v-checkbox v-model="settings.beta" label="Beta (β) version opt-in" hide-details class="mr-4"></v-checkbox>
-          <v-checkbox v-model="settings.map4vue" :disabled="!uidata.map4vueAvailable" label="Mapping 4.0 opt-in" hide-details></v-checkbox>
-          <!-- <div v-if="!uidata.map4vueAvailable" class="ml-2 mt-4"><a :href="'https://docs.google.com/forms/d/e/1FAIpQLSdnZxQP7-3q4OpVg3Si4rAKaXAy1lb_G_CKqp6lAZloLBibKw/viewform?usp=pp_url&entry.1705383554=%s&entry.1564022075=Question&entry.272808407=Mapping+4.0+opt-in+request+access'.format(user)">[request access]</a></div> -->
         </v-layout>
         <v-text-field v-if="uidata.footerInfoAboutAvailable || extended" v-model="settings.footerInfoAbout" class="mt-4" placeholder=" " append-icon="mdi-eye" 
           @click:append="settings.footerInfoAbout = 'Powered by [Mapping Sheets](https://www.thexs.ca/xsmapping)'" :label="'%s (∗)'.format(localize('About information (Markdown)'))"></v-text-field>
@@ -409,6 +420,7 @@ Vue.component('vi-gas', {
 
   data() {
     data.working = false;
+    data.chosenFile = null;
     // iwStyle below comes from mapping-vue map.css x-iw-marked class (keep it synced)
     data.iwStyle = "font-weight: 300!important; font-size: 13px!important; letter-spacing: .0178571429em!important; line-height: 1.25rem; font-family: Roboto,sans-serif!important;";
     data.shapesFillColors = "black,white,red,green,yellow,blue,gray,brown".split(",").sort();
@@ -492,8 +504,43 @@ Vue.component('vi-gas', {
         .savePreferences(this.settings);
     },
 
+    downloadFile(e) {
+      function downloadBlobFile(blob, filename) {
+        var link = document.createElement("a");
+        var url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      let content = JSON.stringify(this.settings, null, 2);
+      downloadBlobFile(new Blob([content], { type: "application/json" }), "preferences.msprefs");
+      this.$gae('download');
+    },
+
+    uploadFile(e) {
+      let json;
+      if (!this.chosenFile) return console.log("No File Chosen"); // never happens so far?
+      var reader = new FileReader();
+      reader.readAsText(this.chosenFile);
+      reader.onload = () => {
+        console.log(reader.result)
+        try {
+          json = JSON.parse(reader.result);
+          console.log("import", json);
+          // create a fresh object with properties from both the original object and the mixin object
+          // this.settings = Object.assign({}, this.settings, { ...json })
+          this.settings = Object.assign({}, { ...this.settings, ...json })
+          this.$gae('upload');
+        } catch (e) { console.error(e) }
+        this.chosenFile = null;
+      }
+    },
+
     test() {
-      console.log(this.$data);
+      console.log("data", this.$data);
+      console.log("settings", this.settings);
       this.$gae("test");
     }
   }
