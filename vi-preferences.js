@@ -50,11 +50,11 @@ Vue.component('vi-gas', {
       <v-icon :title="localize('help')">mdi-help-circle</v-icon>
     </v-btn>
 
-    <template v-if="uidata.preferencesExportImportAvailable || extended">
-      <v-btn icon small @click="downloadFile">
+    <template x-export-import>
+      <v-btn icon small @click="downloadFile" :disabled="!(uidata.preferencesExportImportAvailable || extended)">
         <v-icon :title="localize('Export')">mdi-download</v-icon>
       </v-btn>
-      <v-btn icon small @click="document.getElementById('importing').click()">
+      <v-btn icon small @click="document.getElementById('importing').click()" :disabled="!(uidata.preferencesExportImportAvailable || extended)">
         <v-icon :title="localize('Import')">mdi-upload</v-icon>
       </v-btn>
       <div hidden>
@@ -74,10 +74,8 @@ Vue.component('vi-gas', {
         <v-layout align-center>
           <v-checkbox v-model="settings.beta" label="Beta (β) version opt-in" hide-details class="mr-4"></v-checkbox>
         </v-layout>
-        <v-text-field v-if="uidata.footerInfoAboutAvailable || extended" v-model="settings.footerInfoAbout" class="mt-4" placeholder=" " append-icon="mdi-eye" 
-          @click:append="settings.footerInfoAbout = 'Powered by [Mapping Sheets](https://www.thexs.ca/xsmapping)'" :label="'%s (∗)'.format(localize('About information (Markdown)'))"></v-text-field>
         <v-checkbox v-if="settings.spreadsheetLocale.indexOf('en') !== 0" v-model="settings.useEnglishLocale" :label="'Use English language instead of (%s)'.format(settings.spreadsheetLocale)"></v-checkbox>
-        <div class="mt-8" style="">{{ "Legend: (β) Beta, (α∗) Alpha/Extended, (+) Premium".format() }}</div>
+        <div class="mt-8" style="">{{ "Legend: (β) Beta, (α) Alpha, (+) Premium, (∗) Extended, (κ) User's Key".format() }}</div>
       </div>
 
       <div v-show="selected === 'document'">
@@ -108,7 +106,6 @@ Vue.component('vi-gas', {
           <v-icon class="ml-3" @click="$open('https://www.thexs.ca/xsmapping/filtering-on-your-map')">mdi-help-circle</v-icon>
         </v-layout>
         <v-layout>
-          <!-- <vx-slider v-model="settings.filtersQty" :disabled="!premium" :min="0" :max="uidata.filtersMaxQty" :label="'%s (+)'.format(localize('label-filters-qty'))"></vx-slider> -->
           <vx-slider v-model="settings.filtersQty" :disabled="!premium && !settings.map4vue" :min="0" :max="uidata.filtersMaxQty || premium *3 + settings.map4vue *1 + (settings.map4vue && premium) *1" :label="'%s (+)'.format(localize('label-filters-qty'))"></vx-slider>
           <v-text-field v-model="settings.filtersExpandedPanels" :disabled="!settings.map4vue" placeholder=" " append-icon="mdi-eye" @click:append="settings.filtersExpandedPanels = [...Array(1 + settings.filtersQty).keys()].join(',')" :label="'%s (csv)'.format(localize('Panels'))" class="flex xs3"></v-text-field>
         </v-layout>
@@ -153,14 +150,19 @@ Vue.component('vi-gas', {
         <v-text-field v-if="settings.map4vue" class="flex xs12" v-model="settings.styledMap" placeholder=" " append-icon="mdi-eye" @click:append="settings.styledMap = uidata.styledMap" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/styled-google-map-on-the-mapping-web-app')" :label="'%s'.format(localize('label-styled-map'))"></v-text-field>
 
         <!-- mapsApiKey might be required even for non premium/custom plans -->
-        <div v-if="uidata.mapsApiKeyAvailable">
+        <div v-if="uidata.mapsApiKeyAvailable || extras">
           <v-layout>
             <v-text-field class="flex xs8" v-model="settings.mapsApiKey" :label="'%s (∗)'.format(localize('Maps Api key (for the Mapping web app)'))" placeholder=" " hide-details></v-text-field>
             <v-text-field class="ml-3" v-model="settings.mapsPageSuffix" prefix="-" :label="'%s (mapping-%s.html) (∗)'.format(localize('Suffix'), settings.mapsPageSuffix)" placeholder=" " hide-details append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/how-to-get-and-use-my-own-maps-api-key')"></v-text-field>
           </v-layout>
         </div>
-        <v-text-field v-if="uidata.footerInfoAboutAvailable || extended" v-model="settings.footerInfoAbout" class="flex xs6 mt-4" placeholder=" " append-icon="mdi-eye" hide-details
-          @click:append="settings.footerInfoAbout = 'Powered by [Mapping Sheets](https://www.thexs.ca/xsmapping)'" :label="'%s (∗)'.format(localize('About information (Markdown)'))"></v-text-field>
+        <v-layout>
+          <v-text-field v-model="settings.footerInfoAbout" :disabled="!(uidata.footerInfoAboutAvailable || extended)" class="flex xs6 mt-4" placeholder=" " append-icon="mdi-eye" hide-details
+            @click:append="settings.footerInfoAbout = 'Powered by [Mapping Sheets](https://www.thexs.ca/xsmapping)'" :label="'%s (Markdown) (∗)'.format(localize('About information'))"></v-text-field>
+          <v-text-field v-model="settings.mapLegendLink" :disabled="!(uidata.mapLegendLinkAvailable || extended)" class="flex xs6 mt-4 ml-1" placeholder=" " hide-details :label="'%s URL (∗)'.format(localize('Legend'))"></v-text-field>
+        </v-layout>
+
+        
       </div>
 
       <div v-show="selected === 'icons'">
@@ -178,8 +180,8 @@ Vue.component('vi-gas', {
           <v-checkbox v-model="settings.markerDraggable" :label="localize('Draggable')" class="mr-4"></v-checkbox>
           <v-checkbox v-model="settings.markerSpider" :label="localize('Overlapping')"></v-checkbox>
         </v-layout>
-        <v-layout v-if="uidata.iconLabelsAvailable || extended">
-          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.labels.enabled" :disabled="!premium" :label="'%s (∗)'.format(localize('Labels'))"></v-checkbox>
+        <v-layout x-labels>
+          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.labels.enabled" :disabled="!(uidata.iconLabelsAvailable || extended)" :label="'%s (∗)'.format(localize('Labels'))"></v-checkbox>
           <v-combobox class="flex xs4 mr-3" :items="uidata.headersAll" v-model="settings.layers.labels.text" :disabled="!settings.layers.labels.enabled" :label="localize('Text')" placeholder=" "></v-combobox>
           <v-select class="flex xs4 mr-3" :items="'center,top,bottom'.split(',')" v-model="settings.layers.labels.position" :disabled="!settings.layers.labels.enabled" :label="localize('Position')" placeholder=" "></v-select>
           <v-text-field class="mr-3" v-model="settings.layers.labels.options" :disabled="!settings.layers.labels.enabled" :label="localize('Options')" placeholder=" " append-icon="mdi-eye" @click:append="settings.layers.labels.options = 'k:v; x,y,css,zoom'"></v-text-field>
@@ -190,7 +192,7 @@ Vue.component('vi-gas', {
           <v-text-field v-model="settings.titleTemplate" :disabled="!settings.icontitleEnabled" placeholder=" " append-icon="mdi-eye" @click:append="settings.titleTemplate = uidata.titleTemplate" :label="'%s {{}}'.format(localize('label-icon-title'))"></v-text-field>
         </v-layout>
         <v-layout>
-          <v-checkbox class="ml-3 mr-4" v-model="settings.markerCluster" :label="localize('Clusters')"></v-checkbox>
+          <v-checkbox class="mr-4" v-model="settings.markerCluster" :label="localize('Clusters')"></v-checkbox>
           <vx-slider class="mr-2" v-model="settings.markerClusterMinimumClusterSize" :min="2" :max="20" :label="localize('Size')"></vx-slider>
           <vx-slider class="mr-2" v-model="settings.markerClusterMaxZoom" :min="10" :max="16" :label="localize('Zoom')"></vx-slider>
           <v-checkbox v-model="settings.markerClusterToggle" :label="localize('Toggle')"></v-checkbox>
@@ -220,7 +222,7 @@ Vue.component('vi-gas', {
           <v-text-field class="ml-4 flex xs2" v-model="settings.linksAnchorText" :label="localize('Link text')" placeholder=" "></v-text-field>
           <v-select class="ml-3 flex xs2" :items="['Top','Bottom']" v-model="settings.infowindowButtonsPosition" :disabled="!settings.map4vue" :label="localize('Buttons')"></v-select>        </v-layout>
 
-        <template v-if="uidata.editingAvailable">
+        <template v-if="uidata.editingAvailable || extras">
           <v-layout>
             <v-checkbox v-model="settings.editingEnabled" :label="'%s (∗)'.format(localize('Editing'))" class="flex xs4"></v-checkbox>
             <v-checkbox v-model="settings.editingAddOverlay" :disabled="!settings.editingEnabled" :label="localize('Add new')" class="flex xs4"></v-checkbox>
@@ -269,10 +271,11 @@ Vue.component('vi-gas', {
         <v-layout>
           <v-checkbox v-model="settings.listingExportNewTab" :disabled="!settings.listingEnabled" :label="localize('Export Listing to a new tab')" class="mr-3"></v-checkbox>
           <v-checkbox v-model="settings.listingExportCsv" :disabled="!settings.listingEnabled" :label="localize('Export Listing as a CSV file')" class="mr-3"></v-checkbox>
-          <v-checkbox v-if="uidata.listingSortableAvailable || extended" v-model="settings.listingSortable" :disabled="!settings.listingEnabled" :label="'%s (∗)'.format(localize('Sortable'))"></v-checkbox>
+          <v-checkbox v-model="settings.listingSortable" :disabled="!settings.listingEnabled || !(uidata.listingSortableAvailable || extended)" :label="'%s (∗)'.format(localize('Sortable'))"></v-checkbox>
         </v-layout>
         <v-checkbox class="ml-3" v-model="settings.listingExportNewTabDirections" :disabled="!settings.listingEnabled" :label="localize('View Directions on Google Maps')"></v-checkbox>
-        <template v-if="uidata.editingColumnAvailable">
+
+        <template v-if="uidata.editingColumnAvailable || extras">
           <v-layout>
             <v-checkbox v-model="settings.editingColumnEnabled" :disabled="!premium" :label="'%s (∗)'.format(localize('Editing'))" class="mr-3"></v-checkbox>
             <v-text-field v-model="settings.editingColumnCsv" :disabled="!premium || !settings.editingColumnEnabled" placeholder=" " append-icon="mdi-eye" @click:append="settings.editingColumnCsv = uidata.headers" :label="'%s (csv)'.format(localize('Headers to select from '))"></v-text-field>
@@ -328,84 +331,116 @@ Vue.component('vi-gas', {
             <v-checkbox class="mr-3" v-model="settings.routingAvoidTolls" :label="localize('label-tolls')"></v-checkbox>
             <v-checkbox v-model="settings.routingAvoidFerries" :label="localize('label-ferries')"></v-checkbox>
           </v-layout>
-          <v-checkbox class="mt-0" v-model="settings.routingDirectionPanelEnabled" :label="localize('label-show-directions')"></v-checkbox>
           <v-layout>
-            <v-checkbox class="mr-3 ml-3 mt-0" v-model="settings.routingSuppressMarkers" :label="localize('label-no-markers')"></v-checkbox>
-            <v-checkbox class="mr-3 mt-0" v-model="settings.routingSuppressInfoWindows" :label="localize('label-no-infowindows')"></v-checkbox>
-            <v-checkbox class="mr-3 mt-0" v-model="settings.routingShowDirectionsUnderListing" :label="localize('label-show-under-listing')"></v-checkbox>
+            <v-checkbox class="mt-0" v-model="settings.routingDirectionPanelEnabled" :label="localize('label-show-directions')"></v-checkbox>
+            <v-checkbox class="mr-3 ml-3 mt-0" v-model="settings.routingSuppressMarkers" :disabled="!settings.routingDirectionPanelEnabled" :label="localize('label-no-markers')"></v-checkbox>
+            <v-checkbox class="mr-3 mt-0" v-model="settings.routingSuppressInfoWindows" :disabled="!settings.routingDirectionPanelEnabled" :label="localize('label-no-infowindows')"></v-checkbox>
+            <v-checkbox class="mr-3 mt-0" v-model="settings.routingShowDirectionsUnderListing" :disabled="!settings.routingDirectionPanelEnabled" :label="localize('label-show-under-listing')"></v-checkbox>
+          </v-layout>
+          <v-layout x-route-120 v-if="extras">
+            <v-checkbox class="mr-3 text-no-wrap" xv-model="settings.routingH120Enabled" disabled="true" :label="'%s (∗κ)'.format(localize('Route:120'))" hide-details></v-checkbox>
+            <!-- Api-Key, Start-2-End -->
           </v-layout>
         </div>
       </div>
 
       <div v-show="selected === 'layers'">
-        <v-layout x-circles>
-          <v-checkbox class="mr-3" v-model="settings.layers.circles.enabled" :label="localize('circles')"></v-checkbox>
-          <v-select class="mr-3" :items="uidata.headersAll" v-model="settings.layers.circles.radiusHeader" :disabled="!settings.layers.circles.enabled" :label="localize('label-place-radius')"></v-select>
-          <v-select class="mr-3" :items="uidata.placeUnits" v-model="settings.layers.circles.radiusUnit" :disabled="!settings.layers.circles.enabled" :label="localize('label-place-unit')"></v-select>
-          <v-text-field class="mr-3" v-model="settings.layers.circles.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.circles.enabled" :label="localize('label-fill-opacity')"></v-text-field>
-          <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_jGK0BUMuCQJ_')">mdi-help-circle</v-icon>
-        </v-layout>
-        <v-layout x-heatmap>
-          <v-checkbox class="mr-3" v-model="settings.layers.heatmap.enabled" :label="localize('heatmap')"></v-checkbox>
-          <v-select class="mr-3" :items="uidata.headersAllOptional" v-model="settings.layers.heatmap.weightHeader" :disabled="!settings.layers.heatmap.enabled" :label="'%s (%s)'.format(localize('label-heatmap-weight'), localize('optional'))"></v-select>
-          <v-text-field class="mr-3" v-model="settings.layers.heatmap.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.heatmap.enabled" :label="localize('label-fill-opacity')"></v-text-field>
-          <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_BbzJ2FAGQ00s')">mdi-help-circle</v-icon>
-        </v-layout>
-        <v-layout x-geojson>
-          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.geojson.enabled" :disabled="!premium" :label="'%s (+)'.format(localize('GeoJSON'))"></v-checkbox>
-          <v-text-field class="mr-3" v-model="settings.layers.geojson.url" :disabled="!settings.layers.geojson.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
-          <v-text-field class="mr-3" v-model="settings.layers.geojson.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.geojson.enabled" :label="localize('label-fill-opacity')"></v-text-field>
-          <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_KN6nws9-AFBH')">mdi-help-circle</v-icon>
-        </v-layout>
-        <v-layout x-kml>
-          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.kml.enabled" :disabled="!premium" :label="'%s (+)'.format(localize('Kml/Kmz'))"></v-checkbox>
-          <v-text-field class="mr-3" v-model="settings.layers.kml.url" :disabled="!settings.layers.kml.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
-          <v-checkbox class="mr-3" v-model="settings.layers.kml.viewport" :disabled="!settings.layers.kml.enabled" :label="localize('Viewport')"></v-checkbox>
-          <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.7yhzkyk5xdib')">mdi-help-circle</v-icon>
-        </v-layout>
+        <v-tabs v-model="tabLayer" align-with-title>
+          <v-tabs-slider color="rgba(0,0,0,.54)"></v-tabs-slider>
+          <v-tab v-for="item in 'basic,advanced,extended,extras'.split(',')" :key="item">{{ item }}</v-tab>
+        </v-tabs>
+        <v-tabs-items v-model="tabLayer">
+          <v-tab-item key="basic">
+            <v-layout x-circles>
+              <v-checkbox class="mr-3" v-model="settings.layers.circles.enabled" :label="localize('circles')"></v-checkbox>
+              <v-select class="mr-3" :items="uidata.headersAll" v-model="settings.layers.circles.radiusHeader" :disabled="!settings.layers.circles.enabled" :label="localize('label-place-radius')"></v-select>
+              <v-select class="mr-3" :items="uidata.placeUnits" v-model="settings.layers.circles.radiusUnit" :disabled="!settings.layers.circles.enabled" :label="localize('label-place-unit')"></v-select>
+              <v-text-field class="mr-3" v-model="settings.layers.circles.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.circles.enabled" :label="localize('label-fill-opacity')"></v-text-field>
+              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_jGK0BUMuCQJ_')">mdi-help-circle</v-icon>
+            </v-layout>
+            <v-layout x-heatmap>
+              <v-checkbox class="mr-3" v-model="settings.layers.heatmap.enabled" :label="localize('heatmap')"></v-checkbox>
+              <v-select class="mr-3" :items="uidata.headersAllOptional" v-model="settings.layers.heatmap.weightHeader" :disabled="!settings.layers.heatmap.enabled" :label="'%s (%s)'.format(localize('label-heatmap-weight'), localize('optional'))"></v-select>
+              <v-text-field class="mr-3" v-model="settings.layers.heatmap.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.heatmap.enabled" :label="localize('label-fill-opacity')"></v-text-field>
+              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_BbzJ2FAGQ00s')">mdi-help-circle</v-icon>
+            </v-layout>
+          </v-tab-item>
 
-        <v-layout x-buffer v-if="uidata.layerTripBufferAvailable || extended">
-          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.buffer.enabled" :label="'%s (∗)'.format(localize('Trip:Buffer'))"></v-checkbox>
-          <v-text-field class="mr-0 col-2" v-model.number="settings.layers.buffer.maxWaypoints" type="number" step="1" min=0 max=10 :disabled="!settings.layers.buffer.enabled" :label="localize('Waypoints')"></v-text-field>
-          <v-text-field class="mr-0 col-2" v-model.number="settings.layers.buffer.maxRadius" type="number" step="1" min="0" max="10" :disabled="!settings.layers.buffer.enabled" :label="localize('Radius')"></v-text-field>
-          <!-- <v-text-field class="mr-0 col-2" v-model="settings.layers.buffer.step" type="number" step="0.1" min="0.1" max="1" :disabled="!settings.layers.buffer.enabled" :label="localize('Step')"></v-text-field> -->
-          <v-select class="mr-3" :items="['kilometers','miles']" v-model="settings.layers.buffer.units" :disabled="!settings.layers.buffer.enabled" :label="localize('Units')"></v-select>
-          <v-checkbox class="mr-3" v-model="settings.layers.buffer.draggable" :disabled="!settings.layers.buffer.enabled" :label="localize('Draggable')"></v-checkbox>
-          <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
-        </v-layout>
+          <v-tab-item key="advanced">
+            <v-layout x-geojson>
+              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.geojson.enabled" :disabled="!premium" :label="'%s (+)'.format(localize('GeoJSON'))"></v-checkbox>
+              <v-text-field class="mr-3" v-model="settings.layers.geojson.url" :disabled="!settings.layers.geojson.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
+              <v-text-field class="mr-3" v-model="settings.layers.geojson.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.geojson.enabled" :label="localize('label-fill-opacity')"></v-text-field>
+              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_KN6nws9-AFBH')">mdi-help-circle</v-icon>
+            </v-layout>
+            <v-layout x-kml>
+              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.kml.enabled" :disabled="!premium" :label="'%s (+)'.format(localize('Kml/Kmz'))"></v-checkbox>
+              <v-text-field class="mr-3" v-model="settings.layers.kml.url" :disabled="!settings.layers.kml.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
+              <v-checkbox class="mr-3" v-model="settings.layers.kml.viewport" :disabled="!settings.layers.kml.enabled" :label="localize('Viewport')"></v-checkbox>
+              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.7yhzkyk5xdib')">mdi-help-circle</v-icon>
+            </v-layout>
+          </v-tab-item>
 
-        <div x-shapes v-if="uidata.layerShapesAvailable || extended">
-          <v-layout class="mb-1">
-            <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.shapes.enabled" :label="'%s (∗)'.format(localize('Shapes'))" hide-details></v-checkbox>
-            <v-select class="flex xs10 mr-3" :items="uidata.layerShapesModes" v-model="settings.layers.shapes.modes" multiple clearable :label="localize('Modes')" placeholder=" " :disabled="!settings.layers.shapes.enabled" hide-details></v-select>
-            <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
-          </v-layout>
-          <v-layout>
-            <v-spacer></v-spacer>
-            <v-checkbox class="mr-3" v-model="settings.layers.shapes.draggable" :disabled="!settings.layers.shapes.enabled" :label="localize('Draggable')"></v-checkbox>
-            <v-checkbox class="mr-3" v-model="settings.layers.shapes.editable" :disabled="!settings.layers.shapes.enabled" :label="localize('Editable')"></v-checkbox>
-            <v-checkbox class="mr-3" v-model="settings.layers.shapes.download" :disabled="!settings.layers.shapes.enabled" :label="localize('Download')"></v-checkbox>
-            <v-combobox class="flex xs2 mr-3" :items="shapesFillColors" v-model="settings.layers.shapes.fillColor" :label="localize('Color')" placeholder=" " :disabled="!settings.layers.shapes.enabled"></v-combobox>
-            <v-text-field class="mr-3" v-model="settings.layers.shapes.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.shapes.enabled" :label="localize('Opacity')"></v-text-field>
-          </v-layout>
-        </div>
+          <v-tab-item key="extended">
+            <div x-shapes>
+              <v-layout class="mb-1">
+                <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.shapes.enabled" :disabled="!(uidata.layerShapesAvailable || extended)" :label="'%s (∗)'.format(localize('Shapes'))" hide-details></v-checkbox>
+                <v-select class="flex xs10 mr-3" :items="uidata.layerShapesModes" v-model="settings.layers.shapes.modes" multiple clearable :label="localize('Modes')" placeholder=" " :disabled="!settings.layers.shapes.enabled" hide-details></v-select>
+                <v-icon @click="$open('https://www.thexs.ca/xsmapping/filtering-on-your-map-with-shapes')">mdi-help-circle</v-icon>
+              </v-layout>
+              <v-layout>
+                <v-spacer></v-spacer>
+                <v-checkbox class="mr-3" v-model="settings.layers.shapes.draggable" :disabled="!settings.layers.shapes.enabled" :label="localize('Draggable')"></v-checkbox>
+                <v-checkbox class="mr-3" v-model="settings.layers.shapes.editable" :disabled="!settings.layers.shapes.enabled" :label="localize('Editable')"></v-checkbox>
+                <v-checkbox class="mr-3" v-model="settings.layers.shapes.download" :disabled="!settings.layers.shapes.enabled" :label="localize('Download')"></v-checkbox>
+                <v-combobox class="flex xs2 mr-3" :items="shapesFillColors" v-model="settings.layers.shapes.fillColor" :label="localize('Color')" placeholder=" " :disabled="!settings.layers.shapes.enabled"></v-combobox>
+                <v-text-field class="mr-3" v-model="settings.layers.shapes.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.shapes.enabled" :label="localize('Opacity')"></v-text-field>
+              </v-layout>
+            </div>
 
-        <v-layout x-ogcwms v-if="uidata.layerOgcWmsAvailable || extended">
-          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.ogcwms.enabled" :disabled="!premium" :label="'%s (∗)'.format(localize('OGC:WMS'))"></v-checkbox>
-          <v-text-field class="mr-3" v-model="settings.layers.ogcwms.url" :disabled="!settings.layers.ogcwms.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
-          <v-text-field class="mr-3" v-model="settings.layers.ogcwms.layers" :disabled="!settings.layers.ogcwms.enabled" :label="localize('Layers')" placeholder=" "></v-text-field>
-          <v-range-slider class="flex mr-2 mt-4 xs6" v-model="settings.layers.ogcwms.zoom" :disabled="!settings.layers.ogcwms.enabled" :min="0" :max="20" :label="localize('Zoom')" thumb-label="xalways" thumb-size="20" hide-details></v-range-slider>
-          <v-icon @click="$open('https://www.thexs.ca/posts/adding-overlay-layers-from-public-ogcwms-servers')">mdi-help-circle</v-icon>
-        </v-layout>
+            <v-layout x-buffer-route>
+              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.route.enabled" :disabled="!(uidata.layerRouteBufferAvailable || extended)" :label="'%s (∗)'.format(localize('Buffer:Route'))" hide-details></v-checkbox>
+              <v-text-field class="mr-0 col-2" v-model.number="settings.layers.route.maxRadius" type="number" step="1" min="1" max="10" :disabled="!settings.layers.route.enabled" :label="localize('Radius')" hide-details></v-text-field>
+              <v-text-field v-if="true" class="mr-0 col-2" v-model="settings.layers.route.step" type="number" step="0.1" min="0.1" max="1" :disabled="!settings.layers.route.enabled" :label="localize('Step')" hide-details></v-text-field>
+              <v-select class="mr-0 col-4" :items="['kilometers','miles']" v-model="settings.layers.route.units" :disabled="!settings.layers.route.enabled" :label="localize('Units')" hide-details></v-select>
+              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
+            </v-layout>
 
-        <v-layout x-ogcwmts v-if="uidata.layerOgcWmtsAvailable || extended">
-          <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.ogcwmts.enabled" :disabled="!premium" :label="'%s (∗)'.format(localize('OGC:WMTS'))"></v-checkbox>
-          <v-select class="flex xs3 mr-3" :items="'TileJSON'.split(',')" v-model="settings.layers.ogcwmts.type" :label="localize('Type')" placeholder=" " :disabled="!settings.layers.ogcwmts.enabled" hide-details></v-select>
-          <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.tileJsonUrl" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
-          <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.opacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('Opacity')"></v-text-field>
-          <v-icon @click="$open('https://www.thexs.ca/posts/adding-overlay-layers-from-public-ogcwms-servers')">mdi-help-circle</v-icon>
-        </v-layout>
+            <v-layout x-ogcwms>
+              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.ogcwms.enabled" :disabled="!(uidata.layerOgcWmsAvailable || extended)" :label="'%s (∗)'.format(localize('OGC:WMS'))"></v-checkbox>
+              <v-text-field class="mr-3" v-model="settings.layers.ogcwms.url" :disabled="!settings.layers.ogcwms.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
+              <v-text-field class="mr-3" v-model="settings.layers.ogcwms.layers" :disabled="!settings.layers.ogcwms.enabled" :label="localize('Layers')" placeholder=" "></v-text-field>
+              <v-range-slider class="flex mr-2 mt-4 xs6" v-model="settings.layers.ogcwms.zoom" :disabled="!settings.layers.ogcwms.enabled" :min="0" :max="20" :label="localize('Zoom')" thumb-label="xalways" thumb-size="20" hide-details></v-range-slider>
+              <v-icon @click="$open('https://www.thexs.ca/posts/adding-overlay-layers-from-public-ogcwms-servers')">mdi-help-circle</v-icon>
+            </v-layout>
 
+            <v-layout x-ogcwmts>
+              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.ogcwmts.enabled" :disabled="!(uidata.layerOgcWmtsAvailable || extended)" :label="'%s (∗)'.format(localize('OGC:WMTS'))"></v-checkbox>
+              <v-select class="flex xs3 mr-3" :items="'TileJSON,TileURL'.split(',')" v-model="settings.layers.ogcwmts.type" :label="localize('Type')" placeholder=" " :disabled="!settings.layers.ogcwmts.enabled" hide-details></v-select>
+              <template v-if="settings.layers.ogcwmts.type === 'TileJSON'">
+                <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.tileJsonUrl" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
+              </template>
+              <template v-if="settings.layers.ogcwmts.type === 'TileURL'">
+                <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.tileUrls" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
+                <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.layers" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('Layers')" placeholder=" "></v-text-field>
+              </template>
+              <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.opacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('Opacity')"></v-text-field>
+              <v-icon @click="$open('https://www.thexs.ca/posts/adding-overlay-layers-from-public-ogcwms-servers')">mdi-help-circle</v-icon>
+            </v-layout>
+          </v-tab-item>
+
+          <v-tab-item key="extras">
+            <v-layout x-buffer-trip>
+              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.buffer.enabled" :disabled="!(uidata.layerTripBufferAvailable || extended)" :label="'%s (∗κ)'.format(localize('Buffer:Trip'))" hide-details></v-checkbox>
+              <v-text-field class="mr-0 col-2" v-model.number="settings.layers.buffer.maxWaypoints" type="number" step="1" min=0 max=10 :disabled="!settings.layers.buffer.enabled" :label="localize('Waypoints')" hide-details></v-text-field>
+              <v-text-field class="mr-0 col-2" v-model.number="settings.layers.buffer.maxRadius" type="number" step="1" min="1" max="10" :disabled="!settings.layers.buffer.enabled" :label="localize('Radius')" hide-details></v-text-field>
+              <v-text-field v-if="!true" class="mr-0 col-2" v-model="settings.layers.buffer.step" type="number" step="0.1" min="0.1" max="1" :disabled="!settings.layers.buffer.enabled" :label="localize('Step')" hide-details></v-text-field>
+              <v-select class="mr-0 col-2" :items="['kilometers','miles']" v-model="settings.layers.buffer.units" :disabled="!settings.layers.buffer.enabled" :label="localize('Units')" hide-details></v-select>
+              <v-checkbox class="mr-1" v-model="settings.layers.buffer.draggable" :disabled="!settings.layers.buffer.enabled" :label="localize('Draggable')" hide-details></v-checkbox>
+              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
+            </v-layout>
+          </v-tab-item>
+        </v-tabs-items>
       </div>
 
       <div class="mt-3" v-show="selected === 'extend'">
@@ -424,6 +459,7 @@ Vue.component('vi-gas', {
     // iwStyle below comes from mapping-vue map.css x-iw-marked class (keep it synced)
     data.iwStyle = "font-weight: 300!important; font-size: 13px!important; letter-spacing: .0178571429em!important; line-height: 1.25rem; font-family: Roboto,sans-serif!important;";
     data.shapesFillColors = "black,white,red,green,yellow,blue,gray,brown".split(",").sort();
+    data.tabLayer = null;
     return data
   },
 
