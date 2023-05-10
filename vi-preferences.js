@@ -415,17 +415,17 @@ Vue.component('vi-gas', {
             </v-layout>
 
             <v-layout x-ogcwmts>
-              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.ogcwmts.enabled" :disabled="!(uidata.layerOgcWmtsAvailable || extended)" :label="'%s (∗)'.format(localize('OGC:WMTS'))"></v-checkbox>
-              <v-select class="flex xs3 mr-3" :items="'TileJSON,TileURL'.split(',')" v-model="settings.layers.ogcwmts.type" :label="localize('Type')" placeholder=" " :disabled="!settings.layers.ogcwmts.enabled" hide-details></v-select>
+              <v-checkbox class="mr-1 text-no-wrap" v-model="settings.layers.ogcwmts.enabled" :disabled="!(uidata.layerOgcWmtsAvailable || extended)" :label="'%s (∗)'.format(localize('OGC:WMTS'))"></v-checkbox>
+              <v-select class="mr-1" :items="'TileJSON,TileURL'.split(',')" v-model="settings.layers.ogcwmts.type" :label="localize('Type')" placeholder=" " :disabled="!settings.layers.ogcwmts.enabled" hide-details></v-select>
               <template v-if="settings.layers.ogcwmts.type === 'TileJSON'">
-                <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.tileJsonUrl" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
+                <v-text-field class="mr-1" v-model="settings.layers.ogcwmts.tileJsonUrl" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
               </template>
               <template v-if="settings.layers.ogcwmts.type === 'TileURL'">
-                <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.tileUrls" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
-                <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.layers" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('Layers')" placeholder=" "></v-text-field>
-                <v-select class="flex xs3 mr-3" :items="'{z}/{x}/{y},{z}/{y}/{x}'.split(',')" v-model="settings.layers.ogcwmts.scheme" :label="localize('Scheme')" placeholder=" " :disabled="!settings.layers.ogcwmts.enabled" hide-details></v-select>
+                <v-text-field class="mr-1" v-model="settings.layers.ogcwmts.tileUrls" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
+                <v-text-field class="mr-1" v-model="settings.layers.ogcwmts.layers" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('Layers')" placeholder=" "></v-text-field>
+                <v-select class="mr-1" :items="'{z}/{x}/{y},{z}/{y}/{x}'.split(',')" v-model="settings.layers.ogcwmts.scheme" :label="localize('Scheme')" placeholder=" " :disabled="!settings.layers.ogcwmts.enabled" hide-details></v-select>
               </template>
-              <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.opacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('Opacity')"></v-text-field>
+              <v-text-field class="mr-1" style="min-width: fit-content;" v-model="settings.layers.ogcwmts.opacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('Opacity')"></v-text-field>
               <v-icon @click="$open('https://www.thexs.ca/posts/adding-overlay-layers-from-public-ogcwms-servers')">mdi-help-circle</v-icon>
             </v-layout>
           </v-tab-item>
