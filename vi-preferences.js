@@ -423,6 +423,7 @@ Vue.component('vi-gas', {
               <template v-if="settings.layers.ogcwmts.type === 'TileURL'">
                 <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.tileUrls" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
                 <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.layers" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('Layers')" placeholder=" "></v-text-field>
+                <v-select class="flex xs3 mr-3" :items="'{z}/{x}/{y},{z}/{y}/{x}'.split(',')" v-model="settings.layers.ogcwmts.scheme" :label="localize('Scheme')" placeholder=" " :disabled="!settings.layers.ogcwmts.enabled" hide-details></v-select>
               </template>
               <v-text-field class="mr-3" v-model="settings.layers.ogcwmts.opacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('Opacity')"></v-text-field>
               <v-icon @click="$open('https://www.thexs.ca/posts/adding-overlay-layers-from-public-ogcwms-servers')">mdi-help-circle</v-icon>
