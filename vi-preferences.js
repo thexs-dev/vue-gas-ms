@@ -403,7 +403,7 @@ Vue.component('vi-gas', {
               <v-text-field class="mr-0 col-2" v-model.number="settings.layers.route.maxRadius" type="number" step="1" min="1" max="10" :disabled="!settings.layers.route.enabled" :label="localize('Radius')" hide-details></v-text-field>
               <v-text-field v-if="true" class="mr-0 col-2" v-model="settings.layers.route.step" type="number" step="0.1" min="0.1" max="1" :disabled="!settings.layers.route.enabled" :label="localize('Step')" hide-details></v-text-field>
               <v-select class="mr-0 col-4" :items="['kilometers','miles']" v-model="settings.layers.route.units" :disabled="!settings.layers.route.enabled" :label="localize('Units')" hide-details></v-select>
-              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
+              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.r63dzu8yfwkc')">mdi-help-circle</v-icon>
             </v-layout>
 
             <v-layout x-ogcwms>
@@ -411,7 +411,7 @@ Vue.component('vi-gas', {
               <v-text-field class="mr-3" v-model="settings.layers.ogcwms.url" :disabled="!settings.layers.ogcwms.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
               <v-text-field class="mr-3" v-model="settings.layers.ogcwms.layers" :disabled="!settings.layers.ogcwms.enabled" :label="localize('Layers')" placeholder=" "></v-text-field>
               <v-range-slider class="flex mr-2 mt-4 xs6" v-model="settings.layers.ogcwms.zoom" :disabled="!settings.layers.ogcwms.enabled" :min="0" :max="20" :label="localize('Zoom')" thumb-label="xalways" thumb-size="20" hide-details></v-range-slider>
-              <v-icon @click="$open('https://www.thexs.ca/posts/adding-overlay-layers-from-public-ogcwms-servers')">mdi-help-circle</v-icon>
+              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.i1gubb2ahk1r')">mdi-help-circle</v-icon>
             </v-layout>
 
             <v-layout x-ogcwmts>
@@ -426,7 +426,7 @@ Vue.component('vi-gas', {
                 <v-select class="mr-1" :items="'{z}/{x}/{y},{z}/{y}/{x}'.split(',')" v-model="settings.layers.ogcwmts.scheme" :label="localize('Scheme')" placeholder=" " :disabled="!settings.layers.ogcwmts.enabled" hide-details></v-select>
               </template>
               <v-text-field class="mr-1" style="min-width: fit-content;" v-model="settings.layers.ogcwmts.opacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('Opacity')"></v-text-field>
-              <v-icon @click="$open('https://www.thexs.ca/posts/adding-overlay-layers-from-public-ogcwms-servers')">mdi-help-circle</v-icon>
+              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.i1gubb2ahk1r')">mdi-help-circle</v-icon>
             </v-layout>
           </v-tab-item>
 
@@ -438,7 +438,7 @@ Vue.component('vi-gas', {
               <v-text-field v-if="!true" class="mr-0 col-2" v-model="settings.layers.buffer.step" type="number" step="0.1" min="0.1" max="1" :disabled="!settings.layers.buffer.enabled" :label="localize('Step')" hide-details></v-text-field>
               <v-select class="mr-0 col-2" :items="['kilometers','miles']" v-model="settings.layers.buffer.units" :disabled="!settings.layers.buffer.enabled" :label="localize('Units')" hide-details></v-select>
               <v-checkbox class="mr-1" v-model="settings.layers.buffer.draggable" :disabled="!settings.layers.buffer.enabled" :label="localize('Draggable')" hide-details></v-checkbox>
-              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
+              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.6ocmdwzfrw9i')">mdi-help-circle</v-icon>
             </v-layout>
           </v-tab-item>
         </v-tabs-items>
