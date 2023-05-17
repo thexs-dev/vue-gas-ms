@@ -434,8 +434,8 @@ Vue.component('vi-gas', {
             <v-layout x-buffer-trip>
               <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.buffer.enabled" :disabled="!(uidata.layerTripBufferAvailable || extended)" :label="'%s (∗κ)'.format(localize('Buffer:Trip'))" hide-details></v-checkbox>
               <v-text-field class="mr-0 col-2" v-model.number="settings.layers.buffer.maxWaypoints" type="number" step="1" min=0 max=10 :disabled="!settings.layers.buffer.enabled" :label="localize('Waypoints')" hide-details></v-text-field>
-              <v-text-field class="mr-0 col-2" v-model.number="settings.layers.buffer.maxRadius" type="number" step="1" min="1" max="10" :disabled="!settings.layers.buffer.enabled" :label="localize('Radius')" hide-details></v-text-field>
-              <v-text-field v-if="!true" class="mr-0 col-2" v-model="settings.layers.buffer.step" type="number" step="0.1" min="0.1" max="1" :disabled="!settings.layers.buffer.enabled" :label="localize('Step')" hide-details></v-text-field>
+              <v-text-field class="mr-1 col-1-2" v-model.number="settings.layers.buffer.maxRadius" type="number" step="1" min="1" max="10" :disabled="!settings.layers.buffer.enabled" :label="localize('Radius')" hide-details></v-text-field>
+              <v-text-field v-if="true" class="mr-0 col-1-2" v-model="settings.layers.buffer.step" type="number" step="0.1" min="0.1" max="1" :disabled="!settings.layers.buffer.enabled" :label="localize('Step')" hide-details></v-text-field>
               <v-select class="mr-0 col-2" :items="['kilometers','miles']" v-model="settings.layers.buffer.units" :disabled="!settings.layers.buffer.enabled" :label="localize('Units')" hide-details></v-select>
               <v-checkbox class="mr-1" v-model="settings.layers.buffer.draggable" :disabled="!settings.layers.buffer.enabled" :label="localize('Draggable')" hide-details></v-checkbox>
               <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.6ocmdwzfrw9i')">mdi-help-circle</v-icon>
