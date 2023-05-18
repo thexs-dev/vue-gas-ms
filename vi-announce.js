@@ -1,7 +1,7 @@
 import VxMarked from 'https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@4.x/vx-marked.js';
 
 Vue.component("announce-actions", {
-  template: `<!--  -->
+  template: /*html*/`<!--  -->
 <div>
   <template v-if="poll.type === 'yorn'">
     <div class="mt-4" v-if="!answered">
@@ -76,14 +76,14 @@ Vue.component("announce-actions", {
 });
 
 Vue.component('vi-gas', {
-  template: `<!--  -->
+  template: /*html*/`<!--  -->
 <div>
   <v-app-bar app>
     <v-toolbar-title>{{announce.title}}</v-toolbar-title>
     <v-spacer></v-spacer>
     <input v-if="itsme" v-model.lazy="key" type="number" min="1" style="width:45px;" @change="update">
     <v-icon v-if="itsme" @click="test">mdi-bug</v-icon>
-    <v-icon @click="$open('http://addon.thexs.ca/mapping-sheets'); $gae('review');" :title="$localize('my-review')">mdi-star</v-icon>
+    <v-icon @click="$open('https://addon.thexs.ca/mapping-sheets'); $gae('review');" :title="$localize('my-review')">mdi-star</v-icon>
     <v-icon :title="$localize('snooze')" @click="google.script.run.flagAnnounce(false,key); google.script.host.close(); $gae('announce-snooze');" class="ml-1">mdi-alarm</v-icon>
     <v-icon :title="$localize('dismiss')" @click="google.script.run.flagAnnounce(true,key); google.script.host.close(); $gae('announce-dismiss');" class="ml-1">mdi-check</v-icon>
   </v-app-bar>
@@ -142,6 +142,7 @@ Vue.component('vi-gas', {
     test() {
       console.log(this.key, this.announce);
       this.$gae("test");
+      $open('https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@4.x/xs-announce-edit.html');
     }
   }
 });
