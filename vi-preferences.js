@@ -161,8 +161,6 @@ Vue.component('vi-gas', {
             @click:append="settings.footerInfoAbout = 'Powered by [Mapping Sheets](https://www.thexs.ca/xsmapping)'" :label="'%s (Markdown) (∗)'.format(localize('About information'))"></v-text-field>
           <v-text-field v-model="settings.mapLegendLink" :disabled="!(uidata.mapLegendLinkAvailable || extended)" class="flex xs6 mt-4 ml-1" placeholder=" " hide-details :label="'%s URL (∗)'.format(localize('Legend'))"></v-text-field>
         </v-layout>
-
-        
       </div>
 
       <div v-show="selected === 'icons'">
@@ -271,7 +269,7 @@ Vue.component('vi-gas', {
         <v-layout>
           <v-checkbox v-model="settings.listingExportNewTab" :disabled="!settings.listingEnabled" :label="localize('Export Listing to a new tab')" class="mr-3"></v-checkbox>
           <v-checkbox v-model="settings.listingExportCsv" :disabled="!settings.listingEnabled" :label="localize('Export Listing as a CSV file')" class="mr-3"></v-checkbox>
-          <v-checkbox v-model="settings.listingSortable" :disabled="!settings.listingEnabled || !(uidata.listingSortableAvailable || extended)" :label="'%s (∗)'.format(localize('Sortable'))"></v-checkbox>
+          <v-checkbox v-model="settings.listingSortable" :disabled="!settings.listingEnabled || !premium" :label="'%s (∗)'.format(localize('Sortable'))"></v-checkbox>
         </v-layout>
         <v-checkbox class="ml-3" v-model="settings.listingExportNewTabDirections" :disabled="!settings.listingEnabled" :label="localize('View Directions on Google Maps')"></v-checkbox>
 
@@ -384,7 +382,7 @@ Vue.component('vi-gas', {
           <v-tab-item key="extended">
             <div x-shapes>
               <v-layout class="mb-1">
-                <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.shapes.enabled" :disabled="!(uidata.layerShapesAvailable || extended)" :label="'%s (∗)'.format(localize('Shapes'))" hide-details></v-checkbox>
+                <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.shapes.enabled" :disabled="!premium" :label="'%s (∗)'.format(localize('Shapes'))" hide-details></v-checkbox>
                 <v-select class="flex xs10 mr-3" :items="uidata.layerShapesModes" v-model="settings.layers.shapes.modes" multiple clearable :label="localize('Modes')" placeholder=" " :disabled="!settings.layers.shapes.enabled" hide-details></v-select>
                 <v-icon @click="$open('https://www.thexs.ca/xsmapping/filtering-on-your-map-with-shapes')">mdi-help-circle</v-icon>
               </v-layout>
@@ -399,7 +397,7 @@ Vue.component('vi-gas', {
             </div>
 
             <v-layout x-buffer-route>
-              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.route.enabled" :disabled="!(uidata.layerRouteBufferAvailable || extended)" :label="'%s (∗)'.format(localize('Buffer:Route'))" hide-details></v-checkbox>
+              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.route.enabled" :disabled="!premium" :label="'%s (∗)'.format(localize('Buffer:Route'))" hide-details></v-checkbox>
               <v-text-field class="mr-0 col-2" v-model.number="settings.layers.route.maxRadius" type="number" step="1" min="1" max="10" :disabled="!settings.layers.route.enabled" :label="localize('Radius')" hide-details></v-text-field>
               <v-text-field v-if="true" class="mr-0 col-2" v-model="settings.layers.route.step" type="number" step="0.1" min="0.1" max="1" :disabled="!settings.layers.route.enabled" :label="localize('Step')" hide-details></v-text-field>
               <v-select class="mr-0 col-4" :items="['kilometers','miles']" v-model="settings.layers.route.units" :disabled="!settings.layers.route.enabled" :label="localize('Units')" hide-details></v-select>
@@ -407,7 +405,7 @@ Vue.component('vi-gas', {
             </v-layout>
 
             <v-layout x-ogcwms>
-              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.ogcwms.enabled" :disabled="!(uidata.layerOgcWmsAvailable || extended)" :label="'%s (∗)'.format(localize('OGC:WMS'))"></v-checkbox>
+              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.ogcwms.enabled" :disabled="!premium" :label="'%s (∗)'.format(localize('OGC:WMS'))"></v-checkbox>
               <v-text-field class="mr-3" v-model="settings.layers.ogcwms.url" :disabled="!settings.layers.ogcwms.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
               <v-text-field class="mr-3" v-model="settings.layers.ogcwms.layers" :disabled="!settings.layers.ogcwms.enabled" :label="localize('Layers')" placeholder=" "></v-text-field>
               <v-range-slider class="flex mr-2 mt-4 xs6" v-model="settings.layers.ogcwms.zoom" :disabled="!settings.layers.ogcwms.enabled" :min="0" :max="20" :label="localize('Zoom')" thumb-label="xalways" thumb-size="20" hide-details></v-range-slider>
@@ -415,7 +413,7 @@ Vue.component('vi-gas', {
             </v-layout>
 
             <v-layout x-ogcwmts>
-              <v-checkbox class="mr-1 text-no-wrap" v-model="settings.layers.ogcwmts.enabled" :disabled="!(uidata.layerOgcWmtsAvailable || extended)" :label="'%s (∗)'.format(localize('OGC:WMTS'))"></v-checkbox>
+              <v-checkbox class="mr-1 text-no-wrap" v-model="settings.layers.ogcwmts.enabled" :disabled="!premium" :label="'%s (∗)'.format(localize('OGC:WMTS'))"></v-checkbox>
               <v-select class="mr-1" :items="'TileJSON,TileURL'.split(',')" v-model="settings.layers.ogcwmts.type" :label="localize('Type')" placeholder=" " :disabled="!settings.layers.ogcwmts.enabled" hide-details></v-select>
               <template v-if="settings.layers.ogcwmts.type === 'TileJSON'">
                 <v-text-field class="mr-1" v-model="settings.layers.ogcwmts.tileJsonUrl" :disabled="!settings.layers.ogcwmts.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
