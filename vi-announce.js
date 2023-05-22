@@ -1,4 +1,4 @@
-import VxMarked from 'https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms@4.x/vx-marked.js';
+import VxMarked from 'https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms/vx-marked.js';
 
 Vue.component("announce-actions", {
   template: /*html*/`<!--  -->
