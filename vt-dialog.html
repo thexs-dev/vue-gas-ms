@@ -94,6 +94,17 @@
       return [...arguments].reduce((p, c) => p.replace(/%s/, c), this);
     };
   </script>
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-4RVELZF362"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', data.GA.gaid, {
+      'page_title': data.GA.title,
+      'page_path': data.GA.path,
+      'user_id': data.GA.uid
+    });
+  </script> -->
 </head>
 
 <body>
@@ -120,6 +131,8 @@
 
     Vue.prototype.$gae = () => null; // dummy in case is not yet ready on first call
     Vue.use(VxAnalytics, data.GA);
+    // Vue.prototype.$gae = function (event) { gtag('event', event, { 'event_category': options.category }); }
+    // Vue.prototype.$gap = function (title, path) { gtag('config', data.GA.gaid, { 'page_title': title, 'page_path': path }); }
 
     Vue.prototype.$open = (url) => { window.open(url) }
     data.localeResources = {};
