@@ -9,7 +9,7 @@ const VxAnalytics = {
         gtag('config', options.gaid, {
           'page_title': options.title,
           'page_path': options.path,
-          'user_id': options.hashedUid
+          'user_id': options.uid
         });
         Vue.prototype.$gae = function (event) { gtag('event', event, { 'event_category': options.category }); }
         Vue.prototype.$gap = function (title, path) { gtag('config', options.gaid, { 'page_title': title, 'page_path': path }); }
