@@ -106,7 +106,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.1.6/dist/vuetify.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms/vx-plugin-load-script.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms/vx-plugin-analytics.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/gh/thexs-dev/vue-gas-ms/vx-plugin-analytics.js"></script> -->
 
   <!-- firebase for announce,[-sidebar],subscription but loaded async mounted() await as required -->
 
@@ -118,8 +118,9 @@
       window.alert("Unexpected error: \n" + err);
     };
 
+    Vue.use(LoadScript);
     Vue.prototype.$gae = () => null; // dummy in case is not yet ready on first call
-    Vue.use(VxAnalytics, data.GA);
+    // Vue.use(VxAnalytics, data.GA);
 
     Vue.prototype.$open = (url) => { window.open(url) }
     data.localeResources = {};
@@ -127,9 +128,26 @@
     window.fetch(data.localesPath + data.language + ".json")
       .then((response) => response.json())
       .then((json) => data.localeResources = json[data.language])
+    console.log("Loading", data.viPath + data.viComponent)
     Vue.loadScript(data.viPath + data.viComponent, {type:"module"})
-      .then(() => { }).catch((e) => { $gsdlog("Problem loading " + data.viComponent); console.log(e) });
+      .then(() => { console.log("Loaded?") }).catch((e) => { $gsdlog("Problem loading " + data.viComponent); console.log(e) });
   </script>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-31069312-8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', data.GA.gaid, {
+      'page_title': data.GA.title,
+      'page_path': data.GA.path,
+      'user_id': data.GA.uid
+    });
+    Vue.prototype.$gae = function (event) { gtag('event', event, { 'event_category': data.GA.category }); }
+    Vue.prototype.$gap = function (title, path) { gtag('config', data.GA.gaid, { 'page_title': title, 'page_path': path }); }
+    $gae = function (event) { gtag('event', event, { 'event_category': data.GA.category }); }
+    $gap = function (title, path) { gtag('config', data.GA.gaid, { 'page_title': title, 'page_path': path }); }
+</script>
 
 </body>
 
