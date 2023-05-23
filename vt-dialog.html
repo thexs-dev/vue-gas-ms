@@ -41,7 +41,7 @@
     // var data = <?!=JSON.stringify(da-ta)?>; // ready for GAS HtmlService...evaluate()
     var data = data || {
       // common to most vi-gas-ms components
-      viComponent: "vi-preferences.js", // 1template, about, announce, preferences, sharing, sidebar, subscription, subscription21
+      viComponent: "vi-about.js", // 1template, about, announce, preferences, sharing, sidebar, subscription, subscription21
       viPath: "./",
       itsme: true,
       user: "fausto@thexs.ca",
@@ -53,7 +53,7 @@
       map4vue: true,
       localesPath: "https://thexs-mapping.firebaseapp.com/locales/",
       language: "en",
-      GA: { gaid: "G-4RVELZF362", title: "MS.addon", path: "/vueTest", category: "testing", uid: "hashed-uid" },
+      GA: { gaid: "UA-31069312-8", title: "MS.addon", path: "/vueTest", category: "testing", uid: "hashed-uid" },
       // vi-about
       // vi-announce
       key: "99",
@@ -94,17 +94,6 @@
       return [...arguments].reduce((p, c) => p.replace(/%s/, c), this);
     };
   </script>
-  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-4RVELZF362"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', data.GA.gaid, {
-      'page_title': data.GA.title,
-      'page_path': data.GA.path,
-      'user_id': data.GA.uid
-    });
-  </script> -->
 </head>
 
 <body>
@@ -131,8 +120,6 @@
 
     Vue.prototype.$gae = () => null; // dummy in case is not yet ready on first call
     Vue.use(VxAnalytics, data.GA);
-    // Vue.prototype.$gae = function (event) { gtag('event', event, { 'event_category': options.category }); }
-    // Vue.prototype.$gap = function (title, path) { gtag('config', data.GA.gaid, { 'page_title': title, 'page_path': path }); }
 
     Vue.prototype.$open = (url) => { window.open(url) }
     data.localeResources = {};
@@ -140,7 +127,6 @@
     window.fetch(data.localesPath + data.language + ".json")
       .then((response) => response.json())
       .then((json) => data.localeResources = json[data.language])
-
     Vue.loadScript(data.viPath + data.viComponent, {type:"module"})
       .then(() => { }).catch((e) => { $gsdlog("Problem loading " + data.viComponent); console.log(e) });
   </script>

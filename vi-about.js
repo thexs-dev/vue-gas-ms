@@ -1,6 +1,6 @@
 
 Vue.component('vi-gas', {
-  template: `<!--  -->
+  template: /*html*/`<!--  -->
 <div>
   <v-app-bar app>
     <v-toolbar-title>{{localize('about')}}</v-toolbar-title>
