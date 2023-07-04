@@ -445,7 +445,7 @@ Vue.component('vi-gas', {
               <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.vexcel.enabled" :label="'%s (∗κ)'.format(localize('Login'))" hide-details></v-checkbox>
               <v-text-field class="mr-3" v-model="settings.layers.vexcel.login.email" :disabled="!settings.layers.vexcel.enabled" :label="localize('Email')" placeholder=" "></v-text-field>
               <v-text-field class="mr-3" v-model="settings.layers.vexcel.login.password" :disabled="!settings.layers.vexcel.enabled" :type="showVxlPassword ? 'text' : 'password'" :label="localize('Password')" placeholder=" " :append-icon="showVxlPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showVxlPassword = !showVxlPassword"></v-text-field>
-              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
+              <v-icon @click="$open('https://www.thexs.ca/posts/adding-vexcel-imagery-services')">mdi-help-circle</v-icon>
             </v-layout>
             <v-layout x-tiles class="mb-2">
               <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.vexcel.tiles.enabled" :disabled="!(settings.layers.vexcel.enabled && settings.layers.vexcel.login.email && settings.layers.vexcel.login.password)" :label="'%s (∗κ)'.format(localize('Tiles'))" hide-details></v-checkbox>
@@ -458,6 +458,9 @@ Vue.component('vi-gas', {
               <v-text-field class="mr-3" v-model="settings.layers.vexcel.tiles.params" :disabled="!settings.layers.vexcel.tiles.enabled" :label="localize('Params')" placeholder=" "></v-text-field>
               <v-checkbox class="mr-3" v-model="settings.layers.vexcel.tiles.labels" :disabled="!settings.layers.vexcel.tiles.enabled" :label="localize('Labels')"></v-checkbox>
             </v-layout>
+            <div>
+              Disclaimer: Vexcel Layers are provided by Ⓒ Vexcel Imaging US Inc., theXS Mapping Sheets add-on only provides the integration of Vexcel imagery into our Mapping solution. You must have authorized access and authorization from Vexcel to use this feature.
+            </div>
           </v-tab-item>
         </v-tabs-items>
       </div>
