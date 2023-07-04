@@ -345,7 +345,7 @@ Vue.component('vi-gas', {
       <div v-show="selected === 'layers'">
         <v-tabs v-model="tabLayer" align-with-title>
           <v-tabs-slider color="rgba(0,0,0,.54)"></v-tabs-slider>
-          <v-tab v-for="item in 'basic,advanced,extended,extras'.split(',')" :key="item">{{ item }}</v-tab>
+          <v-tab v-for="item in 'basic,advanced,extended,extras'.split(',').concat(uidata.layerVexcelAvailable ? 'vexcel' : [])" :key="item">{{ item }}</v-tab>
         </v-tabs>
         <v-tabs-items v-model="tabLayer">
           <v-tab-item key="basic">
@@ -439,6 +439,26 @@ Vue.component('vi-gas', {
               <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.6ocmdwzfrw9i')">mdi-help-circle</v-icon>
             </v-layout>
           </v-tab-item>
+
+          <v-tab-item key="vexcel">
+            <v-layout x-login>
+              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.vexcel.enabled" :label="'%s (∗κ)'.format(localize('Login'))" hide-details></v-checkbox>
+              <v-text-field class="mr-3" v-model="settings.layers.vexcel.login.email" :disabled="!settings.layers.vexcel.enabled" :label="localize('Email')" placeholder=" "></v-text-field>
+              <v-text-field class="mr-3" v-model="settings.layers.vexcel.login.password" :disabled="!settings.layers.vexcel.enabled" :type="showVxlPassword ? 'text' : 'password'" :label="localize('Password')" placeholder=" " :append-icon="showVxlPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showVxlPassword = !showVxlPassword"></v-text-field>
+              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers')">mdi-help-circle</v-icon>
+            </v-layout>
+            <v-layout x-tiles class="mb-2">
+              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.vexcel.tiles.enabled" :disabled="!(settings.layers.vexcel.enabled && settings.layers.vexcel.login.email && settings.layers.vexcel.login.password)" :label="'%s (∗κ)'.format(localize('Tiles'))" hide-details></v-checkbox>
+              <v-text-field class="mr-3" v-model="settings.layers.vexcel.tiles.url" :disabled="!settings.layers.vexcel.tiles.enabled" :label="localize('URL')" placeholder=" " hide-details></v-text-field>
+              <v-text-field class="mr-3" v-model="settings.layers.vexcel.tiles.layer" :disabled="!settings.layers.vexcel.tiles.enabled" :label="localize('Layer')" placeholder=" " hide-details></v-text-field>
+              <v-text-field class="mr-1" style="min-width: fit-content;" v-model="settings.layers.vexcel.tiles.opacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.vexcel.tiles.enabled" :label="localize('Opacity')" hide-details></v-text-field>
+            </v-layout>
+            <v-layout x-tiles-2>
+              <v-spacer class="flex xs2"></v-spacer>
+              <v-text-field class="mr-3" v-model="settings.layers.vexcel.tiles.params" :disabled="!settings.layers.vexcel.tiles.enabled" :label="localize('Params')" placeholder=" "></v-text-field>
+              <v-checkbox class="mr-3" v-model="settings.layers.vexcel.tiles.labels" :disabled="!settings.layers.vexcel.tiles.enabled" :label="localize('Labels')"></v-checkbox>
+            </v-layout>
+          </v-tab-item>
         </v-tabs-items>
       </div>
 
@@ -459,6 +479,7 @@ Vue.component('vi-gas', {
     data.iwStyle = "font-weight: 300!important; font-size: 13px!important; letter-spacing: .0178571429em!important; line-height: 1.25rem; font-family: Roboto,sans-serif!important;";
     data.shapesFillColors = "black,white,red,green,yellow,blue,gray,brown".split(",").sort();
     data.tabLayer = null;
+    data.showVxlPassword = false;
     return data
   },
 
