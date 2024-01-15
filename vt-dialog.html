@@ -41,7 +41,7 @@
     // var data = <?!=JSON.stringify(da-ta)?>; // ready for GAS HtmlService...evaluate()
     var data = data || {
       // common to most vi-gas-ms components
-      viComponent: "vi-preferences.js", // 1template, about, announce, preferences, sharing, sidebar, subscription, subscription21
+      viComponent: "vi-sidebar.js", // 1template, about, announce, preferences, sharing, sidebar, subscription, subscription21
       viPath: "./",
       itsme: true,
       user: "fausto@thexs.ca",
@@ -53,7 +53,7 @@
       map4vue: true,
       localesPath: "https://thexs-mapping.firebaseapp.com/locales/",
       language: "en",
-      GA: { gaid: "UA-31069312-8", title: "MS.addon", path: "/vueTest", category: "testing", uid: "hashed-uid" },
+      GA: { gaid: "G-4RVELZF362", title: "MS.addon", path: "/vueTest", category: "testing", uid: "hashed-uid" },
       // vi-about
       // vi-announce
       key: "99",
@@ -62,6 +62,7 @@
       selected: "layers",
       // vi-sharing
       fileId: "1hNt8yd6Vd-zxj6anWN0Xe8frzwHaEddh", urlPath: "https://mapping.thexs.app/map.html",
+      fileName: "ms-testing.test.1718678537.json",
       // vi-sidebar
       filtersKind: "checkboxes,checkbox-list,slider,slider-right,range,date,date-range,select,select-multiple,select-dynamic".split(","),
       // vi-subscription
@@ -133,7 +134,7 @@
       .then(() => { console.log("Loaded?") }).catch((e) => { $gsdlog("Problem loading " + data.viComponent); console.log(e) });
   </script>
 
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-31069312-8"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4RVELZF362"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
