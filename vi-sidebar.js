@@ -81,7 +81,7 @@ Vue.component('vi-gas', {
         <span v-else>:: {{ localize(uidata.message)}}</span>
       </div>
       <v-layout v-if="uidata.mapPublishOnFirebaseAvailable" class="mt-2 mb-2">
-        <v-checkbox v-model="uidata.published" :label="'%s on Google Storage'.format($localize('Publish'))" :disabled="working || !uidata.public" class="mt-0 pt-0 text-truncate" dense hide-details> </v-checkbox>
+        <v-checkbox v-model="uidata.publish" :label="'%s on Google Storage'.format($localize('Publish'))" :disabled="working" class="mt-0 pt-0 text-truncate" dense hide-details> </v-checkbox>
         <v-spacer></v-spacer>
         <v-icon @click="$open('%s?host=mexs&fid=%s/%s%s'.format(uidata.urlPath, hashedUid, uidata.fid, itsme?'&dev=1':''))" :disabled="working || !uidata.published || !uidata.fid" :title="localize('view')" class="ml-1">mdi-open-in-new</v-icon>
         <v-icon @click="$open('https://www.thexs.ca/posts/how-to-publish-your-public-map-on-google-cloud-storage')" :title="localize('help')" class="ml-1">mdi-help-circle</v-icon>
