@@ -205,7 +205,7 @@ Vue.component('vi-gas', {
         </v-layout>
         <v-layout v-if="settings.map4vue">
           <v-checkbox v-model="settings.infowindowMarkdownEnabled" :disabled="!premium" :label="'%s (+)'.format(localize('Markdown'))" class="mr-4"></v-checkbox>
-          <v-text-field :value="settings.infowindowMarkedTemplate" readonly :disabled="!settings.infowindowMarkdownEnabled" :label="localize('Content template (Markdown)')" 
+          <v-text-field :value="settings.infowindowMarkedTemplate" readonly :disabled="!settings.infowindowMarkdownEnabled" :label="localize('Content template (Markdown)')"
             @click:append-outer="selected = 'infowindow-markdown'" placeholder=" " class="" hide-details append-outer-icon="mdi-pencil">
           </v-text-field>
         </v-layout>
@@ -241,7 +241,7 @@ Vue.component('vi-gas', {
       <div v-if="selected === 'infowindow-markdown'">
         <v-layout>
           <v-textarea :value="settings.infowindowMarkedTemplate" @input="debouncing" xautofocus :label="localize('Content template (Markdown)')" rows=19 no-resize background-color="grey lighten-2" placeholder=" " style="margin-right:8px" hide-details></v-textarea>
-          <div style="overflow-y: auto; overflow-x: hidden; border-bottom: 1px solid lightgray;" 
+          <div style="overflow-y: auto; overflow-x: hidden; border-bottom: 1px solid lightgray;"
             :style="{ 'width': settings.infowindowWidth + 'px', ...(settings.infowindowHeightLock ? {'height': settings.infowindowHeight + 'px'} : {'height': 'fit-content', 'max-height': settings.infowindowHeight + 'px'}) }">
             <vx-marked :template="settings.infowindowMarkedTemplate" :json="infowindowMarkedJson()" :sanitize="true" :style="iwStyle" ></vx-marked>
           </div>
@@ -257,7 +257,7 @@ Vue.component('vi-gas', {
         <v-layout>
           <v-checkbox v-if="settings.map4vue" v-model="settings.listingEnabled" :label="localize('Enabled')" class="mr-3"></v-checkbox>
           <v-text-field v-model="settings.listingTemplate" placeholder=" " :disabled="!settings.listingEnabled" :readonly="uidata.listingTemplateMarked"
-            append-icon="mdi-eye" @click:append="settings.listingTemplate = settings.map4vue ? uidata.listingTemplateMarkdown : uidata.listingTemplate; uidata.listingTemplateMarked=false" 
+            append-icon="mdi-eye" @click:append="settings.listingTemplate = settings.map4vue ? uidata.listingTemplateMarkdown : uidata.listingTemplate; uidata.listingTemplateMarked=false"
             append-outer-icon="mdi-pencil" @click:append-outer="if (settings.map4vue) {selected = 'listing-markdown'; uidata.listingTemplateMarked=true}"
             :label="'%s {{}}'.format(localize('label-listing'))">
           </v-text-field>
@@ -285,7 +285,7 @@ Vue.component('vi-gas', {
       <div v-if="selected === 'listing-markdown'">
         <v-layout>
           <v-textarea :value="settings.listingTemplate" @input="debouncing2" xautofocus :label="localize('Content template (Markdown)')" rows=19 no-resize background-color="grey lighten-2" placeholder=" " style="margin-right:8px" hide-details></v-textarea>
-          <div style="overflow-y: auto; overflow-x: hidden; border-bottom: 1px solid lightgray;" 
+          <div style="overflow-y: auto; overflow-x: hidden; border-bottom: 1px solid lightgray;"
             :style="{ 'width': settings.listingWidth + 'px', 'height': 'fit-content', 'max-height': '75vh' }">
             <vx-marked :template="settings.listingTemplate" :json="infowindowMarkedJson()" :sanitize="true" :style="iwStyle" ></vx-marked>
           </div>
@@ -365,12 +365,18 @@ Vue.component('vi-gas', {
           </v-tab-item>
 
           <v-tab-item key="advanced">
-            <v-layout x-geojson>
-              <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.geojson.enabled" :disabled="!premium" :label="'%s (+)'.format(localize('GeoJSON'))"></v-checkbox>
-              <v-text-field class="mr-3" v-model="settings.layers.geojson.url" :disabled="!settings.layers.geojson.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
-              <v-text-field class="mr-3" v-model="settings.layers.geojson.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.geojson.enabled" :label="localize('label-fill-opacity')"></v-text-field>
-              <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_KN6nws9-AFBH')">mdi-help-circle</v-icon>
-            </v-layout>
+            <div x-geojson>
+              <v-layout>
+                <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.geojson.enabled" :disabled="!premium" :label="'%s (+)'.format(localize('GeoJSON'))"></v-checkbox>
+                <v-text-field class="mr-3" v-model="settings.layers.geojson.url" :disabled="!settings.layers.geojson.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
+                <v-text-field class="mr-3" v-model="settings.layers.geojson.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.geojson.enabled" :label="localize('label-fill-opacity')"></v-text-field>
+                <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_KN6nws9-AFBH')">mdi-help-circle</v-icon>
+              </v-layout>
+              <v-layout v-if="uidata.layerGeoJsonExtrasAvailable">
+                <v-text-field class="ml-5 mr-3" v-model="settings.layers.geojson.style" :disabled="!settings.layers.geojson.enabled" :label="'%s (∗κ)'.format(localize('Style CSS'))" placeholder=" " append-icon="mdi-eye" @click:append="settings.layers.geojson.style = geojsonStyleHint"></v-text-field>
+                <v-text-field class="mr-3" v-model="settings.layers.geojson.infowindowTemplate" :disabled="!settings.layers.geojson.enabled" :label="'%s (∗κ)'.format(localize('Infowindow template (Markdown)'))" placeholder=" "></v-text-field>
+              </v-layout>
+            </div>
             <v-layout x-kml>
               <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.kml.enabled" :disabled="!premium" :label="'%s (+)'.format(localize('Kml/Kmz'))"></v-checkbox>
               <v-text-field class="mr-3" v-model="settings.layers.kml.url" :disabled="!settings.layers.kml.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
@@ -483,6 +489,7 @@ Vue.component('vi-gas', {
     data.shapesFillColors = "black,white,red,green,yellow,blue,gray,brown".split(",").sort();
     data.tabLayer = null;
     data.showVxlPassword = false;
+    data.geojsonStyleHint = "fillColor:blue;fillOpacity:0.5;strokeColor:black;strokeOpacity:1;strokeWeight:1";
     return data
   },
 
