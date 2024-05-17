@@ -374,7 +374,7 @@ Vue.component('vi-gas', {
               </v-layout>
               <v-layout v-if="uidata.layerGeoJsonExtrasAvailable">
                 <v-text-field class="ml-5 mr-3" v-model="settings.layers.geojson.style" :disabled="!settings.layers.geojson.enabled" :label="'%s (∗κ)'.format(localize('Style CSS'))" placeholder=" " append-icon="mdi-eye" @click:append="settings.layers.geojson.style = geojsonStyleHint"></v-text-field>
-                <v-text-field class="mr-3" v-model="settings.layers.geojson.infowindowTemplate" :disabled="!settings.layers.geojson.enabled" :label="'%s (∗κ)'.format(localize('Infowindow template (Markdown)'))" placeholder=" "></v-text-field>
+                <v-text-field class="mr-3" v-model="settings.layers.geojson.infowindowTemplate" :disabled="!settings.layers.geojson.enabled" :label="'%s (∗κ)'.format(localize('Infowindow template'))" placeholder=" "></v-text-field>
               </v-layout>
             </div>
             <v-layout x-kml>
