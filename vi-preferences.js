@@ -373,8 +373,8 @@ Vue.component('vi-gas', {
                 <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_KN6nws9-AFBH')">mdi-help-circle</v-icon>
               </v-layout>
               <v-layout v-if="uidata.layerGeoJsonExtrasAvailable">
-                <v-text-field class="ml-5 mr-3" v-model="settings.layers.geojson.style" :disabled="!settings.layers.geojson.enabled" :label="'%s (∗κ)'.format(localize('Style CSS'))" placeholder=" " append-icon="mdi-eye" @click:append="settings.layers.geojson.style = geojsonStyleHint"></v-text-field>
-                <v-text-field class="mr-3" v-model="settings.layers.geojson.infowindowTemplate" :disabled="!settings.layers.geojson.enabled" :label="'%s (∗κ)'.format(localize('Infowindow template'))" placeholder=" "></v-text-field>
+                <v-text-field class="ml-5 mr-3" v-model="settings.layers.geojson.style" :disabled="!settings.layers.geojson.enabled" :label="'%s (∗)'.format(localize('Style CSS'))" placeholder=" " append-icon="mdi-eye" @click:append="settings.layers.geojson.style = geojsonStyleHint"></v-text-field>
+                <v-text-field class="mr-3" v-model="settings.layers.geojson.infowindowTemplate" :disabled="!settings.layers.geojson.enabled" :label="'%s (∗)'.format(localize('Infowindow template'))" placeholder=" "></v-text-field>
               </v-layout>
             </div>
             <v-layout x-kml>
@@ -393,12 +393,16 @@ Vue.component('vi-gas', {
                 <v-icon @click="$open('https://www.thexs.ca/xsmapping/filtering-on-your-map-with-shapes')">mdi-help-circle</v-icon>
               </v-layout>
               <v-layout>
-                <v-spacer></v-spacer>
-                <v-checkbox class="mr-3" v-model="settings.layers.shapes.draggable" :disabled="!settings.layers.shapes.enabled" :label="localize('Draggable')"></v-checkbox>
+                <v-checkbox class="ml-5 mr-3" v-model="settings.layers.shapes.draggable" :disabled="!settings.layers.shapes.enabled" :label="localize('Draggable')"></v-checkbox>
                 <v-checkbox class="mr-3" v-model="settings.layers.shapes.editable" :disabled="!settings.layers.shapes.enabled" :label="localize('Editable')"></v-checkbox>
                 <v-checkbox class="mr-3" v-model="settings.layers.shapes.download" :disabled="!settings.layers.shapes.enabled" :label="localize('Download')"></v-checkbox>
                 <v-combobox class="flex xs2 mr-3" :items="shapesFillColors" v-model="settings.layers.shapes.fillColor" :label="localize('Color')" placeholder=" " :disabled="!settings.layers.shapes.enabled"></v-combobox>
                 <v-text-field class="mr-3" v-model="settings.layers.shapes.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.shapes.enabled" :label="localize('Opacity')"></v-text-field>
+              </v-layout>
+              <v-layout v-if="uidata.layerShapesImportAvailable">
+                <v-checkbox class="ml-5 mr-3" v-model="settings.layers.shapes.import.enabled" :disabled="!settings.layers.shapes.enabled" :label="localize('Import')"></v-checkbox>
+                <v-select class="mr-1" :items="(uidata.layerShapesImportFormatList ||'shapes').split(',')" v-model="settings.layers.shapes.import.format" :label="localize('Format')" placeholder=" " :disabled="!settings.layers.shapes.import.enabled" hide-details></v-select>
+                <v-text-field class="mr-3" v-model="settings.layers.shapes.import.url" :disabled="!settings.layers.shapes.import.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
               </v-layout>
             </div>
 

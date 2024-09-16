@@ -129,6 +129,7 @@ window.localData = {
     "layerVexcelAvailable": true,
     "layerGeoJsonExtrasAvailable": true,
     "layerShapesAvailable": false,
+    "layerShapesImportAvailable": true,
     "layerShapesModes": [
       "circle",
       "rectangle",
@@ -286,7 +287,10 @@ window.localData = {
         "fillColor": "yellow",
         "modes": [
           "polygon"
-        ]
+        ],
+        "import": {
+          "format": "shapes",
+        },
       },
       "labels": {
         "position": "center",
