@@ -404,7 +404,7 @@ Vue.component('vi-gas', {
               </v-layout>
               <v-layout v-if="uidata.layerShapesImportAvailable">
                 <v-checkbox class="ml-5 mr-3" v-model="settings.layers.shapes.import.enabled" :disabled="!settings.layers.shapes.enabled" :label="localize('Import')"></v-checkbox>
-                <v-select class="mr-1" :items="(uidata.layerShapesImportFormatList ||'shapes').split(',')" v-model="settings.layers.shapes.import.format" :label="localize('Format')" placeholder=" " :disabled="!settings.layers.shapes.import.enabled" hide-details></v-select>
+                <v-select class="flex xs3 mr-1" :items="(uidata.layerShapesImportFormatList ||'shapes').split(',')" v-model="settings.layers.shapes.import.format" :label="localize('Format')" placeholder=" " :disabled="!settings.layers.shapes.import.enabled" hide-details></v-select>
                 <v-text-field class="mr-3" v-model="settings.layers.shapes.import.url" :disabled="!settings.layers.shapes.import.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
               </v-layout>
             </div>
