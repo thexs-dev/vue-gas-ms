@@ -215,8 +215,9 @@ Vue.component('vi-gas', {
           <v-checkbox v-model="settings.infowindowHeightLock" :label="localize('Lock')"></v-checkbox>
         </v-layout>
         <v-layout>
-          <v-checkbox v-model="settings.infowindowDirections" :label="localize('Add Directions link')" class="pr-4"></v-checkbox>
-          <v-checkbox v-model="settings.infowindowZoomIn" :label="localize('Add Zoom-in link')"></v-checkbox>
+          <v-checkbox v-model="settings.infowindowDirections" :label="localize('Directions')" class="pr-4"></v-checkbox>
+          <v-checkbox v-model="settings.infowindowZoomIn" :label="localize('Zoom-in')" class="pr-4"></v-checkbox>
+          <v-checkbox v-model="settings.infowindowHideListing" :label="localize('Hide Listing')"></v-checkbox>
           <v-text-field class="ml-4 flex xs2" v-model="settings.linksAnchorText" :label="localize('Link text')" placeholder=" "></v-text-field>
           <v-select class="ml-3 flex xs2" :items="['Top','Bottom']" v-model="settings.infowindowButtonsPosition" :disabled="!settings.map4vue" :label="localize('Buttons')"></v-select>        </v-layout>
 
@@ -232,7 +233,8 @@ Vue.component('vi-gas', {
             <v-text-field v-model="settings.editingHeadersTextarea" :disabled="!settings.editingEnabled" :label="localize('Headers as textarea (csv)')" placeholder=" " class="flex xs6"></v-text-field>
           </v-layout>
           <v-layout>
-            <v-textarea v-model="settings.editingAppendDefaultValues" :disabled="!settings.editingEnabled" :label="localize('Append default values (json)')" :rows=3 placeholder=" " class="flex xs6 mr-3" hide-details></v-textarea>
+            <v-textarea v-model="settings.editingPresetValues" :disabled="!settings.editingEnabled" :label="localize('Preset values (json)')" :rows=3 placeholder=" " class="flex xs6 mr-3" hide-details></v-textarea>
+            <v-textarea v-model="settings.editingAppendDefaultValues" :disabled="!settings.editingEnabled || !settings.editingAddOverlay" :label="localize('Append default values (json)')" :rows=3 placeholder=" " class="flex xs6 mr-3" hide-details></v-textarea>
             <v-textarea v-model="settings.editingUpdatePatchedValues" :disabled="!settings.editingEnabled" :label="localize('Update patched values (json)')" :rows=3 placeholder=" " class="flex xs6" hide-details></v-textarea>
           </v-layout>
         </template>
@@ -395,6 +397,7 @@ Vue.component('vi-gas', {
               <v-layout>
                 <v-checkbox class="ml-5 mr-3" v-model="settings.layers.shapes.draggable" :disabled="!settings.layers.shapes.enabled" :label="localize('Draggable')"></v-checkbox>
                 <v-checkbox class="mr-3" v-model="settings.layers.shapes.editable" :disabled="!settings.layers.shapes.enabled" :label="localize('Editable')"></v-checkbox>
+                <v-checkbox class="mr-3" v-model="settings.layers.shapes.switch" :disabled="!settings.layers.shapes.enabled" :label="localize('Switch')"></v-checkbox>
                 <v-checkbox class="mr-3" v-model="settings.layers.shapes.download" :disabled="!settings.layers.shapes.enabled" :label="localize('Download')"></v-checkbox>
                 <v-combobox class="flex xs2 mr-3" :items="shapesFillColors" v-model="settings.layers.shapes.fillColor" :label="localize('Color')" placeholder=" " :disabled="!settings.layers.shapes.enabled"></v-combobox>
                 <v-text-field class="mr-3" v-model="settings.layers.shapes.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.shapes.enabled" :label="localize('Opacity')"></v-text-field>

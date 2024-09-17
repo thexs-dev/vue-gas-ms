@@ -120,7 +120,7 @@ window.localData = {
     ],
     "mapTypeOsmAvailable": true,
     "unattendedAlwaysAvailable": true,
-    "editingAvailable": false,
+    "editingAvailable": true,
     "editingColumnAvailable": false,
     "iconLabelsAvailable": false,
     "mapsApiKeyAvailable": false,
