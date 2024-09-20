@@ -397,7 +397,7 @@ Vue.component('vi-gas', {
               <v-layout>
                 <v-checkbox class="ml-5 mr-3" v-model="settings.layers.shapes.draggable" :disabled="!settings.layers.shapes.enabled" :label="localize('Draggable')"></v-checkbox>
                 <v-checkbox class="mr-3" v-model="settings.layers.shapes.editable" :disabled="!settings.layers.shapes.enabled" :label="localize('Editable')"></v-checkbox>
-                <v-checkbox class="mr-3" v-model="settings.layers.shapes.switch" :disabled="!settings.layers.shapes.enabled" :label="localize('Switch')"></v-checkbox>
+                <!-- <v-checkbox class="mr-3" v-model="settings.layers.shapes.switch" :disabled="!settings.layers.shapes.enabled" :label="localize('Switch')"></v-checkbox> -->
                 <v-checkbox class="mr-3" v-model="settings.layers.shapes.download" :disabled="!settings.layers.shapes.enabled" :label="localize('Download')"></v-checkbox>
                 <v-combobox class="flex xs2 mr-3" :items="shapesFillColors" v-model="settings.layers.shapes.fillColor" :label="localize('Color')" placeholder=" " :disabled="!settings.layers.shapes.enabled"></v-combobox>
                 <v-text-field class="mr-3" v-model="settings.layers.shapes.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.shapes.enabled" :label="localize('Opacity')"></v-text-field>
