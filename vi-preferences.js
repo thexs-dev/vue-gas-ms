@@ -81,12 +81,15 @@ Vue.component('vi-gas', {
       <div v-show="selected === 'document'">
         <div v-if="uidata.unattendedAvailable">
           <v-layout>
-            <v-checkbox class="flex xs11" v-model="settings.unattendedEnabled" @change="unattended" :disabled="!settings.lastBuildDate" label="Unattended BUILD (time-based trigger)"></v-checkbox>
+            <v-checkbox class="flex xs11" v-model="settings.unattendedEnabled" @change="unattended('unattendedEnabled')" :disabled="!settings.lastBuildDate" label="Unattended BUILD (time-based trigger)"></v-checkbox>
             <v-select :items="uidata.unattendedFrequencies" suffix="hours" v-model="settings.unattendedFrequency" :label="localize('Frequency')" class="mr-3" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/how-to-update-my-map-automatically-when-the-data-changes')"></v-select>
             <v-checkbox v-model="settings.unattendedAlways" :disabled="!uidata.unattendedAlwaysAvailable" :label="localize('Always')"></v-checkbox>
           </v-layout>
-          <div v-if="settings.lastBuildDate" class="body-2 mb-8 ml-4">(*) Unattended BUILD requires access to this Spreadsheet</div>
-          <div v-else class="body-2 mb-8 ml-4">(*) BUILD a map first, to get access to the Unattended BUILD option</div>
+          <v-layout>
+            <v-checkbox class="flex xs11" v-model="settings.buildTargettedRowsOnly" @change="unattended('buildTargettedRowsOnly')" :disabled="!premium || !settings.lastBuildDate || !uidata.buildTargettedRowsOnlyAvailable" label="(+)Targetted BUILD (Only selected/filtered Rows)"></v-checkbox>
+          </v-layout>
+          <div v-if="settings.lastBuildDate" class="body-2 mb-8 ml-4">(*) Unattended and Targetted BUILD require access to this Spreadsheet</div>
+          <div v-else class="body-2 mb-8 ml-4">(*) BUILD a map first, to get access to these BUILD options</div>
           <!-- file picker dialog if required -->
           <div v-if="picker.required">
             <p hidden id='picker-result'></p>
@@ -539,8 +542,9 @@ Vue.component('vi-gas', {
         .getHomebaseLatLngFromAddress(this.settings.routingHbAddress);
     },
 
-    unattended(e) {
-      if (this.settings.unattendedEnabled) {
+    unattended(caller) {
+      console.log("unattended?", caller)
+      if (this.settings[caller]) {
         this.working = true;
         this.$gae("unattended");
         google.script.run
@@ -552,7 +556,7 @@ Vue.component('vi-gas', {
           this.working = false;
           if (!r) {
             this.picker.required = true;
-            window.setTimeout(() => this.settings.unattendedEnabled = false, 1000);
+            window.setTimeout(() => this.settings[caller] = false, 1000);
             getOAuthToken();
           }
         })
