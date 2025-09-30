@@ -85,8 +85,8 @@ Vue.component('vi-gas', {
             <v-select :items="uidata.unattendedFrequencies" suffix="hours" v-model="settings.unattendedFrequency" :label="localize('Frequency')" class="mr-3" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/how-to-update-my-map-automatically-when-the-data-changes')"></v-select>
             <v-checkbox v-model="settings.unattendedAlways" :disabled="!uidata.unattendedAlwaysAvailable" :label="localize('Always')"></v-checkbox>
           </v-layout>
-          <v-layout>
-            <v-checkbox class="flex xs11" v-model="settings.buildTargettedRowsOnly" @change="unattended('buildTargettedRowsOnly')" :disabled="!premium || !settings.lastBuildDate || !uidata.buildTargettedRowsOnlyAvailable" label="(+)Targetted BUILD (Only selected/filtered Rows)"></v-checkbox>
+          <v-layout v-if="uidata.buildTargettedRowsOnlyAvailable">
+            <v-checkbox class="flex xs11" v-model="settings.buildTargettedRowsOnly" @change="unattended('buildTargettedRowsOnly')" :disabled="!premium || !settings.lastBuildDate" label="Targetted BUILD (only selected/filtered rows) (+)" append-icon="mdi-help-circle" @click:append="$open('https://www.thexs.ca/posts/how-to-build-a-map-with-only-the-selected-filtered-rows')"></v-checkbox>
           </v-layout>
           <div v-if="settings.lastBuildDate" class="body-2 mb-8 ml-4">(*) Unattended and Targetted BUILD require access to this Spreadsheet</div>
           <div v-else class="body-2 mb-8 ml-4">(*) BUILD a map first, to get access to these BUILD options</div>
