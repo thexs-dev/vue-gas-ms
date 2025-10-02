@@ -120,7 +120,7 @@ window.localData = {
     ],
     "mapTypeOsmAvailable": true,
     "unattendedAlwaysAvailable": true,
-    "buildTargettedRowsOnlyAvailable": true,
+    "buildTargetedRowsOnlyAvailable": true,
     "editingAvailable": true,
     "editingColumnAvailable": false,
     "iconLabelsAvailable": false,
