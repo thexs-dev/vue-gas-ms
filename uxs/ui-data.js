@@ -263,7 +263,8 @@ window.localData = {
         "fillOpacity": 0.15
       },
       "heatmap": {
-        "fillOpacity": 0.6
+        "fillOpacity": 0.6,
+        "radius": 30
       },
       "geojson": {
         "fillOpacity": 0.1,

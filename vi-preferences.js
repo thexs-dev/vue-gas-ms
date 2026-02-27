@@ -364,7 +364,8 @@ Vue.component('vi-gas', {
             <v-layout x-heatmap>
               <v-checkbox class="mr-3" v-model="settings.layers.heatmap.enabled" :label="localize('heatmap')"></v-checkbox>
               <v-select class="mr-3" :items="uidata.headersAllOptional" v-model="settings.layers.heatmap.weightHeader" :disabled="!settings.layers.heatmap.enabled" :label="'%s (%s)'.format(localize('label-heatmap-weight'), localize('optional'))"></v-select>
-              <v-text-field class="mr-3" v-model="settings.layers.heatmap.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.heatmap.enabled" :label="localize('label-fill-opacity')"></v-text-field>
+              <v-text-field v-if="!true" class="mr-3" v-model="settings.layers.heatmap.fillOpacity" type="number" step="0.01" min="0" max="1" :disabled="!settings.layers.heatmap.enabled" :label="localize('label-fill-opacity')"></v-text-field>
+              <v-text-field class="mr-3" v-model="settings.layers.heatmap.radius" type="number" step="1" min="10" max="60" :disabled="!settings.layers.heatmap.enabled" :label="localize('Radius')"></v-text-field>
               <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.p_BbzJ2FAGQ00s')">mdi-help-circle</v-icon>
             </v-layout>
           </v-tab-item>
