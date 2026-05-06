@@ -79,9 +79,10 @@ Vue.component('vi-gas', {
       </div>
 
       <div v-show="selected === 'document'">
-        <div v-if="uidata.unattendedAvailable">
+        <div>
           <v-layout>
-            <v-checkbox class="flex xs12" v-model="settings.unattendedEnabled" @change="unattended('unattendedEnabled')" :disabled="!premium || !settings.lastBuildDate || working" label="Unattended BUILD (time-based trigger) (+)"></v-checkbox>
+            <!-- uidata.unattendedAvailable = unattendedEnabled-legacy-as-basic || premium -->
+            <v-checkbox class="flex xs12" v-model="settings.unattendedEnabled" @change="unattended('unattendedEnabled')" :disabled="!uidata.unattendedAvailable || !settings.lastBuildDate || working" label="Unattended BUILD (time-based trigger) (+)"></v-checkbox>
             <v-select :items="uidata.unattendedFrequencies" suffix="hours" v-model="settings.unattendedFrequency" :label="localize('Frequency')" class="mr-3" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/how-to-update-my-map-automatically-when-the-data-changes')"></v-select>
             <v-checkbox v-model="settings.unattendedAlways" :disabled="!uidata.unattendedAlwaysAvailable" :label="localize('Always')"></v-checkbox>
           </v-layout>
