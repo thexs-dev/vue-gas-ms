@@ -119,8 +119,8 @@ window.localData = {
       "styled"
     ],
     "mapTypeOsmAvailable": true,
-    "unattendedAlwaysAvailable": true,
-    "buildTargetedRowsOnlyAvailable": true,
+    "unattendedAlwaysAvailable": !true,
+    "buildTargetedRowsOnlyAvailable": !true,
     "editingAvailable": true,
     "editingColumnAvailable": false,
     "iconLabelsAvailable": false,
@@ -128,7 +128,7 @@ window.localData = {
     "listingSortableAvailable": false,
     "layerTripBufferAvailable": false,
     "layerVexcelAvailable": true,
-    "layerGeoJsonExtrasAvailable": true,
+    "layerGeoJsonExtrasAvailable": !true,
     "layerShapesAvailable": false,
     "layerShapesImportAvailable": true,
     "layerShapesModes": [
@@ -271,6 +271,7 @@ window.localData = {
         "style": ""
       },
       "kml": {
+        "enabled": !true,
         "viewport": true
       },
       "buffer": {

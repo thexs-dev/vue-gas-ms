@@ -81,12 +81,12 @@ Vue.component('vi-gas', {
       <div v-show="selected === 'document'">
         <div v-if="uidata.unattendedAvailable">
           <v-layout>
-            <v-checkbox class="flex xs11" v-model="settings.unattendedEnabled" @change="unattended('unattendedEnabled')" :disabled="!settings.lastBuildDate || working" label="Unattended BUILD (time-based trigger)"></v-checkbox>
+            <v-checkbox class="flex xs12" v-model="settings.unattendedEnabled" @change="unattended('unattendedEnabled')" :disabled="!premium || !settings.lastBuildDate || working" label="Unattended BUILD (time-based trigger) (+)"></v-checkbox>
             <v-select :items="uidata.unattendedFrequencies" suffix="hours" v-model="settings.unattendedFrequency" :label="localize('Frequency')" class="mr-3" append-outer-icon="mdi-help-circle" @click:append-outer="$open('https://www.thexs.ca/posts/how-to-update-my-map-automatically-when-the-data-changes')"></v-select>
             <v-checkbox v-model="settings.unattendedAlways" :disabled="!uidata.unattendedAlwaysAvailable" :label="localize('Always')"></v-checkbox>
           </v-layout>
-          <v-layout v-if="uidata.buildTargetedRowsOnlyAvailable">
-            <v-checkbox class="flex xs11" v-model="settings.buildTargetedRowsOnly" @change="unattended('buildTargetedRowsOnly')" :disabled="!premium || !settings.lastBuildDate || working" label="Targeted BUILD (only selected/filtered rows) (+)" append-icon="mdi-help-circle" @click:append="$open('https://www.thexs.ca/posts/how-to-build-a-map-with-only-the-selected-filtered-rows')"></v-checkbox>
+          <v-layout>
+            <v-checkbox class="flex xs11" v-model="settings.buildTargetedRowsOnly" @change="unattended('buildTargetedRowsOnly')" :disabled="!uidata.buildTargetedRowsOnlyAvailable || !premium || !settings.lastBuildDate || working" label="Targeted BUILD (only selected/filtered rows) (∗)" append-icon="mdi-help-circle" @click:append="$open('https://www.thexs.ca/posts/how-to-build-a-map-with-only-the-selected-filtered-rows')"></v-checkbox>
           </v-layout>
           <div v-if="settings.lastBuildDate" class="body-2 mb-8 ml-4">(*) Unattended and Targeted BUILD require access to this Spreadsheet</div>
           <div v-else class="body-2 mb-8 ml-4">(*) BUILD a map first, to get access to these BUILD options</div>
@@ -263,7 +263,7 @@ Vue.component('vi-gas', {
           <v-checkbox v-if="settings.map4vue" v-model="settings.listingEnabled" :label="localize('Enabled')" class="mr-3"></v-checkbox>
           <v-text-field v-model="settings.listingTemplate" placeholder=" " :disabled="!settings.listingEnabled" :readonly="uidata.listingTemplateMarked"
             append-icon="mdi-eye" @click:append="settings.listingTemplate = settings.map4vue ? uidata.listingTemplateMarkdown : uidata.listingTemplate; uidata.listingTemplateMarked=false"
-            append-outer-icon="mdi-pencil" @click:append-outer="if (settings.map4vue) {selected = 'listing-markdown'; uidata.listingTemplateMarked=true}"
+            append-outer-icon="mdi-pencil" @click:append-outer="if (premium) {selected = 'listing-markdown'; uidata.listingTemplateMarked=true}"
             :label="'%s {{}}'.format(localize('label-listing'))">
           </v-text-field>
         </v-layout>
@@ -383,18 +383,15 @@ Vue.component('vi-gas', {
                 <v-text-field class="mr-3" v-model="settings.layers.geojson.infowindowTemplate" :disabled="!settings.layers.geojson.enabled" :label="'%s (∗)'.format(localize('Infowindow template'))" placeholder=" "></v-text-field>
               </v-layout>
             </div>
-            <v-layout x-kml>
+            <v-layout x-kml v-if="settings.layers.kml.enabled">
               <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.kml.enabled" :disabled="!premium" :label="'%s (+)'.format(localize('Kml/Kmz'))"></v-checkbox>
               <v-text-field class="mr-3" v-model="settings.layers.kml.url" :disabled="!settings.layers.kml.enabled" :label="localize('File URL')" placeholder=" "></v-text-field>
               <v-checkbox class="mr-3" v-model="settings.layers.kml.viewport" :disabled="!settings.layers.kml.enabled" :label="localize('Viewport')"></v-checkbox>
               <v-icon @click="$open('https://www.thexs.ca/xsmapping/adding-custom-layers#h.7yhzkyk5xdib')">mdi-help-circle</v-icon>
             </v-layout>
-          </v-tab-item>
-
-          <v-tab-item key="extended">
             <div x-shapes>
               <v-layout class="mb-1">
-                <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.shapes.enabled" :disabled="!premium" :label="'%s (∗)'.format(localize('Shapes'))" hide-details></v-checkbox>
+                <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.shapes.enabled" :disabled="!premium" :label="'%s (+)'.format(localize('Shapes'))" hide-details></v-checkbox>
                 <v-select class="flex xs10 mr-3" :items="uidata.layerShapesModes" v-model="settings.layers.shapes.modes" multiple clearable :label="localize('Modes')" placeholder=" " :disabled="!settings.layers.shapes.enabled" hide-details></v-select>
                 <v-icon @click="$open('https://www.thexs.ca/xsmapping/filtering-on-your-map-with-shapes')">mdi-help-circle</v-icon>
               </v-layout>
@@ -412,7 +409,9 @@ Vue.component('vi-gas', {
                 <v-text-field class="mr-3" v-model="settings.layers.shapes.import.url" :disabled="!settings.layers.shapes.import.enabled" :label="localize('URL')" placeholder=" "></v-text-field>
               </v-layout>
             </div>
+          </v-tab-item>
 
+          <v-tab-item key="extended">
             <v-layout x-buffer-route>
               <v-checkbox class="mr-3 text-no-wrap" v-model="settings.layers.route.enabled" :disabled="!premium" :label="'%s (∗)'.format(localize('Buffer:Route'))" hide-details></v-checkbox>
               <v-text-field class="mr-0 col-2" v-model.number="settings.layers.route.maxRadius" type="number" step="1" min="1" max="10" :disabled="!settings.layers.route.enabled" :label="localize('Radius')" hide-details></v-text-field>
